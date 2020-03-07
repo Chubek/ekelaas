@@ -157,4 +157,15 @@ router.put("/set/connection/:userid", (req, res) => {
     });
 });
 
+router.post("/auth/on/create", (req, res) => {
+  const userId = jwt.verify(req.body.jwt, process.env.JWT_SECRET).id;
+
+  UserSchema.findOne({ _id: userId })
+    .then(doc => res.status(200).json({ doc }))
+    .catch(e => {
+      res.status(500).json({ e });
+      console.log(e);
+    });
+});
+
 module.exports = router;

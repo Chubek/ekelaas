@@ -105,7 +105,7 @@ router.post("/add/class/:courseid", auth, (req, res) => {
 });
 
 router.put("/set/class/:classid", auth, (req, res) => {
-  const userId = req.user .id;
+  const userId = req.user.id;
   const classId = req.params.classid;
   const { classDate, classHour, classParticipants, classNotes } = req.body;
 
@@ -127,3 +127,36 @@ router.put("/set/class/:classid", auth, (req, res) => {
       console.log(e);
     });
 });
+
+router.get("/all", (req, res) => {
+  CourseSchema.find()
+    .then(docCourses => res.status(200).json({ docCourses }))
+    .catch(e => {
+      res.status(500).json({ error: e.message });
+      console.log(e);
+    });
+});
+
+router.get("/single/:courseid", (req, res) => {
+  const courseId = req.params.courseid;
+
+  CourseSchema.findOne({ _id: courseId })
+    .then(courseDoc => res.status(200).json({ courseDoc }))
+    .catch(e => {
+      res.status(500).json({ error: e.message });
+      console.log(e);
+    });
+});
+
+router.get("/multiple", (req, res) => {
+  const courseIds = req.query.courses;
+
+  CourseSchema.find({ _id: { $all: courseIds } })
+    .then(courseDocs => res.status(200).json({ courseDocs }))
+    .catch(e => {
+      res.status(500).json({ error: e.message });
+      console.log(e);
+    });
+});
+
+module.exports = router;

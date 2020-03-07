@@ -78,3 +78,35 @@ router.put("/set/student/:teacherid", auth, (req, res) => {
     });
 });
 
+router.get("/all", (req, res) => {
+  TeacherSchema.find()
+    .then(docTeachers => res.status(200).json({ docTeachers }))
+    .catch(e => {
+      res.status(500).json({ error: e.message });
+      console.log(e);
+    });
+});
+
+router.get("/single/:teacherid", (req, res) => {
+  const teacherId = req.params.teacherid;
+
+  TeacherSchema.findOne({ _id: teacherId })
+    .then(teacherDoc => res.status(200).json({ teacherDoc }))
+    .catch(e => {
+      res.status(500).json({ error: e.message });
+      console.log(e);
+    });
+});
+
+router.get("/multiple", (req, res) => {
+  const teacherIds = req.query.teachers;
+
+  TeacherSchema.find({ _id: { $all: teacherIds } })
+    .then(teacherDocs => res.status(200).json({ teacherDocs }))
+    .catch(e => {
+      res.status(500).json({ error: e.message });
+      console.log(e);
+    });
+});
+
+module.exports = router;

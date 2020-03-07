@@ -58,4 +58,35 @@ router.put("/set/info/:studentid", auth, (req, res) => {
     });
 });
 
+router.get("/all", (req, res) => {
+  StudentSchema.find()
+    .then(docStudents => res.status(200).json({ docStudents }))
+    .catch(e => {
+      res.status(500).json({ error: e.message });
+      console.log(e);
+    });
+});
+
+router.get("/single/:studentid", (req, res) => {
+  const studentId = req.params.studentid;
+
+  StudentSchema.findOne({ _id: studentId })
+    .then(studentDoc => res.status(200).json({ studentDoc }))
+    .catch(e => {
+      res.status(500).json({ error: e.message });
+      console.log(e);
+    });
+});
+
+router.get("/multiple", (req, res) => {
+  const studentIds = req.query.students;
+
+  StudentSchema.find({ _id: { $all: studentIds } })
+    .then(studentDocs => res.status(200).json({ studentDocs }))
+    .catch(e => {
+      res.status(500).json({ error: e.message });
+      console.log(e);
+    });
+});
+
 module.exports = router;
