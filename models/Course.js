@@ -2,9 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const CourseSchema = new Schema({
-  teachers_id: {
-    type: [String]
-  },
+  teacher_id: String,
   students: [String],
   info: {
     subject: String,
@@ -25,3 +23,5 @@ const CourseSchema = new Schema({
     }
   ]
 });
+
+module.exports = mongoose.model("Course", CourseSchema);

@@ -11,7 +11,7 @@ const TeacherSchema = new Schema({
     credits: [String],
     degrees: [String]
   },
-  students_id: [
+  students: [
     {
       student_id: String,
       notes: String,
@@ -21,3 +21,5 @@ const TeacherSchema = new Schema({
   courses_id: [String],
   quizzes_id: [String]
 });
+
+module.exports = mongoose.model("Teacher", TeacherSchema);

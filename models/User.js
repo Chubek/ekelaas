@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const moment = require("moment");
+const _ = require("lodash");
 
 const UserSchema = new Schema({
   display_name: {
@@ -22,13 +23,21 @@ const UserSchema = new Schema({
   },
   activaton_numbers: [
     {
-      number: Number,
+      number: {
+        type: String,
+        unique: true,
+        default:
+          _.random(100, 150).toString() +
+          _.random(200, 250).toString() +
+          _.random(300, 400).toString()
+      },
       expires: {
         type: Date,
         default: moment().add(2, "hours")
       }
     }
   ],
+  verified: Boolean,
   info: {
     first_name: String,
     last_name: String,
@@ -43,8 +52,11 @@ const UserSchema = new Schema({
     mikogo_id: String
   },
   priviledges: {
+    type: String,
     teacher_id: String,
     admin_id: String,
     student_id: String
   }
 });
+
+module.exports = mongoose.model("User", UserSchema);
