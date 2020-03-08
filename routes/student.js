@@ -58,6 +58,90 @@ router.put("/set/info/:studentid", auth, (req, res) => {
     });
 });
 
+router.put("/set/favorite/courses/:studentid", auth, (req, res) => {
+  const userId = req.user.id;
+  const studentId = req.params.studentid;
+  const favoriteCourses = req.body.favoriteCourses;
+
+  StudentSchema.findOneAndUpdate(
+    { _id: studentId, user_id: userId },
+    {
+      $addToSet: {
+        favorite_courses: favoriteCourses
+      }
+    },
+    { upsert: true, new: true }
+  )
+    .then(studentDoc => res.status(200).json({ studentDoc }))
+    .catch(e => {
+      res.status(500).json({ error: e.message });
+      console.log(e);
+    });
+});
+
+router.put("/set/favorite/teachers/:studentid", auth, (req, res) => {
+  const userId = req.user.id;
+  const studentId = req.params.studentid;
+  const favoriteTeachers = req.body.favoriteTeachers;
+
+  StudentSchema.findOneAndUpdate(
+    { _id: studentId, user_id: userId },
+    {
+      $addToSet: {
+        favorite_teachers: favoriteTeachers
+      }
+    },
+    { upsert: true, new: true }
+  )
+    .then(studentDoc => res.status(200).json({ studentDoc }))
+    .catch(e => {
+      res.status(500).json({ error: e.message });
+      console.log(e);
+    });
+});
+
+router.put("/set/taken/courses/:studentid", auth, (req, res) => {
+  const userId = req.user.id;
+  const studentId = req.params.studentid;
+  const takenCourses = req.body.takenCourses;
+
+  StudentSchema.findOneAndUpdate(
+    { _id: studentId, user_id: userId },
+    {
+      $addToSet: {
+        taken_courses: takenCourses
+      }
+    },
+    { upsert: true, new: true }
+  )
+    .then(studentDoc => res.status(200).json({ studentDoc }))
+    .catch(e => {
+      res.status(500).json({ error: e.message });
+      console.log(e);
+    });
+});
+
+router.put("/set/engaged/teachers/:studentid", auth, (req, res) => {
+  const userId = req.user.id;
+  const studentId = req.params.studentid;
+  const engagedTeachers = req.body.engagedTeachers;
+
+  StudentSchema.findOneAndUpdate(
+    { _id: studentId, user_id: userId },
+    {
+      $addToSet: {
+        engaged_teachers: engagedTeachers
+      }
+    },
+    { upsert: true, new: true }
+  )
+    .then(studentDoc => res.status(200).json({ studentDoc }))
+    .catch(e => {
+      res.status(500).json({ error: e.message });
+      console.log(e);
+    });
+});
+
 router.get("/all", (req, res) => {
   StudentSchema.find()
     .then(docStudents => res.status(200).json({ docStudents }))

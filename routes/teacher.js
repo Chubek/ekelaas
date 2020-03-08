@@ -78,6 +78,24 @@ router.put("/set/student/:teacherid", auth, (req, res) => {
     });
 });
 
+router.put("/set/courses/:teacherid", auth, (req, res) => {
+  const userId = req.user.id;
+  const teacherId = req.params.teacherid;
+  const { coursesId } = req.body.coursesId;
+
+  TeacherSchema.findOneAndUpdate(
+    { _id: teacherId, user_id: userId },
+    {
+      $addToSet: {
+        courses_id: { $each: coursesId }
+      }
+    },
+    { upsert: true, new: true }
+  )
+    .then(teacherDoc => res.status(200).json({ teacherDoc }))
+    .catch(e => console.log(e));
+});
+
 router.get("/all", (req, res) => {
   TeacherSchema.find()
     .then(docTeachers => res.status(200).json({ docTeachers }))

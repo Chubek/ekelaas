@@ -87,6 +87,7 @@ export default UserModule = {
             studentId: res.docUser.priviledges.student_id,
             teacherId: res.docUser.priviledges.teacherId
           });
+          dispatch("loadType");
         });
     },
 
@@ -119,6 +120,7 @@ export default UserModule = {
             studentId: res.docUser.priviledges.student_id,
             teacherId: res.docUser.priviledges.teacherId
           });
+          dispatch("loadType");
         });
     },
 
@@ -132,6 +134,14 @@ export default UserModule = {
         })
         .then(res => dispatch("logIn", payload))
         .catch(e => console.log(e));
+    },
+
+    loadType({ dispatch, state }) {
+      if (state.type == "Student") {
+        dispatch("loadStudent", state.typeId);
+      } else if (state.type == "Teacher") {
+        dispatch("loadTeacher", state.typeId);
+      }
     }
   },
   getters: {}
