@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export default TeacherModule = {
+const TeacherModule = {
   state: {
     teacherId: String,
     info: {
@@ -17,27 +17,27 @@ export default TeacherModule = {
     courses: [Object]
   },
   mutations: {
-    [SET_TEACHER_ID](state, payload) {
+    SET_TEACHER_ID(state, payload) {
       state.teacherId = payload;
     },
 
-    [SET_TEACHER_INFO](state, payload) {
+    SET_TEACHER_INFO(state, payload) {
       state.info = payload;
     },
 
-    [SET_TEACHER_STUDENTS](state, payload) {
+    SET_TEACHER_STUDENTS(state, payload) {
       state.students = payload;
     },
 
-    [PUSH_TEACHER_STUDENTS](state, payload) {
+    PUSH_TEACHER_STUDENTS(state, payload) {
       state.students.push(payload);
     },
 
-    [SET_TEACHER_COURSES](state, payload) {
+    SET_TEACHER_COURSES(state, payload) {
       state.coursesId = payload;
     },
 
-    [PUSH_TEACHER_COURSES](state, payload) {
+    PUSH_TEACHER_COURSES(state, payload) {
       state.coursesId.push(payload);
     }
   },
@@ -64,7 +64,7 @@ export default TeacherModule = {
         .catch(e => console.log(e));
     },
 
-    loadTeacher({ commit }, payload) {
+    loadTeacher({ dispatch, commit }, payload) {
       axios.get(`/teacher/single/${payload}`).then(res => {
         commit("SET_TEACHER_ID", res.teacherDoc._id);
         commit("SET_TEACHER_INFO", {
@@ -77,9 +77,9 @@ export default TeacherModule = {
     },
 
     setTeacherStudents({ commit }, payload) {
-      ids = [];
-      notes = [];
-      overallScore = [];
+      let ids = [];
+      let notes = [];
+      let overallScore = [];
       payload.forEach(student => {
         ids.push(student.student_id);
         notes.push(student.notes);
@@ -88,7 +88,7 @@ export default TeacherModule = {
       axios
         .get(`/student/multiple/get?students=${ids}`)
         .then(res => {
-          const student = res.studentDocs;
+          let student = res.studentDocs;
           const concat = student.concat(notes, overallScore);
           commit("SET_TEACHER_STUDENTS", concat);
         })
@@ -149,3 +149,5 @@ export default TeacherModule = {
   },
   getters: {}
 };
+
+export default TeacherModule;

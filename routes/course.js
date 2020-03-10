@@ -128,8 +128,10 @@ router.put("/set/class/:classid", auth, (req, res) => {
     });
 });
 
-router.get("/all", (req, res) => {
+router.get("/all/:limit", (req, res) => {
+  const limit = parseInt(req.params.limit);
   CourseSchema.find()
+    .limit(limit)
     .then(docCourses => res.status(200).json({ docCourses }))
     .catch(e => {
       res.status(500).json({ error: e.message });

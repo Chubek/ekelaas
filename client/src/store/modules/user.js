@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export default UserModule = {
+const UserModule = {
   state: {
     loggedIn: !!localStorage.getItem("token"),
     userData: {
@@ -27,23 +27,23 @@ export default UserModule = {
     typeId: String
   },
   mutations: {
-    [SET_USER_DATA](state, payload) {
+    SET_USER_DATA(state, payload) {
       state.userData = payload;
     },
 
-    [SET_USER_INFO](state, payload) {
+    SET_USER_INFO(state, payload) {
       state.info = payload;
     },
 
-    [SET_REFERRAL_CODE](state, payload) {
+    SET_REFERRAL_CODE(state, payload) {
       state.referralCode = payload;
     },
 
-    [SET_CONNECTIONS](state, payload) {
+    SET_CONNECTIONS(state, payload) {
       state.connections = payload;
     },
 
-    [SET_TYPE](state, payload) {
+    SET_TYPE(state, payload) {
       state.type = payload.type;
 
       if (payload.type == "Student") {
@@ -54,7 +54,7 @@ export default UserModule = {
     }
   },
   actions: {
-    logIn({ commit }, payload) {
+    logIn({ dispatch, commit }, payload) {
       axios
         .post("/user/auth", {
           displayName: payload.displayName,
@@ -91,7 +91,7 @@ export default UserModule = {
         });
     },
 
-    logInOnCreate({ commit }) {
+    logInOnCreate({ dispatch, commit }) {
       axios
         .post("/user/auth/on/create", {
           jwt: localStorage.getItem("token")
@@ -132,7 +132,7 @@ export default UserModule = {
           phoneNumber: payload.phoneNumber,
           password: payload.password
         })
-        .then(res => dispatch("logIn", payload))
+        .then(() => dispatch("logIn", payload))
         .catch(e => console.log(e));
     },
 
@@ -146,3 +146,5 @@ export default UserModule = {
   },
   getters: {}
 };
+
+export default UserModule;

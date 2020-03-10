@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export default CourseModule = {
+const CourseModule = {
   state: {
     courseId: String,
     teacher: Object,
@@ -21,35 +21,35 @@ export default CourseModule = {
     ]
   },
   mutations: {
-    [SET_COURSE_ID](state, payload) {
+    SET_COURSE_ID(state, payload) {
       state.courseId = payload;
     },
 
-    [SET_COURSE_TEACHER](state, payload) {
+    SET_COURSE_TEACHER(state, payload) {
       state.teacher = payload;
     },
 
-    [SET_COURSE_STUDENTS](state, payload) {
+    SET_COURSE_STUDENTS(state, payload) {
       state.students = payload;
     },
 
-    [PUSH_COURSE_STUDENTS](state, payload) {
+    PUSH_COURSE_STUDENTS(state, payload) {
       state.students.push(payload);
     },
 
-    [SET_COURSE_INFO](state, payload) {
+    SET_COURSE_INFO(state, payload) {
       state.info = payload;
     },
 
-    [SET_COURSE_CLASSES](state, payload) {
+    SET_COURSE_CLASSES(state, payload) {
       state.classes = payload;
     },
 
-    [PUSH_COURSE_CLASSES](state, payload) {
+    PUSH_COURSE_CLASSES(state, payload) {
       state.classes.push(payload);
     },
 
-    [PUSH_CLASS_PARTICIPANTS](state, payload) {
+    PUSH_CLASS_PARTICIPANTS(state, payload) {
       state.classes.forEach(myClass => {
         if (myClass.classId == payload.classId) {
           myClass.classParticipants.push(payload.classParticipants);
@@ -148,3 +148,5 @@ export default CourseModule = {
   },
   getters: {}
 };
+
+export default CourseModule
