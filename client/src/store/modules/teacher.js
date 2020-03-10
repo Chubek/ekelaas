@@ -104,7 +104,7 @@ export default TeacherModule = {
         .catch(e => console.log(e));
     },
 
-    pushTeacherStudents({ dispatch }, payload) {
+    pushTeacherStudents({ commit }, payload) {
       axios
         .put(
           `/teacher/set/student/${payload.teacherId}`,
@@ -129,7 +129,7 @@ export default TeacherModule = {
         .catch(e => console.log(e));
     },
 
-    pushTeacherCourses({ dispatch }, payload) {
+    pushTeacherCourses({ commit }, payload) {
       axios
         .put(
           `/teacher/set/courses/${payload.teacherId}`,

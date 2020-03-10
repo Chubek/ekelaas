@@ -80,7 +80,7 @@ router.put("/add/student/:courseid", auth, (req, res) => {
     });
 });
 
-router.post("/add/class/:courseid", auth, (req, res) => {
+router.put("/add/class/:courseid", auth, (req, res) => {
   const userId = req.user.id;
   const courseId = req.params.courseid;
   const { classDate, classHour, classParticipants, classNotes } = req.body;

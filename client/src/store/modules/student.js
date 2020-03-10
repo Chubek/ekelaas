@@ -136,11 +136,9 @@ export default StudentModule = {
             headers: { "x-auth-token": localStorage.getItem("token") }
           }
         )
-        .then(res => {
+        .then(() => {
           axios
-            .get(
-              `/course/multiple/get?courses=${res.studentDocs.favorite_courses}`
-            )
+            .get(`/course/multiple/get?courses=${payload.favoriteCourses}`)
             .then(res => commit("PUSH_FAVORITE_COURSES", res.courseDocs))
             .catch(e => console.log(e));
         })
@@ -158,16 +156,15 @@ export default StudentModule = {
             headers: { "x-auth-token": localStorage.getItem("token") }
           }
         )
-        .then(res => {
+        .then(() => {
           axios
-            .get(
-              `/teacher/multiple/get?teachers=${res.studentDocs.favorite_teachers}`
-            )
+            .get(`/teacher/multiple/get?teachers=${payload.favoriteTeachers}`)
             .then(res => commit("PUSH_FAVORITE_TEACHERS", res.teacherDocs))
             .catch(e => console.log(e));
         })
         .catch(e => console.log(e));
     },
+
     pushTakenCourses({ commit }, payload) {
       axios
         .get(
@@ -179,11 +176,9 @@ export default StudentModule = {
             headers: { "x-auth-token": localStorage.getItem("token") }
           }
         )
-        .then(res => {
+        .then(() => {
           axios
-            .get(
-              `/course/multiple/get?courses=${res.studentDocs.taken_courses}`
-            )
+            .get(`/course/multiple/get?courses=${payload.takenCourses}`)
             .then(res => commit("PUSH_TAKEN_COURSES", res.courseDocs))
             .catch(e => console.log(e));
         })
@@ -201,11 +196,9 @@ export default StudentModule = {
             headers: { "x-auth-token": localStorage.getItem("token") }
           }
         )
-        .then(res => {
+        .then(() => {
           axios
-            .get(
-              `/teacher/multiple/get?teachers=${res.studentDocs.engaged_teachers}`
-            )
+            .get(`/teacher/multiple/get?teachers=${payload.engagedTeachers}`)
             .then(res => commit("PUSH_ENGAGED_TEACHERS", res.teacherDocs))
             .catch(e => console.log(e));
         })
