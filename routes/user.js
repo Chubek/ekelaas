@@ -110,9 +110,9 @@ router.get("/single/:userid", (req, res) => {
     });
 });
 
-router.put("/set/info/:userid", (req, res) => {
+router.put("/set/info/", auth, (req, res) => {
   const { firstName, lastName, dateOfBirth, referralCode } = req.body;
-  const userId = req.params.userid;
+  const userId = req.user.id;
 
   UserSchema.findOneAndUpdate(
     { _id: userId },

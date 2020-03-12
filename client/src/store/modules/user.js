@@ -142,6 +142,32 @@ const UserModule = {
       } else if (state.type == "Teacher") {
         dispatch("loadTeacher", state.typeId);
       }
+    },
+
+    setUserInfo({ commit }, payload) {
+      new Promise((resolve, reject) => {
+        axios
+          .put(
+            "/user/set/info",
+            {
+              firstName: payload.firstName,
+              lastName: payload.lastName,
+              dateOfBirth: payload.dateOfBirth,
+              referralCode: payload.referralCode
+            },
+            { headers: { "x-auth-token": localStorage.getItem("token") } }
+          )
+          .then(res => {
+            if (res.status == 200) {
+              commit("SET_USER_INFO", payload);
+              resolve("اطلاعات با موفقیت وارد شد.");
+            } else {
+              console.log("Error setting info.");
+              reject("ورود اطلاعات انجام نگرفت.");
+            }
+          })
+          .catch(e => console.log(e));
+      });
     }
   },
   getters: {}
