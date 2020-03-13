@@ -3,6 +3,12 @@ import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import Register from "../components/User/Register.vue";
 import Login from "../components/User/Login.vue";
+import SetInfo from "../components/User/SetInfo.vue";
+import SetStudent from "../components/Student/SetStudent.vue";
+import SetTeacher from "../components/Teacher/SetTeacher.vue";
+import SetCourse from "../components/Course/SetCourse.vue"
+import SetClass from "../components/Course/SetClass.vue"
+//import authGuard from "./authGuard"
 Vue.use(VueRouter);
 
 const routes = [
@@ -20,6 +26,31 @@ const routes = [
     path: "/login",
     name: "ورود",
     component: Login
+  },
+  {
+    path: "/set/info",
+    name: "ثبت اطلاعات",
+    component: SetInfo
+  },
+  {
+    path: "/set/student",
+    name: " ثبت اطلاعات دانش آموزی",
+    component: SetStudent
+  },
+  {
+    path: "/set/teacher",
+    name: " ثبت اطلاعات معلمی",
+    component: SetTeacher
+  },
+  {
+    path: "/set/course",
+    name: " ثبت اطلاعات دوره",
+    component: SetCourse
+  },
+  {
+    path: "/set/class",
+    name: " ثبت اطلاعات کلاس",
+    component: SetClass
   },
   {
     path: "/about",

@@ -4,7 +4,7 @@ include ../../assets/locale/FA.pug
 div
     h2.pageTitle
         |#{STR_loginHeader}
-    v-card.inputHolder.d-flex-justify-start(class="d-flex pa-10 ma-10")
+    v-card.inputHolder.d-flex.justify-center(class="d-flex pa-10 ma-10")
         v-col(cols="12" sm="6" md="3")
             v-text-field(v-model="loginString" label=STR_loginString placeholder=STR_loginString outlined)
             v-text-field(v-model="password" label=STR_password placeholder=STR_password outlined)

@@ -3,12 +3,13 @@ include ../../assets/locale/FA.pug
 
 div
     h2.pageTitle
-        |#{STR_infoTitle}
-    v-card.inputHolder.d-flex.justify-start.text-end(class="d-flex pa-10 ma-10")
+        |#{STR_infoHeader}
+    v-card.inputHolder.d-flex.justify-center.text-end(class="d-flex pa-10 ma-10")
         v-col(cols="12" sm="6" md="3")
             v-text-field(v-model="firstName" label=STR_firstName placeholder=STR_firstName outlined)
-            v-text-field(v-model="lastName" label=STR_lastName placeholder=STR_lastName outlined)
-            v-date-picker(v-model="dateOfBirth" locale="fa" first-day-of-week="saturday")
+            v-text-field(v-model="lastName" label=STR_lastName placeholder=STR_lastName outlined)            
+            h5.labelTitle=STR_dateOfBirth
+            v-date-picker(v-model="dateOfBirth" title=STR_dateOfBirth locale="fa" class="datePicker")
             v-text-field(v-model="referral" label=STR_referral placeholder=STR_referral outlined)
             v-btn(color="purple" large dark @click="onSendInfo")=STR_sendInfo
 
@@ -43,4 +44,11 @@ body, .pageTitle, .inputHolder
 
 .inputHolder
     font-weight: 1000
+
+.labelTitle
+    margin-left: 8rem
+    margin-bottom: 1rem
+
+.datePicker
+  margin-bottom: 2rem
 </style>

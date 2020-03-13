@@ -170,7 +170,11 @@ const UserModule = {
       });
     }
   },
-  getters: {}
+  getters: {
+    getLoggedIn: state => {
+      return state.loggedIn;
+    }
+  }
 };
 
 export default UserModule;
