@@ -125,6 +125,28 @@ const UserModule = {
         });
     },
 
+    logInOnRegister({ commit }, payload) {
+      axios
+        .post("/user/auth", {
+          displayName: payload.displayName,
+          email: payload.email,
+          phoneNumber: payload.phoneNumber,
+          password: payload.password
+        })
+        .then(res => {
+          console.log("res", res);
+          localStorage.setItem("token", res.data.token);
+          commit("SET_USER_DATA", {
+            userId: res.data.docUser._id,
+            displayName: res.data.docUser.display_name,
+            email: res.data.docUser.email,
+            phoneNumber: res.data.docUser.phone_number,
+            verified: res.data.docUser.verified
+          });        
+          
+        });
+    },
+
     register({ dispatch }, payload) {
       return new Promise((resolve, reject) => {
         axios
@@ -139,7 +161,7 @@ const UserModule = {
             if (res.status == 200) {
               resolve("کاربر ساخته شد.");
             }
-            dispatch("logIn", payload);
+            dispatch("logInOnRegister", payload);
           })
           .catch(e => {
             if (e.response.status == 401) {
