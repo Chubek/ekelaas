@@ -4,6 +4,8 @@ const router = require("express").Router();
 const _ = require("lodash");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const auth = require("../middleware/auth");
+const moment = require("moment");
 
 const SALT_ROUNDS = 12;
 
@@ -12,11 +14,24 @@ router.post("/register", (req, res) => {
 
   if (!displayName || !phoneNumber || !password) {
     res
-      .status(401)
+      .status(403)
       .json({ message: "Please fill in the required information." });
     console.log("Info not entered.");
     return false;
   }
+
+  UserSchema.findOne({
+    display_name: displayName,
+    email: email,
+    phone_number: phoneNumber
+  }).then(doc => {
+    if (doc) {
+      console.log("doc", doc);
+      res.status(401).json({ message: "Already exists." });
+      console.log("Data exists.");
+      return false;
+    }
+  });
 
   bcrypt.hash(password, SALT_ROUNDS, (err, hash) => {
     if (err) throw err;
@@ -62,8 +77,23 @@ router.post("/auth", (req, res) => {
     return false;
   }
 
-  UserSchema.find({ $or: { displayName, email, phoneNumber } }).then(
-    docUser => {
+  let input = null;
+  if (!displayName && !email && phoneNumber) {
+    input = phoneNumber;
+  } else if (!displayName && email && !phoneNumber) {
+    input = email;
+  } else if (displayName && !email && !phoneNumber) {
+    input = displayName;
+  } else if (!displayName && !email && !phoneNumber) {
+    res.status(403).json({ message: "No data entered." });
+  } else if (displayName && email && phoneNumber) {
+    input = phoneNumber;
+  }
+
+  UserSchema.findOne({
+    $or: [{ display_name: input }, { email: input }, { phone_number: input }]
+  })
+    .then(docUser => {
       bcrypt
         .compare(password, docUser.password)
         .then(isMatch => {
@@ -86,8 +116,11 @@ router.post("/auth", (req, res) => {
           res.status(500).json({ error: e.message });
           console.log(e);
         });
-    }
-  );
+    })
+    .catch(e => {
+      res.status(500).json({ error: e.message });
+      console.log(e);
+    });
 });
 
 router.get("/all", (req, res) => {

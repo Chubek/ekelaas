@@ -67,12 +67,17 @@ export default Vue.extend({
     },
 
     onSubtractCounter: function() {
-      this.counter -= 1;
+      if (this.counter > 0) {
+        this.counter -= 1;
+      }
       this.numbersList.pop();
     },
 
     onRemoveSession: function(index) {
       this.numbersList.splice(index, 1);
+      if (this.counter > 0) {
+        this.counter -= 1;
+      }
     },
 
     onAddClass: function(index) {
@@ -84,6 +89,9 @@ export default Vue.extend({
         classNotes: this.notes[index]
       });
       this.numbersList.splice(index, 1);
+      if (this.counter > 0) {
+        this.counter -= 1;
+      }
     }
   }
 });

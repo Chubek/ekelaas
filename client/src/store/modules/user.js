@@ -125,15 +125,30 @@ const UserModule = {
     },
 
     register({ dispatch }, payload) {
-      axios
-        .post("/user/register", {
-          displayName: payload.displayName,
-          email: payload.email,
-          phoneNumber: payload.phoneNumber,
-          password: payload.password
-        })
-        .then(() => dispatch("logIn", payload))
-        .catch(e => console.log(e));
+      return new Promise((resolve, reject) => {
+        axios
+          .post("/user/register", {
+            displayName: payload.displayName,
+            email: payload.email,
+            phoneNumber: payload.phoneNumber,
+            password: payload.password
+          })
+          .then(res => {
+            console.log("res", res);
+            if (res.status == 200) {
+              resolve("کاربر ساخته شد.");
+            }
+            dispatch("logIn", payload);
+          })
+          .catch(e => {
+            if (e.response.status == 401) {
+              reject("نام کاربری، ایمیل یا موبایل در پایگاه داده وجود دارد.");
+            } else if (e.response.status == 403) {
+              reject("لطفا اطلاعات را وارد کنید.");
+            }
+            console.log(e);
+          });
+      });
     },
 
     loadType({ dispatch, state }) {
