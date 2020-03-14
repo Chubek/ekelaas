@@ -53,26 +53,26 @@ const TeacherModule = {
           { headers: { "x-auth-token": localStorage.getItem("token") } }
         )
         .then(res => {
-          commit("SET_TEACHER_ID", res.teacherDoc._id);
+          commit("SET_TEACHER_ID", res.data.teacherDoc._id);
           commit("SET_TEACHER_INFO", {
-            credits: res.teacherDoc.info.credits,
-            degrees: res.teacherDoc.info.degrees
+            credits: res.data.teacherDoc.info.credits,
+            degrees: res.data.teacherDoc.info.degrees
           });
-          dispatch("setTeacherStudents", res.teacherDoc.students);
-          dispatch("setTeacherCourses", res.teacherDoc.courses_id);
+          dispatch("setTeacherStudents", res.data.teacherDoc.students);
+          dispatch("setTeacherCourses", res.data.teacherDoc.courses_id);
         })
         .catch(e => console.log(e));
     },
 
     loadTeacher({ dispatch, commit }, payload) {
       axios.get(`/teacher/single/${payload}`).then(res => {
-        commit("SET_TEACHER_ID", res.teacherDoc._id);
+        commit("SET_TEACHER_ID", res.data.teacherDoc._id);
         commit("SET_TEACHER_INFO", {
-          credits: res.teacherDoc.info.credits,
-          degrees: res.teacherDoc.info.degrees
+          credits: res.data.teacherDoc.info.credits,
+          degrees: res.data.teacherDoc.info.degrees
         });
-        dispatch("setTeacherStudents", res.teacherDoc.students);
-        dispatch("setTeacherCourses", res.teacherDoc.courses_id);
+        dispatch("setTeacherStudents", res.data.teacherDoc.students);
+        dispatch("setTeacherCourses", res.data.teacherDoc.courses_id);
       });
     },
 
@@ -88,7 +88,7 @@ const TeacherModule = {
       axios
         .get(`/student/multiple/get?students=${ids}`)
         .then(res => {
-          let student = res.studentDocs;
+          let student = res.data.studentDocs;
           const concat = student.concat(notes, overallScore);
           commit("SET_TEACHER_STUDENTS", concat);
         })
@@ -99,7 +99,7 @@ const TeacherModule = {
       axios
         .get(`/course/multiple/get?students=${payload}`)
         .then(res => {
-          commit("SET_TEACHER_COURSES", res.courseDocs);
+          commit("SET_TEACHER_COURSES", res.data.courseDocs);
         })
         .catch(e => console.log(e));
     },
@@ -119,9 +119,9 @@ const TeacherModule = {
         )
         .then(res => {
           axios
-            .get(`/student/single/${res.studentDoc.student_id}`)
+            .get(`/student/single/${res.data.studentDoc.student_id}`)
             .then(res => {
-              const student = res.studentDoc;
+              const student = res.data.studentDoc;
               const obj = student.concat(payload.notes, payload.score);
               commit("PUSH_TEACHER_STUDENTS", obj);
             });
@@ -140,8 +140,8 @@ const TeacherModule = {
         )
         .then(res => {
           axios
-            .get(`/course/multiple/get?courses=${res.courses_id}`)
-            .then(res => commit("PUSH_TEACHER_COURSES", res.courseDocs))
+            .get(`/course/multiple/get?courses=${res.data.courses_id}`)
+            .then(res => commit("PUSH_TEACHER_COURSES", res.data.courseDocs))
             .catch(e => console.log(e));
         })
         .catch(e => console.log(e));

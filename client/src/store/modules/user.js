@@ -63,29 +63,30 @@ const UserModule = {
           password: payload.password
         })
         .then(res => {
-          localStorage.setItem("token", res.token);
+          console.log("res", res);
+          localStorage.setItem("token", res.data.token);
           commit("SET_USER_DATA", {
-            userId: res.docUser._id,
-            displayName: res.docUser.display_name,
-            email: res.docUser.email,
-            phoneNumber: res.docUser.phone_number,
-            verified: res.docUser.verified
+            userId: res.data.docUser._id,
+            displayName: res.data.docUser.display_name,
+            email: res.data.docUser.email,
+            phoneNumber: res.data.docUser.phone_number,
+            verified: res.data.docUser.verified
           });
           commit("SET_USER_INFO", {
-            firstName: res.docUser.info.first_name,
-            lastName: res.docUser.info.last_name,
-            dateOfBirth: res.docUser.info.date_of_birth
+            firstName: res.data.docUser.info.first_name,
+            lastName: res.data.docUser.info.last_name,
+            dateOfBirth: res.data.docUser.info.date_of_birth
           });
           commit("SET_CONNECTIONS", {
-            adobeConnectionId: res.docUser.connections.adobe_connection_id,
-            ekigaId: res.docUser.connections.ekiga_id,
-            vSeeId: res.docUser.connections.vsee_id,
-            mikogoId: res.docUser.connections.mikogo_id
+            adobeConnectionId: res.data.docUser.connections.adobe_connection_id,
+            ekigaId: res.data.docUser.connections.ekiga_id,
+            vSeeId: res.data.docUser.connections.vsee_id,
+            mikogoId: res.data.docUser.connections.mikogo_id
           });
           commit("SET_TYPE", {
-            type: res.docUser.priviledges.type,
-            studentId: res.docUser.priviledges.student_id,
-            teacherId: res.docUser.priviledges.teacherId
+            type: res.data.docUser.priviledges.type,
+            studentId: res.data.docUser.priviledges.student_id,
+            teacherId: res.data.docUser.priviledges.teacherId
           });
           dispatch("loadType");
         });
@@ -98,27 +99,27 @@ const UserModule = {
         })
         .then(res => {
           commit("SET_USER_DATA", {
-            userId: res.docUser._id,
-            displayName: res.docUser.display_name,
-            email: res.docUser.email,
-            phoneNumber: res.docUser.phone_number,
-            verified: res.docUser.verified
+            userId: res.data.docUser._id,
+            displayName: res.data.docUser.display_name,
+            email: res.data.docUser.email,
+            phoneNumber: res.data.docUser.phone_number,
+            verified: res.data.docUser.verified
           });
           commit("SET_USER_INFO", {
-            firstName: res.docUser.info.first_name,
-            lastName: res.docUser.info.last_name,
-            dateOfBirth: res.docUser.info.date_of_birth
+            firstName: res.data.docUser.info.first_name,
+            lastName: res.data.docUser.info.last_name,
+            dateOfBirth: res.data.docUser.info.date_of_birth
           });
           commit("SET_CONNECTIONS", {
-            adobeConnectionId: res.docUser.connections.adobe_connection_id,
-            ekigaId: res.docUser.connections.ekiga_id,
-            vSeeId: res.docUser.connections.vsee_id,
-            mikogoId: res.docUser.connections.mikogo_id
+            adobeConnectionId: res.data.docUser.connections.adobe_connection_id,
+            ekigaId: res.data.docUser.connections.ekiga_id,
+            vSeeId: res.data.docUser.connections.vsee_id,
+            mikogoId: res.data.docUser.connections.mikogo_id
           });
           commit("SET_TYPE", {
-            type: res.docUser.priviledges.type,
-            studentId: res.docUser.priviledges.student_id,
-            teacherId: res.docUser.priviledges.teacherId
+            type: res.data.docUser.priviledges.type,
+            studentId: res.data.docUser.priviledges.student_id,
+            teacherId: res.data.docUser.priviledges.teacherId
           });
           dispatch("loadType");
         });

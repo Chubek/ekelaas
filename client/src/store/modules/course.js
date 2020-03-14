@@ -70,35 +70,35 @@ const CourseModule = {
           { headers: { "x-auth-token": localStorage.getItem("token") } }
         )
         .then(res => {
-          commit("SET_COURSE_ID", res.courseDoc._id);
-          dispatch("setCourseTeacher", res.courseDoc.teacher_id);
-          dispatch("setCourseStudents", res.courseDoc.students);
-          commit("SET_COURSE_INFO", res.courseDoc.info);
-          commit("SET_COURSE_CLASSES", res.courseDoc.classes);
+          commit("SET_COURSE_ID", res.data.courseDoc._id);
+          dispatch("setCourseTeacher", res.data.courseDoc.teacher_id);
+          dispatch("setCourseStudents", res.data.courseDoc.students);
+          commit("SET_COURSE_INFO", res.data.courseDoc.info);
+          commit("SET_COURSE_CLASSES", res.data.courseDoc.classes);
         })
         .catch(e => console.log(e));
     },
     loadCourse({ dispatch, commit }, payload) {
       axios.get(`/course/single/${payload}`).then(res => {
-        commit("SET_COURSE_ID", res.courseDoc._id);
-        dispatch("setCourseTeacher", res.courseDoc.teacher_id);
-        dispatch("setCourseStudents", res.courseDoc.students);
-        commit("SET_COURSE_INFO", res.courseDoc.info);
-        commit("SET_COURSE_CLASSES", res.courseDoc.classes);
+        commit("SET_COURSE_ID", res.data.courseDoc._id);
+        dispatch("setCourseTeacher", res.data.courseDoc.teacher_id);
+        dispatch("setCourseStudents", res.data.courseDoc.students);
+        commit("SET_COURSE_INFO", res.data.courseDoc.info);
+        commit("SET_COURSE_CLASSES", res.data.courseDoc.classes);
       });
     },
 
     setCourseTeacher({ commit }, payload) {
       axios
         .get(`/teacher/single/${payload}`)
-        .then(res => commit("SET_COURSE_TEACHER", res.teacherDoc))
+        .then(res => commit("SET_COURSE_TEACHER", res.data.teacherDoc))
         .catch(e => console.log(e));
     },
 
     setCourseStudents({ commit }, payload) {
       axios
         .get(`/student/multiple/get?students=${payload}`)
-        .then(res => commit("SET_COURSE_STUDENTS", res.studentDocs))
+        .then(res => commit("SET_COURSE_STUDENTS", res.data.studentDocs))
         .catch(e => console.log(e));
     },
 
@@ -115,7 +115,7 @@ const CourseModule = {
           axios
             .get(`/student/single/${payload.studentId}`)
             .then(res => {
-              commit("PUSH_COURSE_STUDENTS", res.studentDocs);
+              commit("PUSH_COURSE_STUDENTS", res.data.studentDocs);
             })
             .catch(e => console.log(e));
         })
@@ -136,7 +136,7 @@ const CourseModule = {
         )
         .then(res => {
           commit("PUSH_COURSE_CLASSES", {
-            classId: res.courseDoc.classes.classId,
+            classId: res.data.courseDoc.classes.classId,
             classDate: payload.classDate,
             classHour: payload.classHour,
             classParticipants: payload.classParticipants,
@@ -149,4 +149,4 @@ const CourseModule = {
   getters: {}
 };
 
-export default CourseModule
+export default CourseModule;

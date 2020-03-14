@@ -69,11 +69,14 @@ const StudentModule = {
           { headers: { "x-auth-token": localStorage.getItem("token") } }
         )
         .then(res => {
-          commit("SET_STUDENT_ID", res.studentDoc._id);
-          dispatch("setFavoriteCourses", res.studentDoc.favorite_courses);
-          dispatch("setFavoriteTeachers", res.studentDoc.favorite_teachers);
-          dispatch("setTakenCourses", res.studentDoc.taken_courses);
-          dispatch("setEngagedTeachers", res.studentDoc.engaged_courses);
+          commit("SET_STUDENT_ID", res.data.studentDoc._id);
+          dispatch("setFavoriteCourses", res.data.studentDoc.favorite_courses);
+          dispatch(
+            "setFavoriteTeachers",
+            res.data.studentDoc.favorite_teachers
+          );
+          dispatch("setTakenCourses", res.data.studentDoc.taken_courses);
+          dispatch("setEngagedTeachers", res.data.studentDoc.engaged_courses);
         })
         .catch(e => console.log(e));
     },
@@ -81,11 +84,14 @@ const StudentModule = {
       axios
         .get(`/student/single/${payload}`)
         .then(res => {
-          commit("SET_STUDENT_ID", res.studentDoc._id);
-          dispatch("setFavoriteCourses", res.studentDoc.favorite_courses);
-          dispatch("setFavoriteTeachers", res.studentDoc.favorite_teachers);
-          dispatch("setTakenCourses", res.studentDoc.taken_courses);
-          dispatch("setEngagedTeachers", res.studentDoc.engaged_courses);
+          commit("SET_STUDENT_ID", res.data.studentDoc._id);
+          dispatch("setFavoriteCourses", res.data.studentDoc.favorite_courses);
+          dispatch(
+            "setFavoriteTeachers",
+            res.data.studentDoc.favorite_teachers
+          );
+          dispatch("setTakenCourses", res.data.studentDoc.taken_courses);
+          dispatch("setEngagedTeachers", res.data.studentDoc.engaged_courses);
         })
         .catch(e => console.log(e));
     },
@@ -94,7 +100,7 @@ const StudentModule = {
       axios
         .get(`/course/multiple/get?courses=${payload}`)
         .then(res => {
-          commit("SET_FAVORITE_COURSES", res.courseDocs);
+          commit("SET_FAVORITE_COURSES", res.data.courseDocs);
         })
         .catch(e => console.log(e));
     },
@@ -103,7 +109,7 @@ const StudentModule = {
       axios
         .get(`/teacher/multiple/get?teachers=${payload}`)
         .then(res => {
-          commit("SET_FAVORITE_TEACHERS", res.courseDocs);
+          commit("SET_FAVORITE_TEACHERS", res.data.courseDocs);
         })
         .catch(e => console.log(e));
     },
@@ -111,7 +117,7 @@ const StudentModule = {
       axios
         .get(`/course/multiple/get?courses=${payload}`)
         .then(res => {
-          commit("SET_TAKEN_COURSES", res.courseDocs);
+          commit("SET_TAKEN_COURSES", res.data.courseDocs);
         })
         .catch(e => console.log(e));
     },
@@ -120,7 +126,7 @@ const StudentModule = {
       axios
         .get(`/teacher/multiple/get?teachers=${payload}`)
         .then(res => {
-          commit("SET_ENGAGED_TEACHERS", res.courseDocs);
+          commit("SET_ENGAGED_TEACHERS", res.data.courseDocs);
         })
         .catch(e => console.log(e));
     },
@@ -139,7 +145,7 @@ const StudentModule = {
         .then(() => {
           axios
             .get(`/course/multiple/get?courses=${payload.favoriteCourses}`)
-            .then(res => commit("PUSH_FAVORITE_COURSES", res.courseDocs))
+            .then(res => commit("PUSH_FAVORITE_COURSES", res.data.courseDocs))
             .catch(e => console.log(e));
         })
         .catch(e => console.log(e));
@@ -159,7 +165,7 @@ const StudentModule = {
         .then(() => {
           axios
             .get(`/teacher/multiple/get?teachers=${payload.favoriteTeachers}`)
-            .then(res => commit("PUSH_FAVORITE_TEACHERS", res.teacherDocs))
+            .then(res => commit("PUSH_FAVORITE_TEACHERS", res.data.teacherDocs))
             .catch(e => console.log(e));
         })
         .catch(e => console.log(e));
@@ -179,7 +185,7 @@ const StudentModule = {
         .then(() => {
           axios
             .get(`/course/multiple/get?courses=${payload.takenCourses}`)
-            .then(res => commit("PUSH_TAKEN_COURSES", res.courseDocs))
+            .then(res => commit("PUSH_TAKEN_COURSES", res.data.courseDocs))
             .catch(e => console.log(e));
         })
         .catch(e => console.log(e));
@@ -199,7 +205,7 @@ const StudentModule = {
         .then(() => {
           axios
             .get(`/teacher/multiple/get?teachers=${payload.engagedTeachers}`)
-            .then(res => commit("PUSH_ENGAGED_TEACHERS", res.teacherDocs))
+            .then(res => commit("PUSH_ENGAGED_TEACHERS", res.data.teacherDocs))
             .catch(e => console.log(e));
         })
         .catch(e => console.log(e));
