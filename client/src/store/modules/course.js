@@ -58,25 +58,30 @@ const CourseModule = {
     }
   },
   actions: {
-    setUpCourse({ dispatch, commit }, payload) {
-      axios
-        .post(
-          "/course/setup",
-          {
-            subject: payload.subject,
-            description: payload.description,
-            price: payload.price
-          },
-          { headers: { "x-auth-token": localStorage.getItem("token") } }
-        )
-        .then(res => {
-          commit("SET_COURSE_ID", res.data.courseDoc._id);
-          dispatch("setCourseTeacher", res.data.courseDoc.teacher_id);
-          dispatch("setCourseStudents", res.data.courseDoc.students);
-          commit("SET_COURSE_INFO", res.data.courseDoc.info);
-          commit("SET_COURSE_CLASSES", res.data.courseDoc.classes);
-        })
-        .catch(e => console.log(e));
+    setUpCourse({ commit }, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .post(
+            "/course/setup",
+            {
+              subject: payload.subject,
+              description: payload.description,
+              price: payload.price
+            },
+            { headers: { "x-auth-token": localStorage.getItem("token") } }
+          )
+          .then(res => {
+            resolve("اطلاعات با موفقیت وارد شد.");
+            commit("SET_COURSE_ID", res.data.courseDoc._id);
+            commit("SET_COURSE_INFO", res.data.courseDoc.info);
+          })
+          .catch(e => {
+            if (e.response.status == 401) {
+              reject("اطلاعات وارد نشده است.");
+            }
+            console.log(e);
+          });
+      });
     },
     loadCourse({ dispatch, commit }, payload) {
       axios.get(`/course/single/${payload}`).then(res => {

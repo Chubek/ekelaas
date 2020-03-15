@@ -57,28 +57,39 @@ const StudentModule = {
   },
   actions: {
     setUpStudent({ dispatch, commit }, payload) {
-      axios
-        .post(
-          "/student/setup",
-          {
-            grade: payload.grade,
-            province: payload.province,
-            city: payload.city,
-            school: payload.school
-          },
-          { headers: { "x-auth-token": localStorage.getItem("token") } }
-        )
-        .then(res => {
-          commit("SET_STUDENT_ID", res.data.studentDoc._id);
-          dispatch("setFavoriteCourses", res.data.studentDoc.favorite_courses);
-          dispatch(
-            "setFavoriteTeachers",
-            res.data.studentDoc.favorite_teachers
-          );
-          dispatch("setTakenCourses", res.data.studentDoc.taken_courses);
-          dispatch("setEngagedTeachers", res.data.studentDoc.engaged_courses);
-        })
-        .catch(e => console.log(e));
+      return new Promise((resolve, reject) => {
+        axios
+          .post(
+            "/student/setup",
+            {
+              grade: payload.grade,
+              province: payload.province,
+              city: payload.city,
+              school: payload.school
+            },
+            { headers: { "x-auth-token": localStorage.getItem("token") } }
+          )
+          .then(res => {
+            resolve("اطلاعات با موفقیت وارد شد. ");
+            commit("SET_STUDENT_ID", res.data.studentDoc._id);
+            dispatch(
+              "setFavoriteCourses",
+              res.data.studentDoc.favorite_courses
+            );
+            dispatch(
+              "setFavoriteTeachers",
+              res.data.studentDoc.favorite_teachers
+            );
+            dispatch("setTakenCourses", res.data.studentDoc.taken_courses);
+            dispatch("setEngagedTeachers", res.data.studentDoc.engaged_courses);
+          })
+          .catch(e => {
+            if (e.response.status == 401) {
+              reject("اطلاعات وارد نشده است.");
+            }
+            console.log(e);
+          });
+      });
     },
     loadStudent({ dispatch, commit }, payload) {
       axios
@@ -211,7 +222,11 @@ const StudentModule = {
         .catch(e => console.log(e));
     }
   },
-  getters: {}
+  getters: {
+    getStudentInfo: state => {
+      return state.info;
+    }
+  }
 };
 
 export default StudentModule;

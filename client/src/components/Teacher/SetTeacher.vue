@@ -4,6 +4,7 @@ div
     h2.pageTitle
         |#{STR_teacherHeader}
     v-card.inputHolder.d-flex.justify-center.text-ed(class="d-flex pa-10 ma-10")
+        v-alert(v-model="alert" border="right" :color="alertColor" dark dismissible)="{{alertText}}"
         v-col(cols="12" sm="6" md="3")
             ul.list
                 li(v-for="(n, index) in numbersCredits" class="creditsLi")
@@ -33,7 +34,11 @@ export default {
     numbersCredits: [0, 1, 2, 3, 4],
     numbersDegrees: [0, 1],
     credits: [],
-    degrees: []
+    degrees: [],
+
+    alert: false,
+    alertColor: null,
+    alertText: null
   }),
   methods: {
     onAddCredit: function() {
@@ -49,10 +54,21 @@ export default {
     },
 
     onSubmitInfo: function() {
-      this.$store.dispatch("setUpTeacher", {
-        credits: this.credits,
-        degrees: this.degrees
-      });
+      this.$store
+        .dispatch("setUpTeacher", {
+          credits: this.credits,
+          degrees: this.degrees
+        })
+        .then(res => {
+          this.alert = true;
+          this.alertColor = "blue";
+          this.alertText = res;
+        })
+        .catch(e => {
+          this.alert = true;
+          this.alertColor = "red";
+          this.alertText = e;
+        });
     },
 
     onDeleteCredit: function(index) {

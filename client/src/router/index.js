@@ -6,8 +6,8 @@ import Login from "../components/User/Login.vue";
 import SetInfo from "../components/User/SetInfo.vue";
 import SetStudent from "../components/Student/SetStudent.vue";
 import SetTeacher from "../components/Teacher/SetTeacher.vue";
-import SetCourse from "../components/Course/SetCourse.vue"
-import SetClass from "../components/Course/SetClass.vue"
+import SetCourse from "../components/Course/SetCourse.vue";
+import SetClass from "../components/Course/SetClass.vue";
 //import authGuard from "./authGuard"
 Vue.use(VueRouter);
 
@@ -33,17 +33,17 @@ const routes = [
     component: SetInfo
   },
   {
-    path: "/set/student",
+    path: "/set/info-student",
     name: " ثبت اطلاعات دانش آموزی",
     component: SetStudent
   },
   {
-    path: "/set/teacher",
+    path: "/set/info-teacher",
     name: " ثبت اطلاعات معلمی",
     component: SetTeacher
   },
   {
-    path: "/set/course",
+    path: "/set/info-course",
     name: " ثبت اطلاعات دوره",
     component: SetCourse
   },

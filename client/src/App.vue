@@ -23,11 +23,7 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
+      <v-btn href="https://github.com/vuetifyjs/vuetify/releases/latest" target="_blank" text>
         <span class="mr-2">Latest Release</span>
         <v-icon>mdi-open-in-new</v-icon>
       </v-btn>
@@ -36,6 +32,8 @@
     <v-content>
       <transition>
         <keep-alive>
+          {{ loggedIn }}
+          {{ userInfo }}
           <router-view></router-view>
         </keep-alive>
       </transition>
@@ -44,17 +42,21 @@
 </template>
 
 <script>
-
-
 export default {
   name: "App",
 
-  components: {
-    
-  },
+  components: {},
 
   data: () => ({
     //
-  })
+  }),
+  computed: {
+    userInfo: function() {
+      return this.$store.getters.getUserInfo;
+    },
+    loggedIn: function() {
+      return this.$store.getters.loggedIn;
+    }
+  }
 };
 </script>

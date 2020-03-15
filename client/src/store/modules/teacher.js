@@ -42,26 +42,32 @@ const TeacherModule = {
     }
   },
   actions: {
-    setUpTeacher({ dispatch, commit }, payload) {
-      axios
-        .post(
-          "/teacher/setup",
-          {
-            credits: payload.credits,
-            degrees: payload.degrees
-          },
-          { headers: { "x-auth-token": localStorage.getItem("token") } }
-        )
-        .then(res => {
-          commit("SET_TEACHER_ID", res.data.teacherDoc._id);
-          commit("SET_TEACHER_INFO", {
-            credits: res.data.teacherDoc.info.credits,
-            degrees: res.data.teacherDoc.info.degrees
+    setUpTeacher({ commit }, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .post(
+            "/teacher/setup",
+            {
+              credits: payload.credits,
+              degrees: payload.degrees
+            },
+            { headers: { "x-auth-token": localStorage.getItem("token") } }
+          )
+          .then(res => {
+            resolve("اطلاعات با موفقیت وارد شد.");
+            commit("SET_TEACHER_ID", res.data.teacherDoc._id);
+            commit("SET_TEACHER_INFO", {
+              credits: res.data.teacherDoc.info.credits,
+              degrees: res.data.teacherDoc.info.degrees
+            });
+          })
+          .catch(e => {
+            if (e.response.status == 401) {
+              reject("لطفا اطلاعات را وارد کنید.");
+            }
+            console.log(e);
           });
-          dispatch("setTeacherStudents", res.data.teacherDoc.students);
-          dispatch("setTeacherCourses", res.data.teacherDoc.courses_id);
-        })
-        .catch(e => console.log(e));
+      });
     },
 
     loadTeacher({ dispatch, commit }, payload) {
@@ -147,7 +153,11 @@ const TeacherModule = {
         .catch(e => console.log(e));
     }
   },
-  getters: {}
+  getters: {
+    getTeacherInfo: state => {
+      return state.info;
+    }
+  }
 };
 
 export default TeacherModule;

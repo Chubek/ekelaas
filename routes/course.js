@@ -9,6 +9,12 @@ router.post("/setup", auth, (req, res) => {
   const userId = req.user.id;
   const { subject, description, price } = req.body;
 
+  if (!subject || !description || !price) {
+    res.status(401).json({ message: "no data entered" });
+    console.log("no data enetered.");
+    return false;
+  }
+
   TeacherSchema.findOne({ user_id: userId }).then(teacherDoc => {
     const Course = new CourseSchema({
       teacher_id: teacherDoc._id,

@@ -7,6 +7,12 @@ router.post("/setup", auth, (req, res) => {
   const userId = req.user.id;
   const { grade, province, city, school } = req.body;
 
+  if (!grade || !province || !city || !school) {
+    res.status(401).json({ message: "No data entered." });
+    console.log("No data entered.");
+    return false;
+  }
+
   const Student = new StudentSchema({
     user_id: userId,
     "info.grade": grade,

@@ -55,41 +55,56 @@ const UserModule = {
   },
   actions: {
     logIn({ dispatch, commit }, payload) {
-      axios
-        .post("/user/auth", {
-          displayName: payload.displayName,
-          email: payload.email,
-          phoneNumber: payload.phoneNumber,
-          password: payload.password
-        })
-        .then(res => {
-          console.log("res", res);
-          localStorage.setItem("token", res.data.token);
-          commit("SET_USER_DATA", {
-            userId: res.data.docUser._id,
-            displayName: res.data.docUser.display_name,
-            email: res.data.docUser.email,
-            phoneNumber: res.data.docUser.phone_number,
-            verified: res.data.docUser.verified
+      return new Promise((resolve, reject) => {
+        axios
+          .post("/user/auth", {
+            displayName: payload.displayName,
+            email: payload.email,
+            phoneNumber: payload.phoneNumber,
+            password: payload.password
+          })
+          .then(res => {
+            resolve("شما وارد شدید.");
+            localStorage.setItem("token", res.data.token);
+            commit("SET_USER_DATA", {
+              userId: res.data.docUser._id,
+              displayName: res.data.docUser.display_name,
+              email: res.data.docUser.email,
+              phoneNumber: res.data.docUser.phone_number,
+              verified: res.data.docUser.verified
+            });
+            commit("SET_USER_INFO", {
+              firstName: res.data.docUser.info.first_name,
+              lastName: res.data.docUser.info.last_name,
+              dateOfBirth: res.data.docUser.info.date_of_birth
+            });
+            commit("SET_CONNECTIONS", {
+              adobeConnectionId:
+                res.data.docUser.connections.adobe_connection_id,
+              ekigaId: res.data.docUser.connections.ekiga_id,
+              vSeeId: res.data.docUser.connections.vsee_id,
+              mikogoId: res.data.docUser.connections.mikogo_id
+            });
+            commit("SET_TYPE", {
+              type: res.data.docUser.priviledges.type,
+              studentId: res.data.docUser.priviledges.student_id,
+              teacherId: res.data.docUser.priviledges.teacherId
+            });
+            dispatch("loadType");
+          })
+          .catch(e => {
+            if (e.response.status == 401) {
+              reject("لطفا پسوورد را وارد کنید.");
+            } else if (e.response.status == 403) {
+              reject("لطفا نام کاربری، ایمیل یا موبایل را وارد کنید.");
+            } else if (e.response.status == 404) {
+              reject("کاربری با این مشخصات وجود ندارد.");
+            } else if (e.response.status == 407) {
+              reject("پسوورد وارد شده اشتباه است.");
+            }
+            console.log(e);
           });
-          commit("SET_USER_INFO", {
-            firstName: res.data.docUser.info.first_name,
-            lastName: res.data.docUser.info.last_name,
-            dateOfBirth: res.data.docUser.info.date_of_birth
-          });
-          commit("SET_CONNECTIONS", {
-            adobeConnectionId: res.data.docUser.connections.adobe_connection_id,
-            ekigaId: res.data.docUser.connections.ekiga_id,
-            vSeeId: res.data.docUser.connections.vsee_id,
-            mikogoId: res.data.docUser.connections.mikogo_id
-          });
-          commit("SET_TYPE", {
-            type: res.data.docUser.priviledges.type,
-            studentId: res.data.docUser.priviledges.student_id,
-            teacherId: res.data.docUser.priviledges.teacherId
-          });
-          dispatch("loadType");
-        });
+      });
     },
 
     logInOnCreate({ dispatch, commit }) {
@@ -142,8 +157,7 @@ const UserModule = {
             email: res.data.docUser.email,
             phoneNumber: res.data.docUser.phone_number,
             verified: res.data.docUser.verified
-          });        
-          
+          });
         });
     },
 
@@ -183,7 +197,7 @@ const UserModule = {
     },
 
     setUserInfo({ commit }, payload) {
-      new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         axios
           .put(
             "/user/set/info",
@@ -199,18 +213,24 @@ const UserModule = {
             if (res.status == 200) {
               commit("SET_USER_INFO", payload);
               resolve("اطلاعات با موفقیت وارد شد.");
-            } else {
-              console.log("Error setting info.");
-              reject("ورود اطلاعات انجام نگرفت.");
             }
           })
-          .catch(e => console.log(e));
+          .catch(e => {
+            if (e.response.status == 401) {
+              reject("لطفا اطلاعات را وارد کنید.");
+              console.log("No data entered.");
+            }
+            console.log(e);
+          });
       });
     }
   },
   getters: {
     getLoggedIn: state => {
       return state.loggedIn;
+    },
+    getUserInfo: state => {
+      return state.info;
     }
   }
 };

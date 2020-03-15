@@ -76,7 +76,11 @@ router.post("/auth", (req, res) => {
     res.status(401).json({ message: "Please enter password." });
     return false;
   }
-
+  if (!displayName || !email || !phoneNumber) {
+    res.status(403).json({ message: "No data entered." });
+    return false;
+  }
+  /*
   let input = null;
   if (!displayName && !email && phoneNumber) {
     input = phoneNumber;
@@ -84,21 +88,32 @@ router.post("/auth", (req, res) => {
     input = email;
   } else if (displayName && !email && !phoneNumber) {
     input = displayName;
-  } else if (!displayName && !email && !phoneNumber) {
+  } else if (!displayName || !email || !phoneNumber) {
     res.status(403).json({ message: "No data entered." });
+    return false;
   } else if (displayName && email && phoneNumber) {
     input = phoneNumber;
-  }
+  }*/
 
   UserSchema.findOne({
-    $or: [{ display_name: input }, { email: input }, { phone_number: input }]
+    $or: [
+      { display_name: displayName },
+      { email: email },
+      { phone_number: phoneNumber }
+    ]
   })
     .then(docUser => {
+      if (!docUser) {
+        res.status(404).json({ message: "No user." });
+        console.log("No user.");
+        return false;
+      }
+
       bcrypt
         .compare(password, docUser.password)
         .then(isMatch => {
           if (!isMatch) {
-            res.status(403).json({ message: "Passwords don't match." });
+            res.status(407).json({ message: "Passwords don't match." });
             return false;
           } else {
             jwt.sign(
@@ -146,6 +161,12 @@ router.get("/single/:userid", (req, res) => {
 router.put("/set/info/", auth, (req, res) => {
   const { firstName, lastName, dateOfBirth, referralCode } = req.body;
   const userId = req.user.id;
+
+  if (!firstName || !lastName || !dateOfBirth) {
+    res.status(401).json({ message: "No data entered." });
+    console.log("no data entered.");
+    return false;
+  }
 
   UserSchema.findOneAndUpdate(
     { _id: userId },

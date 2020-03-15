@@ -4,7 +4,7 @@ div
     h2.pageTitle
         |#{STR_registerHeader}
     v-card.inputHolder.d-flex.justify-center.text-end(class="d-flex pa-10 ma-10")
-      v-alert(v-model="alert" border="right" color="alertColor" dark dismissible)="{{alertText}}"
+      v-alert(v-model="alert" border="right" :color="alertColor" dark dismissible)="{{alertText}}"
       v-col(cols="12" sm="6" md="3")
           v-text-field(v-model="displayName" label=STR_displayName placeholder=STR_displayName outlined)
           v-text-field(v-model="email" label=STR_email placeholder="ایمیل" type="email" outlined)
