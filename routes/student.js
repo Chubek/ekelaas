@@ -14,7 +14,7 @@ router.post("/setup", auth, (req, res) => {
   }
 
   const Student = new StudentSchema({
-    user_id: userId,
+    userId: userId,
     "info.grade": grade,
     "info.province": province,
     "info.city": city,
@@ -27,7 +27,7 @@ router.post("/setup", auth, (req, res) => {
       {
         $set: {
           "priviledges.type": "Student",
-          "priviledges.student_id": studentDoc._id
+          "priviledges.studentid": studentDoc._id
         }
       },
       { upsert: true }
@@ -46,7 +46,7 @@ router.put("/set/info/:studentid", auth, (req, res) => {
   const { grade, province, city, school } = req.body;
 
   StudentSchema.findOneAndUpdate(
-    { _id: studentId, user_id: userId },
+    { _id: studentId, userId: userId },
     {
       $set: {
         "info.grade": grade,
@@ -70,10 +70,10 @@ router.put("/set/favorite/courses/:studentid", auth, (req, res) => {
   const favoriteCourses = req.body.favoriteCourses;
 
   StudentSchema.findOneAndUpdate(
-    { _id: studentId, user_id: userId },
+    { _id: studentId, userId: userId },
     {
       $addToSet: {
-        favorite_courses: favoriteCourses
+        favoriteCourses: favoriteCourses
       }
     },
     { upsert: true, new: true }
@@ -91,10 +91,10 @@ router.put("/set/favorite/teachers/:studentid", auth, (req, res) => {
   const favoriteTeachers = req.body.favoriteTeachers;
 
   StudentSchema.findOneAndUpdate(
-    { _id: studentId, user_id: userId },
+    { _id: studentId, userId: userId },
     {
       $addToSet: {
-        favorite_teachers: favoriteTeachers
+        favoriteTeachers: favoriteTeachers
       }
     },
     { upsert: true, new: true }
@@ -112,7 +112,7 @@ router.put("/set/taken/courses/:studentid", auth, (req, res) => {
   const takenCourses = req.body.takenCourses;
 
   StudentSchema.findOneAndUpdate(
-    { _id: studentId, user_id: userId },
+    { _id: studentId, userId: userId },
     {
       $addToSet: {
         taken_courses: takenCourses
@@ -133,7 +133,7 @@ router.put("/set/engaged/teachers/:studentid", auth, (req, res) => {
   const engagedTeachers = req.body.engagedTeachers;
 
   StudentSchema.findOneAndUpdate(
-    { _id: studentId, user_id: userId },
+    { _id: studentId, userId: userId },
     {
       $addToSet: {
         engaged_teachers: engagedTeachers

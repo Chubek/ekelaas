@@ -15,9 +15,9 @@ router.post("/setup", auth, (req, res) => {
     return false;
   }
 
-  TeacherSchema.findOne({ user_id: userId }).then(teacherDoc => {
+  TeacherSchema.findOne({ userId: userId }).then(teacherDoc => {
     const Course = new CourseSchema({
-      teacher_id: teacherDoc._id,
+      teacherId: teacherDoc._id,
       "info.subject": subject,
       "info.description": description,
       "info.price": price.toString()
@@ -28,7 +28,7 @@ router.post("/setup", auth, (req, res) => {
         { _id: teacherDoc._id },
         {
           $addToSet: {
-            courses_id: courseDoc._id
+            coursesId: courseDoc._id
           }
         },
         { upsert: true }
@@ -48,7 +48,7 @@ router.put("/set/info/:courseid", auth, (req, res) => {
   const { subject, description, price } = req.body;
 
   CourseSchema.findOneAndUpdate(
-    { _id: courseId, teacher_id: userId },
+    { _id: courseId, teacherId: userId },
     {
       $set: {
         "info.subject": subject,
@@ -71,7 +71,7 @@ router.put("/add/student/:courseid", auth, (req, res) => {
   const studentId = req.body.studentId;
 
   CourseSchema.findOneAndUpdate(
-    { _id: courseId, teacher_id: userId },
+    { _id: courseId, teacherId: userId },
     {
       $addToSet: {
         students: { studentId }
@@ -92,13 +92,13 @@ router.put("/add/class/:courseid", auth, (req, res) => {
   const { classDate, classHour, classParticipants, classNotes } = req.body;
 
   CourseSchema.findOneAndUpdate(
-    { _id: courseId, teacher_id: userId },
+    { _id: courseId, teacherId: userId },
     {
       $set: {
-        "classes.$.class_date": classDate,
-        "classes.$.class_hour": classHour,
-        "classes.$.class_participants": classParticipants,
-        "classes.$.class_notes": classNotes
+        "classes.$.classDate": classDate,
+        "classes.$.classHour": classHour,
+        "classes.$.classParticipants": classParticipants,
+        "classes.$.classNotes": classNotes
       }
     },
     { upsert: true, new: true }
@@ -116,13 +116,13 @@ router.put("/set/class/:classid", auth, (req, res) => {
   const { classDate, classHour, classParticipants, classNotes } = req.body;
 
   CourseSchema.findOneAndUpdate(
-    { "classes.$.class_id": classId, teacher_id: userId },
+    { "classes.$.classId": classId, teacherId: userId },
     {
       $set: {
-        "classes.$.class_date": classDate,
-        "classes.$.class_hour": classHour,
-        "classes.$.class_participants": classParticipants,
-        "classes.$.class_notes": classNotes
+        "classes.$.classDate": classDate,
+        "classes.$.classHour": classHour,
+        "classes.$.classParticipants": classParticipants,
+        "classes.$.classNotes": classNotes
       }
     },
     { upsert: true, new: true }

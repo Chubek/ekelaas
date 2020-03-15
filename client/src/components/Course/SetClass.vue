@@ -101,13 +101,13 @@ export default Vue.extend({
 @include font('Yekan', '../../assets/fonts/Yekan')
 
 body, .pageTitle, .inputHolder
-    font-family: 'Yekan', Tahoma, sans-serif
+  font-family: 'Yekan', Tahoma, sans-serif
 
 .inputHolder
-    font-weight: 1000
+  font-weight: 1000
 
 .counter
-    display: flex
+  display: flex
     
   
 </style>

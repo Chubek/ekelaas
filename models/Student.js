@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const StudentSchema = new Schema({
-  user_id: {
+  userId: {
     type: String,
     required: true,
     unique: true
@@ -13,15 +13,15 @@ const StudentSchema = new Schema({
     city: String,
     school: String
   },
-  favorite_courses: [String],
-  taken_courses_id: [String],
-  favorite_teachers: [String],
-  engaged_teachers_id: [String],
-  taken_quizzes: [
+  favoriteCourses: [String],
+  takenCoursesId: [String],
+  favoriteTeachers: [String],
+  engagedTeachersId: [String],
+  takenQuizzes: [
     {
-      quizz_id: String,
-      taken_date: Date,
-      final_score: mongoose.Types.Decimal128
+      quizzId: String,
+      takenDate: Date,
+      finalScore: mongoose.Types.Decimal128
     }
   ]
 });

@@ -3,6 +3,7 @@ import axios from "axios";
 const StudentModule = {
   state: {
     studentId: String,
+    isStudent: !!studentId,
     info: {
       grade: String,
       province: String,
@@ -72,13 +73,10 @@ const StudentModule = {
           .then(res => {
             resolve("اطلاعات با موفقیت وارد شد. ");
             commit("SET_STUDENT_ID", res.data.studentDoc._id);
-            dispatch(
-              "setFavoriteCourses",
-              res.data.studentDoc.favorite_courses
-            );
+            dispatch("setFavoriteCourses", res.data.studentDoc.favoriteCourses);
             dispatch(
               "setFavoriteTeachers",
-              res.data.studentDoc.favorite_teachers
+              res.data.studentDoc.favoriteTeachers
             );
             dispatch("setTakenCourses", res.data.studentDoc.taken_courses);
             dispatch("setEngagedTeachers", res.data.studentDoc.engaged_courses);
@@ -96,11 +94,8 @@ const StudentModule = {
         .get(`/student/single/${payload}`)
         .then(res => {
           commit("SET_STUDENT_ID", res.data.studentDoc._id);
-          dispatch("setFavoriteCourses", res.data.studentDoc.favorite_courses);
-          dispatch(
-            "setFavoriteTeachers",
-            res.data.studentDoc.favorite_teachers
-          );
+          dispatch("setFavoriteCourses", res.data.studentDoc.favoriteCourses);
+          dispatch("setFavoriteTeachers", res.data.studentDoc.favoriteTeachers);
           dispatch("setTakenCourses", res.data.studentDoc.taken_courses);
           dispatch("setEngagedTeachers", res.data.studentDoc.engaged_courses);
         })
@@ -225,6 +220,9 @@ const StudentModule = {
   getters: {
     getStudentInfo: state => {
       return state.info;
+    },
+    getStudentStatus: state => {
+      return state.isStudent;
     }
   }
 };

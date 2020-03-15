@@ -34,6 +34,35 @@ div
 <script>
 export default {
   name: "Profile",
-  data: () => ({})
+  data: () => ({
+    displayMakeTeacher: "hideClass",
+    displayPhoneNumber: "hideClass",
+    displayStudent: "hideClass",
+    displayTeacher: "hideClass"
+  }),
+  computed: {
+    isTeacher: function() {
+      return this.$store.getters.getTeacherStatus;
+    },
+    isStudent: function() {
+      return this.$store.getters.getStudentStatus;
+    },
+    info: function() {
+      return this.$store.getters.getUserInfo;
+    },
+    studentInfo: function() {
+      return this.$store.getters.getStudentInfo;
+    },
+    teacherInfo: function() {
+      return this.$store.getters.getTeacherInfo;
+    }
+  },
+  mounted: function() {
+    if (isTeacher) {
+      this.displayPhoneNumber = "displayClass";
+      this.displayTeacher = "displayClass";
+      this.displayStudent = "displayClass";
+    }
+  }
 };
 </script>

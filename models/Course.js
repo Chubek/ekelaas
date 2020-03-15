@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const CourseSchema = new Schema({
-  teacher_id: String,
+  teacherId: String,
   students: [String],
   info: {
     subject: String,
@@ -11,15 +11,15 @@ const CourseSchema = new Schema({
   },
   classes: [
     {
-      class_id: {
+      classId: {
         type: mongoose.Types.ObjectId,
         auto: true,
         unique: true
       },
-      class_date: Date,
-      class_hour: String,
-      class_participants: [String],
-      class_notes: String
+      classDate: Date,
+      classHour: String,
+      classParticipants: [String],
+      classNotes: String
     }
   ]
 });

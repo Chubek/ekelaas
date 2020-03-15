@@ -11,7 +11,7 @@ const UserSchema = new Schema({
   email: {
     type: String
   },
-  phone_number: {
+  phoneNumber: {
     type: String,
     required: true,
     unique: true
@@ -26,7 +26,7 @@ const UserSchema = new Schema({
     last_name: String,
     date_of_birth: String
   },
-  referral_code: String,
+  referralCode: String,
   connections: {
     adobe_connect_id: String,
     ekiga_id: String,
@@ -36,9 +36,9 @@ const UserSchema = new Schema({
   },
   priviledges: {
     type: String,
-    teacher_id: String,
+    teacherId: String,
     admin_id: String,
-    student_id: String
+    studentId: String
   }
 });
 

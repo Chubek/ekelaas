@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const QuizzSchema = new Schema({
-  teacher_id: {
+  teacherId: {
     type: String,
     required: true,
     unique: true

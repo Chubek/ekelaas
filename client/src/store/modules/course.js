@@ -49,7 +49,7 @@ const CourseModule = {
       state.classes.push(payload);
     },
 
-    PUSH_CLASS_PARTICIPANTS(state, payload) {
+    PUSH_CLASSPARTICIPANTS(state, payload) {
       state.classes.forEach(myClass => {
         if (myClass.classId == payload.classId) {
           myClass.classParticipants.push(payload.classParticipants);
@@ -86,7 +86,7 @@ const CourseModule = {
     loadCourse({ dispatch, commit }, payload) {
       axios.get(`/course/single/${payload}`).then(res => {
         commit("SET_COURSE_ID", res.data.courseDoc._id);
-        dispatch("setCourseTeacher", res.data.courseDoc.teacher_id);
+        dispatch("setCourseTeacher", res.data.courseDoc.teacherId);
         dispatch("setCourseStudents", res.data.courseDoc.students);
         commit("SET_COURSE_INFO", res.data.courseDoc.info);
         commit("SET_COURSE_CLASSES", res.data.courseDoc.classes);

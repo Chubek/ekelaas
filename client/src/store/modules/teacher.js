@@ -3,6 +3,7 @@ import axios from "axios";
 const TeacherModule = {
   state: {
     teacherId: String,
+    isTeacher: !!teacherId,
     info: {
       credits: Array,
       degrees: Array
@@ -17,7 +18,7 @@ const TeacherModule = {
     courses: [Object]
   },
   mutations: {
-    SET_TEACHER_ID(state, payload) {
+    SET_teacherId(state, payload) {
       state.teacherId = payload;
     },
 
@@ -55,7 +56,7 @@ const TeacherModule = {
           )
           .then(res => {
             resolve("اطلاعات با موفقیت وارد شد.");
-            commit("SET_TEACHER_ID", res.data.teacherDoc._id);
+            commit("SET_teacherId", res.data.teacherDoc._id);
             commit("SET_TEACHER_INFO", {
               credits: res.data.teacherDoc.info.credits,
               degrees: res.data.teacherDoc.info.degrees
@@ -72,13 +73,13 @@ const TeacherModule = {
 
     loadTeacher({ dispatch, commit }, payload) {
       axios.get(`/teacher/single/${payload}`).then(res => {
-        commit("SET_TEACHER_ID", res.data.teacherDoc._id);
+        commit("SET_teacherId", res.data.teacherDoc._id);
         commit("SET_TEACHER_INFO", {
           credits: res.data.teacherDoc.info.credits,
           degrees: res.data.teacherDoc.info.degrees
         });
         dispatch("setTeacherStudents", res.data.teacherDoc.students);
-        dispatch("setTeacherCourses", res.data.teacherDoc.courses_id);
+        dispatch("setTeacherCourses", res.data.teacherDoc.coursesId);
       });
     },
 
@@ -87,9 +88,9 @@ const TeacherModule = {
       let notes = [];
       let overallScore = [];
       payload.forEach(student => {
-        ids.push(student.student_id);
+        ids.push(student.studentid);
         notes.push(student.notes);
-        overallScore.push(student.overall_score);
+        overallScore.push(student.overallScore);
       });
       axios
         .get(`/student/multiple/get?students=${ids}`)
@@ -125,7 +126,7 @@ const TeacherModule = {
         )
         .then(res => {
           axios
-            .get(`/student/single/${res.data.studentDoc.student_id}`)
+            .get(`/student/single/${res.data.studentDoc.studentid}`)
             .then(res => {
               const student = res.data.studentDoc;
               const obj = student.concat(payload.notes, payload.score);
@@ -146,7 +147,7 @@ const TeacherModule = {
         )
         .then(res => {
           axios
-            .get(`/course/multiple/get?courses=${res.data.courses_id}`)
+            .get(`/course/multiple/get?courses=${res.data.coursesId}`)
             .then(res => commit("PUSH_TEACHER_COURSES", res.data.courseDocs))
             .catch(e => console.log(e));
         })
@@ -156,6 +157,9 @@ const TeacherModule = {
   getters: {
     getTeacherInfo: state => {
       return state.info;
+    },
+    getTeacherStatus: state => {
+      return state.isTeacher;
     }
   }
 };

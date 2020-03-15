@@ -23,7 +23,7 @@ router.post("/register", (req, res) => {
   UserSchema.findOne({
     display_name: displayName,
     email: email,
-    phone_number: phoneNumber
+    phonenumber: phoneNumber
   }).then(doc => {
     if (doc) {
       console.log("doc", doc);
@@ -39,7 +39,7 @@ router.post("/register", (req, res) => {
     const User = new UserSchema({
       display_name: displayName,
       email: email,
-      phone_number: phoneNumber,
+      phonenumber: phoneNumber,
       password: hash
     });
 
@@ -99,7 +99,7 @@ router.post("/auth", (req, res) => {
     $or: [
       { display_name: displayName },
       { email: email },
-      { phone_number: phoneNumber }
+      { phonenumber: phoneNumber }
     ]
   })
     .then(docUser => {
@@ -147,8 +147,8 @@ router.get("/all", (req, res) => {
     });
 });
 
-router.get("/single/:userid", (req, res) => {
-  const userId = req.params.userid;
+router.get("/single/:userId", (req, res) => {
+  const userId = req.params.userId;
 
   UserSchema.findOne({ _id: userId })
     .then(userDoc => res.status(200).json({ userDoc }))
@@ -175,7 +175,7 @@ router.put("/set/info/", auth, (req, res) => {
         "info.first_name": firstName,
         "info.last_name": lastName,
         "info.date_of_birth": dateOfBirth,
-        referral_code: referralCode
+        referralCode: referralCode
       }
     },
     { upsert: true }
@@ -187,9 +187,9 @@ router.put("/set/info/", auth, (req, res) => {
     });
 });
 
-router.put("/set/connection/:userid", (req, res) => {
+router.put("/set/connection/:userId", (req, res) => {
   const { adobeConnectId, ekigaId, vSeeId, OMId, mikogoId } = req.body;
-  const userId = req.params.userid;
+  const userId = req.params.userId;
 
   UserSchema.findOneAndUpdate(
     { _id: userId },

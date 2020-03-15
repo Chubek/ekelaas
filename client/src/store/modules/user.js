@@ -24,9 +24,24 @@ const UserModule = {
       mikogoId: String
     },
     type: String,
-    typeId: String
+    typeId: String,
+
+    loadedUser: {
+      loadedUserId: String,
+      loadedUserStudentId: String,
+      loadedUserTeacherId: String,
+      loadedUserIsStudent: !!loadedUserStudentId,
+      loadedUserIsTeacher: !!loadedUserTeacherId,
+      loadedUserInfo: Object,
+      loadedUserStudentInfo: Object,
+      loadedUserTeacherInfo: Object
+    }
   },
   mutations: {
+    SET_LOADED_USER(state, payload) {
+      state.loadedUser = payload;
+    },
+
     SET_USER_DATA(state, payload) {
       state.userData = payload;
     },
@@ -70,7 +85,7 @@ const UserModule = {
               userId: res.data.docUser._id,
               displayName: res.data.docUser.display_name,
               email: res.data.docUser.email,
-              phoneNumber: res.data.docUser.phone_number,
+              phoneNumber: res.data.docUser.phoneNumber,
               verified: res.data.docUser.verified
             });
             commit("SET_USER_INFO", {
@@ -87,7 +102,7 @@ const UserModule = {
             });
             commit("SET_TYPE", {
               type: res.data.docUser.priviledges.type,
-              studentId: res.data.docUser.priviledges.student_id,
+              studentId: res.data.docUser.priviledges.studentid,
               teacherId: res.data.docUser.priviledges.teacherId
             });
             dispatch("loadType");
@@ -117,7 +132,7 @@ const UserModule = {
             userId: res.data.docUser._id,
             displayName: res.data.docUser.display_name,
             email: res.data.docUser.email,
-            phoneNumber: res.data.docUser.phone_number,
+            phoneNumber: res.data.docUser.phoneNumber,
             verified: res.data.docUser.verified
           });
           commit("SET_USER_INFO", {
@@ -133,7 +148,7 @@ const UserModule = {
           });
           commit("SET_TYPE", {
             type: res.data.docUser.priviledges.type,
-            studentId: res.data.docUser.priviledges.student_id,
+            studentId: res.data.docUser.priviledges.studentid,
             teacherId: res.data.docUser.priviledges.teacherId
           });
           dispatch("loadType");
@@ -155,7 +170,7 @@ const UserModule = {
             userId: res.data.docUser._id,
             displayName: res.data.docUser.display_name,
             email: res.data.docUser.email,
-            phoneNumber: res.data.docUser.phone_number,
+            phoneNumber: res.data.docUser.phoneNumber,
             verified: res.data.docUser.verified
           });
         });
@@ -223,6 +238,35 @@ const UserModule = {
             console.log(e);
           });
       });
+    },
+
+    loadUser({ commit }, payload) {
+      axios.get(`/user/single/${payload}`).then(resUser => {
+        if (resUser.data.priviledges.type == "Student") {
+          axios
+            .get(`/student/single/${resUser.data.priviledges.studentid}`)
+            .then(resStudent => {
+              commit("SET_LOADED_USER", {
+                loadedUserId: resUser.data._id,
+                loadedUserInfo: resUser.data.info,
+                loadedUserStudentId: resUser.data.priviledges.studentid,
+                loadedUserStudentInfo: resStudent.data.info
+              });
+            })
+            .catch(e => console.log(e));
+        } else if ((resUser.data.priviledges.type = "Teacher")) {
+          axios
+            .get(`/teacher/single/${resUser.data.priviledges.teacherId}`)
+            .then(resTeacher => {
+              commit("SET_LOADED_USER", {
+                loadedUserId: resUser.data._id,
+                loadedUserInfo: resUser.data.info,
+                loadedUserTeacherId: resUser.data.priviledges.teacherId,
+                loadedUserTeacherInfo: resTeacher.data.info
+              });
+            });
+        }
+      });
     }
   },
   getters: {
@@ -231,6 +275,9 @@ const UserModule = {
     },
     getUserInfo: state => {
       return state.info;
+    },
+    getLoadedUser: state => {
+      return state.loadedUser;
     }
   }
 };
