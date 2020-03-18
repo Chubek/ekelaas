@@ -1,9 +1,8 @@
 import axios from "axios";
-
+import FA from "../../assets/locale/FA";
 const TeacherModule = {
   state: {
     teacherId: String,
-    isTeacher: !!teacherId,
     info: {
       credits: Array,
       degrees: Array
@@ -18,7 +17,7 @@ const TeacherModule = {
     courses: [Object]
   },
   mutations: {
-    SET_teacherId(state, payload) {
+    SET_TEACHER_ID(state, payload) {
       state.teacherId = payload;
     },
 
@@ -55,8 +54,8 @@ const TeacherModule = {
             { headers: { "x-auth-token": localStorage.getItem("token") } }
           )
           .then(res => {
-            resolve("اطلاعات با موفقیت وارد شد.");
-            commit("SET_teacherId", res.data.teacherDoc._id);
+            resolve(FA.STR_infoEntered);
+            commit("SET_TEACHER_ID", res.data.teacherDoc._id);            
             commit("SET_TEACHER_INFO", {
               credits: res.data.teacherDoc.info.credits,
               degrees: res.data.teacherDoc.info.degrees
@@ -64,7 +63,7 @@ const TeacherModule = {
           })
           .catch(e => {
             if (e.response.status == 401) {
-              reject("لطفا اطلاعات را وارد کنید.");
+              reject(FA.STR_pleaseEnterInfo);
             }
             console.log(e);
           });
@@ -73,7 +72,8 @@ const TeacherModule = {
 
     loadTeacher({ dispatch, commit }, payload) {
       axios.get(`/teacher/single/${payload}`).then(res => {
-        commit("SET_teacherId", res.data.teacherDoc._id);
+        console.log("resss", res)
+        commit("SET_TEACHER_ID", res.data.teacherDoc._id);        
         commit("SET_TEACHER_INFO", {
           credits: res.data.teacherDoc.info.credits,
           degrees: res.data.teacherDoc.info.degrees
@@ -88,7 +88,7 @@ const TeacherModule = {
       let notes = [];
       let overallScore = [];
       payload.forEach(student => {
-        ids.push(student.studentid);
+        ids.push(student.studentId);
         notes.push(student.notes);
         overallScore.push(student.overallScore);
       });
@@ -126,7 +126,7 @@ const TeacherModule = {
         )
         .then(res => {
           axios
-            .get(`/student/single/${res.data.studentDoc.studentid}`)
+            .get(`/student/single/${res.data.studentDoc.studentId}`)
             .then(res => {
               const student = res.data.studentDoc;
               const obj = student.concat(payload.notes, payload.score);
@@ -158,8 +158,8 @@ const TeacherModule = {
     getTeacherInfo: state => {
       return state.info;
     },
-    getTeacherStatus: state => {
-      return state.isTeacher;
+    getTeacherId: state => {
+      return state.teacherId;
     }
   }
 };

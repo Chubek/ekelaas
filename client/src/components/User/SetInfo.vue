@@ -12,7 +12,10 @@ div
             h5.labelTitle=STR_dateOfBirth
             v-date-picker(v-model="dateOfBirth" title=STR_dateOfBirth locale="fa" class="datePicker")
             v-text-field(v-model="referral" label=STR_referral placeholder=STR_referral outlined)
-            v-btn(color="purple" large dark @click="onSendInfo")=STR_sendInfo
+            v-btn(color="purple" large :disabled="filled" dark @click="onSendInfo")=STR_sendInfo
+            br/
+            p(v-if="filled")
+              |#{STR_fillFurther}
 
 </template>
 <script>
@@ -23,7 +26,7 @@ export default {
     lastName: null,
     dateOfBirth: null,
     referral: null,
-
+    filled: false,
     alert: false,
     alertColor: null,
     alertText: null
@@ -41,6 +44,8 @@ export default {
           this.alert = true;
           this.alertColor = "blue";
           this.alertText = res;
+          this.filled = true;
+          this.$emit("clicked");
         })
         .catch(e => {
           this.alert = true;

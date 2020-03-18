@@ -8,6 +8,8 @@ import SetStudent from "../components/Student/SetStudent.vue";
 import SetTeacher from "../components/Teacher/SetTeacher.vue";
 import SetCourse from "../components/Course/SetCourse.vue";
 import SetClass from "../components/Course/SetClass.vue";
+import Profile from "../components/User/Profile.vue";
+import Logout from "../components/User/Logout.vue";
 //import authGuard from "./authGuard"
 Vue.use(VueRouter);
 
@@ -51,6 +53,16 @@ const routes = [
     path: "/set/class",
     name: " ثبت اطلاعات کلاس",
     component: SetClass
+  },
+  {
+    path: "/profile/:userId",
+    name: " پروفایل کاربر",
+    component: Profile
+  },
+  {
+    path: "/logout",
+    name: " خروج کاربر",
+    component: Logout
   },
   {
     path: "/about",

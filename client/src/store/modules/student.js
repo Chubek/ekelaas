@@ -1,9 +1,8 @@
 import axios from "axios";
-
+import FA from "../../assets/locale/FA";
 const StudentModule = {
   state: {
     studentId: String,
-    isStudent: !!studentId,
     info: {
       grade: String,
       province: String,
@@ -71,8 +70,9 @@ const StudentModule = {
             { headers: { "x-auth-token": localStorage.getItem("token") } }
           )
           .then(res => {
-            resolve("اطلاعات با موفقیت وارد شد. ");
+            resolve(FA.STR_infoEntered);
             commit("SET_STUDENT_ID", res.data.studentDoc._id);
+            commit("SET_IS_STUDENT");
             dispatch("setFavoriteCourses", res.data.studentDoc.favoriteCourses);
             dispatch(
               "setFavoriteTeachers",
@@ -83,7 +83,7 @@ const StudentModule = {
           })
           .catch(e => {
             if (e.response.status == 401) {
-              reject("اطلاعات وارد نشده است.");
+              reject(FA.STR_infoNotEntered);
             }
             console.log(e);
           });
@@ -94,6 +94,7 @@ const StudentModule = {
         .get(`/student/single/${payload}`)
         .then(res => {
           commit("SET_STUDENT_ID", res.data.studentDoc._id);
+          commit("SET_IS_STUDENT");
           dispatch("setFavoriteCourses", res.data.studentDoc.favoriteCourses);
           dispatch("setFavoriteTeachers", res.data.studentDoc.favoriteTeachers);
           dispatch("setTakenCourses", res.data.studentDoc.taken_courses);
@@ -221,8 +222,15 @@ const StudentModule = {
     getStudentInfo: state => {
       return state.info;
     },
-    getStudentStatus: state => {
-      return state.isStudent;
+
+    getFavoriteTeachers: state => {
+      return state.favoriteTeachers;
+    },
+    getEngagedTeachers: state => {
+      return state.engagedTeachers;
+    },
+    getStudentId: state => {
+      return state.studentId;
     }
   }
 };

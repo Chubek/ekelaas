@@ -22,8 +22,8 @@ router.post("/setup", auth, (req, res) => {
       { _id: userId },
       {
         $set: {
-          "priviledges.type": "Teacher",
-          "priviledges.teacherId": teacherDoc._id
+          "types.type": "Teacher",
+          "types.teacherId": teacherDoc._id
         }
       },
       { upsert: true }
@@ -64,7 +64,7 @@ router.put("/set/student/:teacherid", auth, (req, res) => {
   const { studentId, notes, score } = req.body;
 
   TeacherSchema.findOneAndUpdate(
-    { _id: teacherId, userId: userId, "students.studentid": studentId },
+    { _id: teacherId, userId: userId, "students.studentId": studentId },
     {
       $set: {
         "students.notes": notes,

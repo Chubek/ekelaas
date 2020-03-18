@@ -1,68 +1,196 @@
 <template lang="pug">
 include ../../assets/locale/FA.pug
-div
+div.mainDiv
     h2.pageTitle
+
         |#{STR_profileHeader}
-    v-cardinputHolder.d-flex.justify-center.text-end(class="d-flex pa-10 ma-10")
-        v-btn(color="blue" dark x-large @click="onMakeStudent")=STR_makeStudent
-        v-btn(color="blue" dark x-large @click="onMakeTeacher" :class="displayMakeTeacher")=STR_makeTeacher
-        h3.pageSubTitle
+    v-card.flex-column.text-start(class="d-flex pa-10 ma-10")
+        v-btn(color="blue" dark x-large @click="onMakeStudent" class="flex-nowrap" :disabled="!loadedIsNone" v-if="userIsLoaded && loadedIsNone")=STR_makeStudent
+        br/
+        v-btn(color="blue" dark x-large @click="onMakeTeacher" class="flex-nowrap" :disabled="!loadedIsNone" v-if="isAdmin && loadedIsNone")=STR_makeTeacher
+        br/
+        h3
             |#{STR_infoTitle}
         v-card-title
-            |#{STR_firstName} "{{ info.firstName }}"
-            |#{STR_firstName} "{{ info.lastName }}"
-        v-card-subtitle(:class="displayPhoneNumber")
-            |#{STR_phoneNumber} "{{ info.phoneNumber }}"
-    v-cardinputHolder.d-flex.justify-center.text-end.pa-10.ma-10(:class="displayStudent")
+            |#{STR_firstName}: {{ info.firstName }}
+            br/
+            |#{STR_lastName}: {{ info.lastName}}
+        v-card-subtitle(v-if="isTeacher || isAdmin || userIsLoaded")
+            |#{STR_phoneNumber}: {{phoneNumber}}
+            br/
+            |#{STR_email}: {{email}}
+    v-card.flex-column.text-start(class="d-flex pa-10 ma-10" v-if="loadedIsStudent")        
         h3.pageSubTitle
             |#{STR_studentTitle}
         v-card-title
-            |#{STR_grade} "{{ studentInfo.grade }}"
-            |#{STR_province} "{{ studentInfo.province }}"
-            |#{STR_city} "{{ studentInfo.city }}"
-            |#{STR_school} "{{ studentInfo.school }}"
-    v-cardinputHolder.d-flex.justify-center.text-end.pa-10.ma-10(:class="displayTeacher")
+            |#{STR_grade}: {{ studentInfo.grade }}
+            br/
+            |#{STR_province}: {{ studentInfo.province }}
+            br/            
+            |#{STR_city}: {{ studentInfo.city }}
+            br/
+            |#{STR_school}: {{ studentInfo.school }}
+    v-card.inputHolder.flex-column.text-start(class="d-flex pa-10 ma-10" v-if="loadedIsTeacher")
+        v-btn(color="red" dark :disabled="isFavorite ^ isTeacher" large @click="onAddTeacherFavorite")=STR_addTeacherFavorite
+        br/
+        v-btn(color="red" dark :disabled="isEngaged ^ isTeacher" large @click="onAddTeacherEngaged")=STR_addTeacherEngaged
+        br/
         h3.pageSubTitle
             |#{STR_teacherTitle}
-        v-card-title
-            div(v-for="(credit, index) in teacherInfo.credits" :key="index")
-                |"{{ credit }}"
-            div(v-for="(degree, index) in teacherInfo.degrees" :key="index")
-                |"{{ degree }}"
+        br/
+        h5 
+          |#{STR_credits}: #[br/]
+        v-card(v-for="(credit, index) in teacherInfo.credits" :key="(index * 5) + 1" style='white-space:pre;')
+           v-card-title
+            |{{ credit }} 
+        br/           
+        h5
+          |#{STR_degrees}:            
+        v-card(v-for="(degree, index) in teacherInfo.degrees" style='white-space:pre;' :key="(index * 10) + 2")
+          v-card-title
+            |{{ degree }}
+
 
 </template>
 <script>
 export default {
   name: "Profile",
   data: () => ({
-    displayMakeTeacher: "hideClass",
-    displayPhoneNumber: "hideClass",
-    displayStudent: "hideClass",
-    displayTeacher: "hideClass"
+    isAdmin: true
   }),
   computed: {
     isTeacher: function() {
-      return this.$store.getters.getTeacherStatus;
+      return this.$store.getters.getUserType === "Teacher";
     },
     isStudent: function() {
-      return this.$store.getters.getStudentStatus;
+      return this.$store.getters.getUserType === "Student";
+    },
+    studentId: function() {
+      let ret = null;
+      if (this.isStudent) {
+        ret = this.$store.getters.getStudentId;
+      }
+      return ret;
+    },
+    teacherId: function() {
+      let ret = null;
+      if (this.isTeacher) {
+        ret = this.$store.getters.getTeacherId;
+      }
+      return ret;
+    },
+    email: function() {
+      return this.$store.getters.getLoadedUser.loadedUserEmail;
+    },
+    phoneNumber: function() {
+      return this.$store.getters.getLoadedUser.loadedUserPhoneNumber;
     },
     info: function() {
-      return this.$store.getters.getUserInfo;
+      return this.$store.getters.getLoadedUser.loadedUserInfo;
     },
     studentInfo: function() {
-      return this.$store.getters.getStudentInfo;
+      return this.$store.getters.getLoadedUser.loadedUserStudentInfo;
     },
     teacherInfo: function() {
-      return this.$store.getters.getTeacherInfo;
+      return this.$store.getters.getLoadedUser.loadedUserTeacherInfo;
+    },
+    loadedIsTeacher: function() {
+      const loadedType = this.$store.getters.getLoadedUser.loadedUserType;
+      return loadedType === "Teacher";
+    },
+    loadedIsStudent: function() {
+      const loadedType = this.$store.getters.getLoadedUser.loadedUserType;
+      return loadedType === "Student";
+    },
+    loadedIsNone: function() {
+      const loadedType = this.$store.getters.getLoadedUser.loadedUserType;
+      return loadedType === "Not Set";
+    },
+    loadedTeacherId: function() {
+      let ret = null;
+      if (this.loadedIsTeacher) {
+        ret = this.$store.getters.getLoadedUser.loadedUserTeacherId;
+      }
+      return ret;
+    },
+    loadedStudentId: function() {
+      let ret = null;
+      if (this.loadedIsStudent) {
+        ret = this.$store.getters.getLoadedUser.loadedUserStudentId;
+      }
+      return ret;
+    },
+    loadedUserId: function() {
+      return this.$store.getters.getLoadedUser.loadedUserId;
+    },
+    isFavorite: function() {
+      let ret = false;
+      console.log("loadedIsTeacher", this.loadedIsTeacher);
+      const arr = this.$store.getters.getFavoriteTeachers;
+
+      if (this.loadedIsTeacher && Array.isArray(arr) && arr.length > 0) {
+        arr.forEach(teacher => {
+          if (this.loadedTeacherId === teacher._id) {
+            ret = true;
+          }
+        });
+      }
+
+      return ret;
+    },
+    isEngaged: function() {
+      let ret = false;
+      const arr = this.$store.getters.getFavoriteEngaged;
+
+      if (this.loadedIsTeacher && Array.isArray(arr) && arr.length > 0) {
+        arr.forEach(teacher => {
+          if (this.loadedTeacherId === teacher._id) {
+            ret = true;
+          }
+        });
+      }
+
+      return ret;
+    },
+    userIsLoaded: function() {
+      return this.loadedUserId === this.$store.getters.getUserId;
     }
   },
-  mounted: function() {
-    if (isTeacher) {
-      this.displayPhoneNumber = "displayClass";
-      this.displayTeacher = "displayClass";
-      this.displayStudent = "displayClass";
+  created: function() {
+    this.$store.dispatch("loadUser", this.$route.params.userId);
+    console.log(this.$route.params.userId);
+  },
+  methods: {
+    onAddTeacherFavorite: function() {
+      this.$store.dispatch("pushFavoriteTeachers", {
+        studentId: this.studentId,
+        favoriteTeachers: [this.loadedTeacherId]
+      });
+      this.isFavorite = true;
+    },
+    onAddTeacherEngaged: function() {
+      this.$store.dispatch("pushEngagedTeachers", {
+        studentId: this.studentId,
+        favoriteTeachers: [this.loadedTeacherId]
+      });
+      this.isEngaged = true;
+    },
+    onMakeStudent: function() {
+      this.$router.push({ path: "/set/info-student" });
+    },
+    onMakeTeacher: function() {
+      this.$router.push({ path: "/set/info-teacher" });
     }
   }
 };
 </script>
+<style lang="sass" scoped>
+@import '@/assets/sass/_colors', '@/assets/sass/_font'
+@include font('Yekan', '../../assets/fonts/Yekan')
+
+body, .pageTitle, .mainDiv
+  font-family: 'Yekan', Tahoma, sans-serif
+
+
+</style>
+

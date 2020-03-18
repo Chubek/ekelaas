@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import FA from "../../assets/locale/FA";
 const UserModule = {
   state: {
     loggedIn: !!localStorage.getItem("token"),
@@ -16,13 +16,6 @@ const UserModule = {
       dateOfBirth: String
     },
     referralCode: String,
-    connections: {
-      adobeConnectId: String,
-      ekigaId: String,
-      vSeeId: String,
-      openMeetingsId: String,
-      mikogoId: String
-    },
     type: String,
     typeId: String,
 
@@ -30,8 +23,9 @@ const UserModule = {
       loadedUserId: String,
       loadedUserStudentId: String,
       loadedUserTeacherId: String,
-      loadedUserIsStudent: !!loadedUserStudentId,
-      loadedUserIsTeacher: !!loadedUserTeacherId,
+      loadedUserType: String,
+      loadedUserEmail: String,
+      loadedUserPhoneNumber: Number,
       loadedUserInfo: Object,
       loadedUserStudentInfo: Object,
       loadedUserTeacherInfo: Object
@@ -39,7 +33,16 @@ const UserModule = {
   },
   mutations: {
     SET_LOADED_USER(state, payload) {
-      state.loadedUser = payload;
+      console.log("LOADED USER CALLED");
+      state.loadedUser.loadedUserId = payload.loadedUserId;
+      state.loadedUser.loadedUserEmail = payload.loadedUserEmail;
+      state.loadedUser.loadedUserPhoneNumber = payload.loadedUserPhoneNumber;
+      state.loadedUser.loadedUserStudentId = payload.loadedUserStudentId;
+      state.loadedUser.loadedUserTeacherId = payload.loadedUserTeacherId;
+      state.loadedUser.loadedUserInfo = payload.loadedUserInfo;
+      state.loadedUser.loadedUserStudentInfo = payload.loadedUserStudentInfo;
+      state.loadedUser.loadedUserTeacherInfo = payload.loadedUserTeacherInfo;
+      state.loadedUser.loadedUserType = payload.loadedUserType;
     },
 
     SET_USER_DATA(state, payload) {
@@ -54,17 +57,18 @@ const UserModule = {
       state.referralCode = payload;
     },
 
-    SET_CONNECTIONS(state, payload) {
-      state.connections = payload;
-    },
-
     SET_TYPE(state, payload) {
       state.type = payload.type;
+    },
 
-      if (payload.type == "Student") {
+    SET_TYPE_ID(state, payload) {
+      console.log("pld_type", payload.type);
+      if (payload.type === "Student") {
         state.typeId = payload.studentId;
-      } else {
+      } else if (payload.type === "Teacher") {
         state.typeId = payload.teacherId;
+      } else if (state.type === "Not Set") {
+        state.typeId = "None";
       }
     }
   },
@@ -83,39 +87,35 @@ const UserModule = {
             localStorage.setItem("token", res.data.token);
             commit("SET_USER_DATA", {
               userId: res.data.docUser._id,
-              displayName: res.data.docUser.display_name,
+              displayName: res.data.docUser.displayName,
               email: res.data.docUser.email,
               phoneNumber: res.data.docUser.phoneNumber,
               verified: res.data.docUser.verified
             });
             commit("SET_USER_INFO", {
-              firstName: res.data.docUser.info.first_name,
-              lastName: res.data.docUser.info.last_name,
-              dateOfBirth: res.data.docUser.info.date_of_birth
-            });
-            commit("SET_CONNECTIONS", {
-              adobeConnectionId:
-                res.data.docUser.connections.adobe_connection_id,
-              ekigaId: res.data.docUser.connections.ekiga_id,
-              vSeeId: res.data.docUser.connections.vsee_id,
-              mikogoId: res.data.docUser.connections.mikogo_id
+              firstName: res.data.docUser.info.firstName,
+              lastName: res.data.docUser.info.lastName,
+              dateOfBirth: res.data.docUser.info.dateOfBirth
             });
             commit("SET_TYPE", {
-              type: res.data.docUser.priviledges.type,
-              studentId: res.data.docUser.priviledges.studentid,
-              teacherId: res.data.docUser.priviledges.teacherId
+              type: res.data.docUser.types.type
+            });
+            commit("SET_TYPE_ID", {
+              type: res.data.docUser.types.type,
+              studentId: res.data.docUser.types.studentId,
+              teacherId: res.data.docUser.types.teacherId
             });
             dispatch("loadType");
           })
           .catch(e => {
             if (e.response.status == 401) {
-              reject("لطفا پسوورد را وارد کنید.");
+              reject(FA.STR_enterPassword);
             } else if (e.response.status == 403) {
-              reject("لطفا نام کاربری، ایمیل یا موبایل را وارد کنید.");
+              reject(FA.STR_enterPDE);
             } else if (e.response.status == 404) {
-              reject("کاربری با این مشخصات وجود ندارد.");
+              reject(FA.STR_noUser);
             } else if (e.response.status == 407) {
-              reject("پسوورد وارد شده اشتباه است.");
+              reject(FA.STR_incorrectPassword);
             }
             console.log(e);
           });
@@ -128,34 +128,32 @@ const UserModule = {
           jwt: localStorage.getItem("token")
         })
         .then(res => {
+          console.log("loginres", res);
           commit("SET_USER_DATA", {
             userId: res.data.docUser._id,
-            displayName: res.data.docUser.display_name,
+            displayName: res.data.docUser.displayName,
             email: res.data.docUser.email,
             phoneNumber: res.data.docUser.phoneNumber,
             verified: res.data.docUser.verified
           });
           commit("SET_USER_INFO", {
-            firstName: res.data.docUser.info.first_name,
-            lastName: res.data.docUser.info.last_name,
-            dateOfBirth: res.data.docUser.info.date_of_birth
-          });
-          commit("SET_CONNECTIONS", {
-            adobeConnectionId: res.data.docUser.connections.adobe_connection_id,
-            ekigaId: res.data.docUser.connections.ekiga_id,
-            vSeeId: res.data.docUser.connections.vsee_id,
-            mikogoId: res.data.docUser.connections.mikogo_id
+            firstName: res.data.docUser.info.firstName,
+            lastName: res.data.docUser.info.lastName,
+            dateOfBirth: res.data.docUser.info.dateOfBirth
           });
           commit("SET_TYPE", {
-            type: res.data.docUser.priviledges.type,
-            studentId: res.data.docUser.priviledges.studentid,
-            teacherId: res.data.docUser.priviledges.teacherId
+            type: res.data.docUser.types.type
+          });
+          commit("SET_TYPE_ID", {
+            type: res.data.docUser.types.type,
+            studentId: res.data.docUser.types.studentId,
+            teacherId: res.data.docUser.types.teacherId
           });
           dispatch("loadType");
         });
     },
 
-    logInOnRegister({ commit }, payload) {
+    logInOnRegister({ dispatch, commit }, payload) {
       axios
         .post("/user/auth", {
           displayName: payload.displayName,
@@ -168,11 +166,22 @@ const UserModule = {
           localStorage.setItem("token", res.data.token);
           commit("SET_USER_DATA", {
             userId: res.data.docUser._id,
-            displayName: res.data.docUser.display_name,
+            displayName: res.data.docUser.displayName,
             email: res.data.docUser.email,
             phoneNumber: res.data.docUser.phoneNumber,
             verified: res.data.docUser.verified
           });
+          commit("SET_TYPE", {
+            type: res.data.docUser.types.type,
+            studentId: res.data.docUser.types.studentId,
+            teacherId: res.data.docUser.types.teacherId
+          });
+          commit("SET_TYPE_ID", {
+            type: res.data.docUser.types.type,
+            studentId: res.data.docUser.types.studentId,
+            teacherId: res.data.docUser.types.teacherId
+          });
+          dispatch("loadType");
         });
     },
 
@@ -188,15 +197,18 @@ const UserModule = {
           .then(res => {
             console.log("res", res);
             if (res.status == 200) {
-              resolve("کاربر ساخته شد.");
+              resolve({
+                message: FA.STR_userCreated,
+                id: res.data.docUser._id
+              });
             }
             dispatch("logInOnRegister", payload);
           })
           .catch(e => {
             if (e.response.status == 401) {
-              reject("نام کاربری، ایمیل یا موبایل در پایگاه داده وجود دارد.");
+              reject(FA.STR_userExists);
             } else if (e.response.status == 403) {
-              reject("لطفا اطلاعات را وارد کنید.");
+              reject(FA.STR_pleaseEnterInfo);
             }
             console.log(e);
           });
@@ -204,6 +216,7 @@ const UserModule = {
     },
 
     loadType({ dispatch, state }) {
+      console.log("typeId", state.typeId);
       if (state.type == "Student") {
         dispatch("loadStudent", state.typeId);
       } else if (state.type == "Teacher") {
@@ -227,12 +240,12 @@ const UserModule = {
           .then(res => {
             if (res.status == 200) {
               commit("SET_USER_INFO", payload);
-              resolve("اطلاعات با موفقیت وارد شد.");
+              resolve(FA.STR_infoEntered);
             }
           })
           .catch(e => {
             if (e.response.status == 401) {
-              reject("لطفا اطلاعات را وارد کنید.");
+              reject(FA.STR_pleaseEnterInfo);
               console.log("No data entered.");
             }
             console.log(e);
@@ -241,32 +254,63 @@ const UserModule = {
     },
 
     loadUser({ commit }, payload) {
+      console.log("action", "ACTIONED");
       axios.get(`/user/single/${payload}`).then(resUser => {
-        if (resUser.data.priviledges.type == "Student") {
+        console.log("resUser", resUser);
+        if (resUser.data.userDoc.types.type === "Student") {
+          console.log("studnt check");
           axios
-            .get(`/student/single/${resUser.data.priviledges.studentid}`)
+            .get(`/student/single/${resUser.data.userDoc.types.studentId}`)
             .then(resStudent => {
+              console.log("resStudent", resStudent);
               commit("SET_LOADED_USER", {
-                loadedUserId: resUser.data._id,
-                loadedUserInfo: resUser.data.info,
-                loadedUserStudentId: resUser.data.priviledges.studentid,
-                loadedUserStudentInfo: resStudent.data.info
+                loadedUserId: resUser.data.userDoc._id,
+                loadedUserEmail: resUser.data.userDoc.email,
+                loadedUserType: resUser.data.userDoc.types.type,
+                loadedUserPhoneNumber: resUser.data.userDoc.phoneNumber,
+                loadedUserInfo: resUser.data.userDoc.info,
+                loadedUserStudentId: resUser.data.userDoc.types.studentId,
+                loadedUserStudentInfo: resStudent.data.studentDoc.info
               });
             })
             .catch(e => console.log(e));
-        } else if ((resUser.data.priviledges.type = "Teacher")) {
+        } else if (resUser.data.userDoc.types.type === "Teacher") {
+          //const teacherId = resUser.data.userDoc.types.teacherId;
           axios
-            .get(`/teacher/single/${resUser.data.priviledges.teacherId}`)
+            .get(`/teacher/single/${resUser.data.userDoc.types.teacherId}`)
             .then(resTeacher => {
+              console.log("resTeacher", resTeacher);
               commit("SET_LOADED_USER", {
-                loadedUserId: resUser.data._id,
-                loadedUserInfo: resUser.data.info,
-                loadedUserTeacherId: resUser.data.priviledges.teacherId,
-                loadedUserTeacherInfo: resTeacher.data.info
+                loadedUserId: resUser.data.userDoc._id,
+                loadedUserEmail: resUser.data.userDoc.email,
+                loadedUserPhoneNumber: resUser.data.userDoc.phoneNumber,
+                loadedUserType: resUser.data.userDoc.types.type,
+                loadedUserInfo: resUser.data.userDoc.info,
+                loadedUserTeacherId: resUser.data.userDoc.types.teacherId,
+                loadedUserTeacherInfo: resTeacher.data.teacherDoc.info
               });
             });
+        } else if (resUser.data.userDoc.types.type === "Not Set") {
+          console.log("hell", "hell");
+          commit("SET_LOADED_USER", {
+            loadedUserId: resUser.data.userDoc._id,
+            loadedUserEmail: resUser.data.userDoc.email,
+            loadedUserType: resUser.data.userDoc.types.type,
+            loadedUserPhoneNumber: resUser.data.userDoc.phoneNumber,
+            loadedUserInfo: {
+              firstName: FA.STR_notEntered,
+              lastName: FA.STR_notEntered,
+              referralCode: FA.STR_notEntered
+            }
+          });
         }
       });
+    },
+
+    logOut({ commit }) {
+      localStorage.removeItem("token");
+      commit("SET_USER_DATA", null);
+      commit("SET_USER_INFO", null);
     }
   },
   getters: {
@@ -278,6 +322,12 @@ const UserModule = {
     },
     getLoadedUser: state => {
       return state.loadedUser;
+    },
+    getUserId: state => {
+      return state.userData.userId;
+    },
+    getUserType: state => {
+      return state.type;
     }
   }
 };

@@ -1,8 +1,9 @@
 <template lang="pug">
 include ../../assets/locale/FA.pug
 div
+    SetInfo(@clicked="onClickSetInfo")
     h2.pageTitle
-        |#{STR_teacherHeader}
+        |#{STR_teacherHeader}    
     v-card.inputHolder.d-flex.justify-center.text-ed(class="d-flex pa-10 ma-10")
         v-alert(v-model="alert" border="right" :color="alertColor" dark dismissible)="{{alertText}}"
         v-col(cols="12" sm="6" md="3")
@@ -25,21 +26,32 @@ div
                 v-btn(color="black" dark icon @click="onAddDegree")
                     v-icon.icon
                         |mdi-plus
-            v-btn(color="purple" large dark @click="onSubmitInfo")=STR_sendInfo
+            v-btn(color="purple" large dark :disabled="disabledButton" @click="onSubmitInfo")=STR_sendInfo
+            p(v-if="disabledButton")
+              |#{STR_fillInfo}
 </template>
 <script>
+import SetInfo from "../User/SetInfo";
 export default {
   name: "SetTeacher",
+  components: {
+    SetInfo
+  },
   data: () => ({
     numbersCredits: [0, 1, 2, 3, 4],
     numbersDegrees: [0, 1],
     credits: [],
     degrees: [],
-
+    disabledButton: true,
     alert: false,
     alertColor: null,
     alertText: null
   }),
+  computed: {
+    userId: function() {
+      return this.$store.getters.getUserId;
+    }
+  },
   methods: {
     onAddCredit: function() {
       const lastIndex = this.numbersCredits.length - 1;
@@ -63,6 +75,7 @@ export default {
           this.alert = true;
           this.alertColor = "blue";
           this.alertText = res;
+          this.$router.push({ path: `/profile/${this.userId}` });
         })
         .catch(e => {
           this.alert = true;
@@ -73,10 +86,15 @@ export default {
 
     onDeleteCredit: function(index) {
       this.numbersCredits.splice(index, 1);
+      this.credits.splice(index, 1);
     },
 
     onDeleteDegree: function(index) {
       this.numbersDegrees.splice(index, 1);
+      this.degrees.splice(index, 1);
+    },
+    onClickSetInfo: function() {
+      this.disabledButton = false;
     }
   }
 };

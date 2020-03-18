@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const moment = require("moment");
 
 const UserSchema = new Schema({
-  display_name: {
+  displayName: {
     type: String,
     required: true,
     unique: true
@@ -22,23 +22,24 @@ const UserSchema = new Schema({
   },
   verified: Boolean,
   info: {
-    first_name: String,
-    last_name: String,
-    date_of_birth: String
+    firstName: String,
+    lastName: String,
+    dateOfBirth: String
   },
   referralCode: String,
-  connections: {
-    adobe_connect_id: String,
-    ekiga_id: String,
-    vsee_id: String,
-    open_meetings_id: String,
-    mikogo_id: String
-  },
-  priviledges: {
-    type: String,
-    teacherId: String,
-    admin_id: String,
-    studentId: String
+  types: {
+    type: {
+      type: String,
+      default: "Not Set"
+    },
+    teacherId: {
+      type: String,
+      default: "None"
+    },
+    studentId: {
+      type: String,
+      default: "None"
+    }
   }
 });
 

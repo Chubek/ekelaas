@@ -26,8 +26,8 @@ router.post("/setup", auth, (req, res) => {
       { _id: userId },
       {
         $set: {
-          "priviledges.type": "Student",
-          "priviledges.studentid": studentDoc._id
+          "types.type": "Student",
+          "types.studentId": studentDoc._id,          
         }
       },
       { upsert: true }
@@ -40,9 +40,9 @@ router.post("/setup", auth, (req, res) => {
   });
 });
 
-router.put("/set/info/:studentid", auth, (req, res) => {
+router.put("/set/info/:studentId", auth, (req, res) => {
   const userId = req.user.id;
-  const studentId = req.params.studentid;
+  const studentId = req.params.studentId;
   const { grade, province, city, school } = req.body;
 
   StudentSchema.findOneAndUpdate(
@@ -64,9 +64,9 @@ router.put("/set/info/:studentid", auth, (req, res) => {
     });
 });
 
-router.put("/set/favorite/courses/:studentid", auth, (req, res) => {
+router.put("/set/favorite/courses/:studentId", auth, (req, res) => {
   const userId = req.user.id;
-  const studentId = req.params.studentid;
+  const studentId = req.params.studentId;
   const favoriteCourses = req.body.favoriteCourses;
 
   StudentSchema.findOneAndUpdate(
@@ -85,9 +85,9 @@ router.put("/set/favorite/courses/:studentid", auth, (req, res) => {
     });
 });
 
-router.put("/set/favorite/teachers/:studentid", auth, (req, res) => {
+router.put("/set/favorite/teachers/:studentId", auth, (req, res) => {
   const userId = req.user.id;
-  const studentId = req.params.studentid;
+  const studentId = req.params.studentId;
   const favoriteTeachers = req.body.favoriteTeachers;
 
   StudentSchema.findOneAndUpdate(
@@ -106,9 +106,9 @@ router.put("/set/favorite/teachers/:studentid", auth, (req, res) => {
     });
 });
 
-router.put("/set/taken/courses/:studentid", auth, (req, res) => {
+router.put("/set/taken/courses/:studentId", auth, (req, res) => {
   const userId = req.user.id;
-  const studentId = req.params.studentid;
+  const studentId = req.params.studentId;
   const takenCourses = req.body.takenCourses;
 
   StudentSchema.findOneAndUpdate(
@@ -127,9 +127,9 @@ router.put("/set/taken/courses/:studentid", auth, (req, res) => {
     });
 });
 
-router.put("/set/engaged/teachers/:studentid", auth, (req, res) => {
+router.put("/set/engaged/teachers/:studentId", auth, (req, res) => {
   const userId = req.user.id;
-  const studentId = req.params.studentid;
+  const studentId = req.params.studentId;
   const engagedTeachers = req.body.engagedTeachers;
 
   StudentSchema.findOneAndUpdate(
@@ -157,8 +157,8 @@ router.get("/all", (req, res) => {
     });
 });
 
-router.get("/single/:studentid", (req, res) => {
-  const studentId = req.params.studentid;
+router.get("/single/:studentId", (req, res) => {
+  const studentId = req.params.studentId;
 
   StudentSchema.findOne({ _id: studentId })
     .then(studentDoc => res.status(200).json({ studentDoc }))

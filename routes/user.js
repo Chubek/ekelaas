@@ -21,12 +21,12 @@ router.post("/register", (req, res) => {
   }
 
   UserSchema.findOne({
-    display_name: displayName,
+    displayName: displayName,
     email: email,
-    phonenumber: phoneNumber
-  }).then(doc => {
-    if (doc) {
-      console.log("doc", doc);
+    phoneNumber: phoneNumber
+  }).then(docUser => {
+    if (docUser) {
+      console.log("docUser", docUser);
       res.status(401).json({ message: "Already exists." });
       console.log("Data exists.");
       return false;
@@ -37,24 +37,24 @@ router.post("/register", (req, res) => {
     if (err) throw err;
 
     const User = new UserSchema({
-      display_name: displayName,
+      displayName: displayName,
       email: email,
-      phonenumber: phoneNumber,
+      phoneNumber: phoneNumber,
       password: hash
     });
 
     User.save()
-      .then(doc => {
+      .then(docUser => {
         jwt.sign(
           {
-            id: doc._id,
-            displayName: doc.display_name
+            id: docUser._id,
+            displayName: docUser.displayName
           },
           process.env.JWT_SECRET,
           (err, token) => {
             if (err) throw err;
 
-            res.status(200).json({ token: token, doc });
+            res.status(200).json({ token: token, docUser });
           }
         );
       })
@@ -97,9 +97,9 @@ router.post("/auth", (req, res) => {
 
   UserSchema.findOne({
     $or: [
-      { display_name: displayName },
+      { displayName: displayName },
       { email: email },
-      { phonenumber: phoneNumber }
+      { phoneNumber: phoneNumber }
     ]
   })
     .then(docUser => {
@@ -117,7 +117,7 @@ router.post("/auth", (req, res) => {
             return false;
           } else {
             jwt.sign(
-              { id: docUser._id, displayName: docUser.display_name },
+              { id: docUser._id, displayName: docUser.displayName },
               process.env.JWT_SECRET,
               (err, token) => {
                 if (err) throw err;
@@ -151,7 +151,10 @@ router.get("/single/:userId", (req, res) => {
   const userId = req.params.userId;
 
   UserSchema.findOne({ _id: userId })
-    .then(userDoc => res.status(200).json({ userDoc }))
+    .then(userDoc => {
+      console.log("userDoc", userDoc);
+      res.status(200).json({ userDoc });
+    })
     .catch(e => {
       res.status(500).json({ error: e.message });
       console.log(e);
@@ -172,9 +175,9 @@ router.put("/set/info/", auth, (req, res) => {
     { _id: userId },
     {
       $set: {
-        "info.first_name": firstName,
-        "info.last_name": lastName,
-        "info.date_of_birth": dateOfBirth,
+        "info.firstName": firstName,
+        "info.lastName": lastName,
+        "info.dateOfBirth": dateOfBirth,
         referralCode: referralCode
       }
     },
@@ -215,7 +218,7 @@ router.post("/auth/on/create", (req, res) => {
   const userId = jwt.verify(req.body.jwt, process.env.JWT_SECRET).id;
 
   UserSchema.findOne({ _id: userId })
-    .then(doc => res.status(200).json({ doc }))
+    .then(docUser => res.status(200).json({ docUser }))
     .catch(e => {
       res.status(500).json({ e });
       console.log(e);

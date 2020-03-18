@@ -9,6 +9,7 @@ const CourseSchema = new Schema({
     description: String,
     price: mongoose.Types.Decimal128
   },
+  connectURI: String,
   classes: [
     {
       classId: {

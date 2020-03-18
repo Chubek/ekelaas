@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import FA from "../../assets/locale/FA";
 const CourseModule = {
   state: {
     courseId: String,
@@ -71,13 +71,13 @@ const CourseModule = {
             { headers: { "x-auth-token": localStorage.getItem("token") } }
           )
           .then(res => {
-            resolve("اطلاعات با موفقیت وارد شد.");
+            resolve(FA.STR_infoEntered);
             commit("SET_COURSE_ID", res.data.courseDoc._id);
             commit("SET_COURSE_INFO", res.data.courseDoc.info);
           })
           .catch(e => {
             if (e.response.status == 401) {
-              reject("اطلاعات وارد نشده است.");
+              reject(FA.STR_infoNotEntered);
             }
             console.log(e);
           });
