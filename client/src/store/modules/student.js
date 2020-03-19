@@ -72,12 +72,36 @@ const StudentModule = {
           .then(res => {
             resolve(FA.STR_infoEntered);
             commit("SET_STUDENT_ID", res.data.studentDoc._id);
-            commit("SET_STUDENT_INFO", res.data.studentDoc.info)
+            commit("SET_STUDENT_INFO", res.data.studentDoc.info);
           })
           .catch(e => {
             if (e.response.status == 401) {
               reject(FA.STR_infoNotEntered);
             }
+            console.log(e);
+          });
+      });
+    },
+    editStudent({ commit, state }, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .put(
+            `/student/set/info/${state.studentId}`,
+            {
+              grade: payload.grade,
+              province: payload.province,
+              city: payload.city,
+              school: payload.school
+            },
+            { headers: { "x-auth-token": localStorage.getItem("token") } }
+          )
+          .then(res => {
+            resolve("Ok");
+            commit("SET_STUDENT_ID", res.data.studentDoc._id);
+            commit("SET_STUDENT_INFO", res.data.studentDoc.info);
+          })
+          .catch(e => {
+            reject(e);
             console.log(e);
           });
       });
@@ -99,11 +123,10 @@ const StudentModule = {
           if (res.data.studentDoc.taken_courses.length > 0) {
             dispatch("setTakenCourses", res.data.studentDoc.taken_courses);
           }
-        
+
           if (res.data.studentDoc.engaged_courses.length > 0) {
             dispatch("setEngagedTeachers", res.data.studentDoc.engaged_courses);
           }
-          
         })
         .catch(e => console.log(e));
     },

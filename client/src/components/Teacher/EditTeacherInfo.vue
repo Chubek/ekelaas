@@ -1,7 +1,6 @@
 <template lang="pug">
 include ../../assets/locale/FA.pug
 div
-    SetInfo(@clicked="onClickSetInfo")
     h2.pageTitle
         |#{STR_teacherHeader}    
     v-card.inputHolder.d-flex.justify-center.text-ed(class="d-flex pa-10 ma-10")
@@ -26,20 +25,15 @@ div
                 v-btn(color="black" dark icon @click="onAddDegree")
                     v-icon.icon
                         |mdi-plus
-            v-btn(color="purple" large dark :disabled="disabledButton" @click="onSubmitInfo")=STR_sendInfo
-            p(v-if="disabledButton")
-              |#{STR_fillInfo}
+            v-btn(color="purple" large dark @click="onSubmitInfo")=STR_sendInfo
+
 </template>
 <script>
-import SetInfo from "../User/SetInfo";
 export default {
-  name: "SetTeacher",
-  components: {
-    SetInfo
-  },
+  name: "EditTeacherInfo",
   data: () => ({
-    numbersCredits: [0, 1, 2, 3, 4],
-    numbersDegrees: [0, 1],
+    numbersCredits: null,
+    numbersDegrees: null,
     credits: [],
     degrees: [],
     disabledButton: true,
@@ -47,14 +41,17 @@ export default {
     alertColor: null,
     alertText: null
   }),
+  created: function() {
+    this.numbersCredits = this.computeNumbersCredits();
+    this.numbersDegrees = this.computeNumbersDegrees();
+  },
   computed: {
     userId: function() {
       return this.$store.getters.getUserId;
     },
     teacherInfo: function() {
       return this.$store.getters.getTeacherInfo;
-    },
-
+    }
   },
   methods: {
     onAddCredit: function() {
@@ -71,7 +68,7 @@ export default {
 
     onSubmitInfo: function() {
       this.$store
-        .dispatch("setUpTeacher", {
+        .dispatch("editTeacher", {
           credits: this.credits,
           degrees: this.degrees
         })
@@ -99,6 +96,22 @@ export default {
     },
     onClickSetInfo: function() {
       this.disabledButton = false;
+    },
+    computeNumbersCredits: function() {
+      let creditsLength = this.teacherInfo.credits.length;
+      let ret = [];
+      for (let i = 0; i < creditsLength; i++) {
+        ret.push(i);
+      }
+      return ret;
+    },
+    computeNumbersDegrees: function() {
+      let creditsLength = this.teacherInfo.degrees.length;
+      let ret = [];
+      for (let i = 0; i < creditsLength; i++) {
+        ret.push(i);
+      }
+      return ret;
     }
   }
 };
@@ -109,15 +122,15 @@ export default {
 
 .pageTitle, .inputHolder
   font-family: 'Yekan', Tahoma, sans-serif
-    
+
 
 .inputHolder
   font-weight: 1000
 
 .list
   list-style-type: none
-    
-.degreesLi, .creditsLi    
+
+.degreesLi, .creditsLi
   display: flex
 
 .icon
@@ -125,5 +138,4 @@ export default {
 
 .icon-minus
   margin-top: 50%
-
 </style>

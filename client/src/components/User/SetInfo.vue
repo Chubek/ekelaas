@@ -10,7 +10,8 @@ div
             v-text-field(v-model="firstName" label=STR_firstName :placeholder="info.firstName" outlined)
             v-text-field(v-model="lastName" label=STR_lastName :placeholder="info.lastName" outlined)            
             h5.labelTitle=STR_dateOfBirth
-            v-date-picker(v-model="dateOfBirth" title=STR_dateOfBirth :show-current="info.dateOfBirth" first-day-of-week="6" locale="fa" class="datePicker")            
+            p.dOBTitle="{{ dateOB }}"
+            v-date-picker(v-model="dateOfBirth" :value="info.dateOfBirth" :show-current="false" first-day-of-week="6" locale="fa" class="datePicker")            
             v-btn(color="purple" large :disabled="filled" dark @click="onSendInfo")=STR_sendInfo
             br/
             p(v-if="filled")
@@ -18,6 +19,8 @@ div
 
 </template>
 <script>
+import moment from "jalali-moment"
+import _ from "lodash"
 export default {
   name: "SetInfo",
   data: () => ({
@@ -56,7 +59,14 @@ export default {
   computed: {
     info: function() {
       return this.$store.getters.getUserInfo;
-    }
+    },
+    dateOB: function() {
+      let dOB = this.info.dateOfBirth;
+      console.log("dOB", dOB)
+      dOB = _.replace(dOB, /-/g, "/");
+      console.log("dob", dOB);
+      return moment(dOB, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
+    },
   }
 };
 </script>
@@ -73,6 +83,11 @@ body, .pageTitle, .inputHolder
 .labelTitle
   margin-left: 8rem
   margin-bottom: 1rem
+
+.dOBTitle
+  margin-left: 6.5rem
+  margin-bottom: 1rem
+
 
 .datePicker
   margin-bottom: 2rem

@@ -75,7 +75,31 @@ const TeacherModule = {
           });
       });
     },
-
+    editTeacher({ commit, state }, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .put(
+            `"/set/info/${state.teacherId}`,
+            {
+              credits: payload.credits,
+              degrees: payload.degrees
+            },
+            { headers: { "x-auth-token": localStorage.getItem("token") } }
+          )
+          .then(res => {
+            resolve("Ok");
+            commit("SET_TEACHER_ID", res.data.teacherDoc._id);
+            commit("SET_TEACHER_INFO", {
+              credits: res.data.teacherDoc.info.credits,
+              degrees: res.data.teacherDoc.info.degrees
+            });
+          })
+          .catch(e => {
+            reject(e);
+            console.log(e);
+          });
+      });
+    },
     loadTeacher({ dispatch, commit }, payload) {
       axios.get(`/teacher/single/${payload}`).then(res => {
         console.log("resss", res);

@@ -6,14 +6,17 @@ import Login from "../components/User/Login.vue";
 import SetInfo from "../components/User/SetInfo.vue";
 import SetStudent from "../components/Student/SetStudent.vue";
 import SetTeacher from "../components/Teacher/SetTeacher.vue";
+import EditTeacherInfo from "../components/Teacher/EditTeacherInfo.vue";
+import EditStudentInfo from "../components/Student/EditStudentInfo.vue";
 import SetCourse from "../components/Course/SetCourse.vue";
 import SetClass from "../components/Course/SetClass.vue";
 import Profile from "../components/User/Profile.vue";
 import Logout from "../components/User/Logout.vue";
 import RedirectToProfile from "../components/Utils/RedirectToProfile.vue";
-import authGuard from "./authGuard";
-import registerGuard from "./registerGuard";
-import teacherGuard from "./teacherGuard";
+import authGuard from "./Guards/authGuard";
+import registerGuard from "./Guards/registerGuard";
+import teacherGuard from "./Guards/teacherGuard";
+import studentGuard from "./Guards/studentGuard";
 Vue.use(VueRouter);
 
 const routes = [
@@ -52,16 +55,28 @@ const routes = [
     beforeEnter: authGuard
   },
   {
+    path: "/edit/info-student",
+    name: " ویرایش اطلاعات دانش‌اموزی",
+    component: EditStudentInfo,
+    afterEnter: studentGuard
+  },
+  {
+    path: "/edit/info-teacher",
+    name: "ویرایش اطلاعات معلمی",
+    component: EditTeacherInfo,
+    afterEnter: teacherGuard
+  },
+  {
     path: "/set/info-course",
     name: " ثبت اطلاعات دوره",
     component: SetCourse,
-    beforeEnter: teacherGuard
+    afterEnter: teacherGuard
   },
   {
     path: "/set/class/:courseId",
     name: " ثبت اطلاعات کلاس",
     component: SetClass,
-    beforeEnter: teacherGuard
+    afterEnter: teacherGuard
   },
   {
     path: "/profile/:userId",
