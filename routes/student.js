@@ -168,7 +168,7 @@ router.get("/single/:studentId", (req, res) => {
     });
 });
 
-router.get("/multiple", (req, res) => {
+router.get("/multiple/get", (req, res) => {
   const studentIds = req.query.students;
 
   StudentSchema.find({ _id: { $all: studentIds } })

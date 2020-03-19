@@ -120,7 +120,7 @@ router.get("/single/:teacherid", (req, res) => {
     });
 });
 
-router.get("/multiple", (req, res) => {
+router.get("/multiple/get", (req, res) => {
   const teacherIds = req.query.teachers;
 
   TeacherSchema.find({ _id: { $all: teacherIds } })

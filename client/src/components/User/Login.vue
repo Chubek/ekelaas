@@ -35,6 +35,7 @@ export default {
           this.alert = true;
           this.alertColor = "blue";
           this.alertText = res;
+          this.$router.push({path: "/"})
         })
         .catch(e => {
           this.alert = true;

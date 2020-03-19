@@ -29,7 +29,7 @@ div
                         td
                             v-time-picker(v-model="times[n]" format="24hr" class="timePicker")
                         td
-                            v-textarea(v-model="participants[n]" label=STR_students hint=STR_participantsHint)
+                            v-autocomplete(v-model="participants[n]" label=STR_students multiple small-chips chips dense :items="autoCompleteUsers")
                         td
                             v-textarea(v-model="notes[n]" label=STR_notes)
                         td
@@ -56,6 +56,9 @@ export default Vue.extend({
     participants: [],
     notes: []
   }),
+  created: function() {
+    this.$store.dispatch("loadAutoCompleteUsers");
+  },
   methods: {
     onAddCounter: function() {
       const lastIndexNumbers = this.numbersList.length - 1;
@@ -82,7 +85,7 @@ export default Vue.extend({
 
     onAddClass: function(index) {
       this.$store.dispatch("pushCourseClasses", {
-        //courseId: this.courseId,
+        courseId: this.$route.params.courseId,
         classDate: this.dates[index],
         classHour: this.times[index],
         classParticipants: this.participants[index],
@@ -92,6 +95,11 @@ export default Vue.extend({
       if (this.counter > 0) {
         this.counter -= 1;
       }
+    }
+  },
+  computed: {
+    autoCompleteUsers: function() {
+      return this.$store.getters.getAutoCompleteUsers;
     }
   }
 });

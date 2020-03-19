@@ -4,10 +4,10 @@ const StudentModule = {
   state: {
     studentId: String,
     info: {
-      grade: String,
-      province: String,
-      city: String,
-      school: String
+      grade: FA.STR_grade,
+      province: FA.STR_province,
+      city: FA.STR_city,
+      school: FA.STR_school
     },
     favoriteCourses: [Object],
     takenCourses: [Object],
@@ -56,7 +56,7 @@ const StudentModule = {
     }
   },
   actions: {
-    setUpStudent({ dispatch, commit }, payload) {
+    setUpStudent({ commit }, payload) {
       return new Promise((resolve, reject) => {
         axios
           .post(
@@ -72,14 +72,7 @@ const StudentModule = {
           .then(res => {
             resolve(FA.STR_infoEntered);
             commit("SET_STUDENT_ID", res.data.studentDoc._id);
-            commit("SET_IS_STUDENT");
-            dispatch("setFavoriteCourses", res.data.studentDoc.favoriteCourses);
-            dispatch(
-              "setFavoriteTeachers",
-              res.data.studentDoc.favoriteTeachers
-            );
-            dispatch("setTakenCourses", res.data.studentDoc.taken_courses);
-            dispatch("setEngagedTeachers", res.data.studentDoc.engaged_courses);
+            commit("SET_STUDENT_INFO", res.data.studentDoc.info)
           })
           .catch(e => {
             if (e.response.status == 401) {
@@ -94,11 +87,23 @@ const StudentModule = {
         .get(`/student/single/${payload}`)
         .then(res => {
           commit("SET_STUDENT_ID", res.data.studentDoc._id);
-          commit("SET_IS_STUDENT");
-          dispatch("setFavoriteCourses", res.data.studentDoc.favoriteCourses);
-          dispatch("setFavoriteTeachers", res.data.studentDoc.favoriteTeachers);
-          dispatch("setTakenCourses", res.data.studentDoc.taken_courses);
-          dispatch("setEngagedTeachers", res.data.studentDoc.engaged_courses);
+          if (res.data.studentDoc.favoriteCourses.length > 0) {
+            dispatch("setFavoriteCourses", res.data.studentDoc.favoriteCourses);
+          }
+          if (res.data.studentDoc.favoriteTeachers.length > 0) {
+            dispatch(
+              "setFavoriteTeachers",
+              res.data.studentDoc.favoriteTeachers
+            );
+          }
+          if (res.data.studentDoc.taken_courses.length > 0) {
+            dispatch("setTakenCourses", res.data.studentDoc.taken_courses);
+          }
+        
+          if (res.data.studentDoc.engaged_courses.length > 0) {
+            dispatch("setEngagedTeachers", res.data.studentDoc.engaged_courses);
+          }
+          
         })
         .catch(e => console.log(e));
     },

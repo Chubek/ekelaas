@@ -9,7 +9,9 @@ const UserSchema = new Schema({
     unique: true
   },
   email: {
-    type: String
+    type: String,
+    required: true,
+    unique: true
   },
   phoneNumber: {
     type: String,
@@ -21,6 +23,10 @@ const UserSchema = new Schema({
     required: true
   },
   verified: Boolean,
+  justCreated: {
+    type: Boolean,
+    default: true
+  },
   info: {
     firstName: String,
     lastName: String,

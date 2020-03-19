@@ -23,6 +23,9 @@ const strings = {
   STR_incorrectPassword: "پسوورد وارد شده اشتباه است.",
   STR_userCreated: "کاربر ساخته شد.",
   STR_userExists: "نام کاربری، ایمیل یا موبایل در پایگاه داده وجود دارد.",
+  STR_displayNameExists: "نام کاربری وجود دارد.",
+  STR_emailExists: "ایمیل وجود دارد.",
+  STR_phoneNumberExists: "شماره تلفن وجود دارد.",
   STR_infoNotEntered: "اطلاعات وارد نشده است.",
 
   STR_provinces: [
@@ -60,10 +63,23 @@ const strings = {
   ],
   STR_invalidEmail: "ایمیل قابل قبول نیست.",
   STR_invalidPassword:
-    "پسوورد باید لاتین باشد، بین ۶ تا ۱۰ کاراکتر باشد، و دارای حداقل یک حرف بزرگ، حداقل یک حرف کوچک، یک رقم و یک حرف مخصوص باشد. ",
+    "پسوورد باید لاتین باشد، بین ۶ تا ۱۰ کاراکتر باشد، و دارای حداقل یک حرف بزرگ، حداقل یک حرف کوچک و یک رقم باشد. ",
   STR_passwordsDontMatch: "رمزهای عبور یکی نیستند.",
   STR_invalidMobile:
-    "شماره موبایل باید ایرانسل، رایتل، تالیا یا همراه اول باشد."
+    "شماره موبایل باید ایرانسل، رایتل، تالیا یا همراه اول باشد.",
+  
+  STR_invalidDisplayName: "نام کاربری باید لاتین باشد.",
+
+  STR_credit: "سابقه",
+  STR_degree: "مدرک",
+
+  STR_firstName: "نام",
+  STR_lastName: "نام خانوادگی",
+
+  STR_grade: "مقطع",
+  STR_province: "استان",
+  STR_city: "شهر",
+  STR_school: "مدرسه"
 };
 
 export default strings;

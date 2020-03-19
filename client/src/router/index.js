@@ -10,7 +10,10 @@ import SetCourse from "../components/Course/SetCourse.vue";
 import SetClass from "../components/Course/SetClass.vue";
 import Profile from "../components/User/Profile.vue";
 import Logout from "../components/User/Logout.vue";
-//import authGuard from "./authGuard"
+import RedirectToProfile from "../components/Utils/RedirectToProfile.vue";
+import authGuard from "./authGuard";
+import registerGuard from "./registerGuard";
+import teacherGuard from "./teacherGuard";
 Vue.use(VueRouter);
 
 const routes = [
@@ -22,7 +25,8 @@ const routes = [
   {
     path: "/register",
     name: "ثبت نام",
-    component: Register
+    component: Register,
+    beforeEnter: registerGuard
   },
   {
     path: "/login",
@@ -32,27 +36,32 @@ const routes = [
   {
     path: "/set/info",
     name: "ثبت اطلاعات",
-    component: SetInfo
+    component: SetInfo,
+    beforeEnter: authGuard
   },
   {
     path: "/set/info-student",
     name: " ثبت اطلاعات دانش آموزی",
-    component: SetStudent
+    component: SetStudent,
+    beforeEnter: authGuard
   },
   {
     path: "/set/info-teacher",
     name: " ثبت اطلاعات معلمی",
-    component: SetTeacher
+    component: SetTeacher,
+    beforeEnter: authGuard
   },
   {
     path: "/set/info-course",
     name: " ثبت اطلاعات دوره",
-    component: SetCourse
+    component: SetCourse,
+    beforeEnter: teacherGuard
   },
   {
-    path: "/set/class",
+    path: "/set/class/:courseId",
     name: " ثبت اطلاعات کلاس",
-    component: SetClass
+    component: SetClass,
+    beforeEnter: teacherGuard
   },
   {
     path: "/profile/:userId",
@@ -62,7 +71,13 @@ const routes = [
   {
     path: "/logout",
     name: " خروج کاربر",
-    component: Logout
+    component: Logout,
+    beforeEnter: authGuard
+  },
+  {
+    path: "/redirect/to/profile/:userId",
+    name: " انتقال به کاربر",
+    component: RedirectToProfile
   },
   {
     path: "/about",

@@ -1,5 +1,6 @@
 import axios from "axios";
 import FA from "../../assets/locale/FA";
+
 const UserModule = {
   state: {
     loggedIn: !!localStorage.getItem("token"),
@@ -11,9 +12,9 @@ const UserModule = {
       verified: Boolean
     },
     info: {
-      firstName: String,
-      lastName: String,
-      dateOfBirth: String
+      firstName: FA.STR_firstName,
+      lastName: FA.STR_lastName,
+      dateOfBirth: new Date().toISOString().substr(0, 10)
     },
     referralCode: String,
     type: String,
@@ -29,7 +30,8 @@ const UserModule = {
       loadedUserInfo: Object,
       loadedUserStudentInfo: Object,
       loadedUserTeacherInfo: Object
-    }
+    },
+    autoCompleteUsers: []
   },
   mutations: {
     SET_LOADED_USER(state, payload) {
@@ -70,10 +72,30 @@ const UserModule = {
       } else if (state.type === "Not Set") {
         state.typeId = "None";
       }
+    },
+
+    SET_AUTO_COMPLETE_USERS(state, payload) {
+      if (payload.info.firstName || payload.info.lastName) {
+        payload.forEach(user => {
+          state.autoCompleteUsers.push(
+            user.displayName +
+              " " +
+              "(" +
+              user.info.firstName +
+              " " +
+              user.info.lastName +
+              ")"
+          );
+        });
+      } else {
+        payload.forEach(user => {
+          state.autoCompleteUsers.push(user.displayName);
+        });
+      }
     }
   },
   actions: {
-    logIn({ dispatch, commit }, payload) {
+    logIn({ dispatch, commit, state }, payload) {
       return new Promise((resolve, reject) => {
         axios
           .post("/user/auth", {
@@ -85,6 +107,7 @@ const UserModule = {
           .then(res => {
             resolve("شما وارد شدید.");
             localStorage.setItem("token", res.data.token);
+            state.loggedIn = true;
             commit("SET_USER_DATA", {
               userId: res.data.docUser._id,
               displayName: res.data.docUser.displayName,
@@ -92,11 +115,15 @@ const UserModule = {
               phoneNumber: res.data.docUser.phoneNumber,
               verified: res.data.docUser.verified
             });
-            commit("SET_USER_INFO", {
-              firstName: res.data.docUser.info.firstName,
-              lastName: res.data.docUser.info.lastName,
-              dateOfBirth: res.data.docUser.info.dateOfBirth
-            });
+
+            if (!res.data.docUser.justCreated) {
+              commit("SET_USER_INFO", {
+                firstName: res.data.docUser.info.firstName,
+                lastName: res.data.docUser.info.lastName,
+                dateOfBirth: res.data.docUser.info.dateOfBirth
+              });
+            }
+
             commit("SET_TYPE", {
               type: res.data.docUser.types.type
             });
@@ -108,13 +135,13 @@ const UserModule = {
             dispatch("loadType");
           })
           .catch(e => {
-            if (e.response.status == 401) {
+            if (e.response.status == 403) {
               reject(FA.STR_enterPassword);
-            } else if (e.response.status == 403) {
+            } else if (e.response.status == 400) {
               reject(FA.STR_enterPDE);
             } else if (e.response.status == 404) {
               reject(FA.STR_noUser);
-            } else if (e.response.status == 407) {
+            } else if (e.response.status == 401) {
               reject(FA.STR_incorrectPassword);
             }
             console.log(e);
@@ -122,13 +149,14 @@ const UserModule = {
       });
     },
 
-    logInOnCreate({ dispatch, commit }) {
+    logInOnCreate({ dispatch, commit, state }) {
       axios
         .post("/user/auth/on/create", {
           jwt: localStorage.getItem("token")
         })
         .then(res => {
           console.log("loginres", res);
+          state.loggedIn = true;
           commit("SET_USER_DATA", {
             userId: res.data.docUser._id,
             displayName: res.data.docUser.displayName,
@@ -136,11 +164,13 @@ const UserModule = {
             phoneNumber: res.data.docUser.phoneNumber,
             verified: res.data.docUser.verified
           });
-          commit("SET_USER_INFO", {
-            firstName: res.data.docUser.info.firstName,
-            lastName: res.data.docUser.info.lastName,
-            dateOfBirth: res.data.docUser.info.dateOfBirth
-          });
+          if (!res.data.docUser.justCreated) {
+            commit("SET_USER_INFO", {
+              firstName: res.data.docUser.info.firstName,
+              lastName: res.data.docUser.info.lastName,
+              dateOfBirth: res.data.docUser.info.dateOfBirth
+            });
+          }
           commit("SET_TYPE", {
             type: res.data.docUser.types.type
           });
@@ -153,7 +183,7 @@ const UserModule = {
         });
     },
 
-    logInOnRegister({ dispatch, commit }, payload) {
+    logInOnRegister({ dispatch, commit, state }, payload) {
       axios
         .post("/user/auth", {
           displayName: payload.displayName,
@@ -164,6 +194,7 @@ const UserModule = {
         .then(res => {
           console.log("res", res);
           localStorage.setItem("token", res.data.token);
+          state.loggedIn = true;
           commit("SET_USER_DATA", {
             userId: res.data.docUser._id,
             displayName: res.data.docUser.displayName,
@@ -205,10 +236,25 @@ const UserModule = {
             dispatch("logInOnRegister", payload);
           })
           .catch(e => {
-            if (e.response.status == 401) {
+            if (e.response.status == 401 && e.response.data.isSame === "user") {
               reject(FA.STR_userExists);
             } else if (e.response.status == 403) {
               reject(FA.STR_pleaseEnterInfo);
+            } else if (
+              e.response.status == 401 &&
+              e.response.data.isSame === "displayName"
+            ) {
+              reject(FA.STR_displayNameExists);
+            } else if (
+              e.response.status == 401 &&
+              e.response.data.isSame === "email"
+            ) {
+              reject(FA.STR_emailExists);
+            } else if (
+              e.response.status == 401 &&
+              e.response.data.isSame === "phoneNumber"
+            ) {
+              reject(FA.STR_phoneNumberExists);
             }
             console.log(e);
           });
@@ -300,17 +346,25 @@ const UserModule = {
             loadedUserInfo: {
               firstName: FA.STR_notEntered,
               lastName: FA.STR_notEntered,
-              referralCode: FA.STR_notEntered
+              referralCode: FA.STR_notEntered,
+              dateOfBirth: new Date().toISOString().substr(0, 10)
             }
           });
         }
       });
     },
 
-    logOut({ commit }) {
+    logOut({ commit, state }) {
       localStorage.removeItem("token");
+      state.loggedIn = false;
       commit("SET_USER_DATA", null);
       commit("SET_USER_INFO", null);
+    },
+
+    loadAutoCompleteUsers({ commit }) {
+      axios.get("/user/all").then(res => {
+        commit("SET_AUTO_COMPLETE_USERS", res.data.docUsers);
+      });
     }
   },
   getters: {
@@ -328,6 +382,9 @@ const UserModule = {
     },
     getUserType: state => {
       return state.type;
+    },
+    getAutoCompleteUsers: state => {
+      return state.autoCompleteUsers;
     }
   }
 };

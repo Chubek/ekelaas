@@ -94,11 +94,13 @@ router.put("/add/class/:courseid", auth, (req, res) => {
   CourseSchema.findOneAndUpdate(
     { _id: courseId, teacherId: userId },
     {
-      $set: {
-        "classes.$.classDate": classDate,
-        "classes.$.classHour": classHour,
-        "classes.$.classParticipants": classParticipants,
-        "classes.$.classNotes": classNotes
+      $push: {
+        classes: {
+          classDate: classDate,
+          classHour: classHour,
+          classParticipants: classParticipants,
+          classNotes: classNotes
+        }
       }
     },
     { upsert: true, new: true }
@@ -119,10 +121,10 @@ router.put("/set/class/:classid", auth, (req, res) => {
     { "classes.$.classId": classId, teacherId: userId },
     {
       $set: {
-        "classes.$.classDate": classDate,
-        "classes.$.classHour": classHour,
-        "classes.$.classParticipants": classParticipants,
-        "classes.$.classNotes": classNotes
+        "classes$.classDate": classDate,
+        "classes$.classHour": classHour,
+        "classes$.classParticipants": classParticipants,
+        "classes$.classNotes": classNotes
       }
     },
     { upsert: true, new: true }
@@ -156,9 +158,9 @@ router.get("/single/:courseid", (req, res) => {
     });
 });
 
-router.get("/multiple", (req, res) => {
+router.get("/multiple/get", (req, res) => {
   const courseIds = req.query.courses;
-
+  console.log("courses", courseIds);
   CourseSchema.find({ _id: { $all: courseIds } })
     .then(courseDocs => res.status(200).json({ courseDocs }))
     .catch(e => {

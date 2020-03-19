@@ -8,10 +8,10 @@ div
     v-card.inputHolder.d-flex.justify-center.text-end(class="d-flex pa-10 ma-10")
         v-alert(v-model="alert" border="right" :color="alertColor" dark dismissible)="{{alertText}}"
         v-col(cols="12" sm="6" md="3")
-            v-select(v-model="grade" label=STR_grade :items="gradeItems" outlined)
-            v-select(v-model="province" label=STR_province :items="provinceItems" outlined)
-            v-text-field(v-model="city" label=STR_city placeholder=STR_city outlined)
-            v-text-field(v-model="school" label=STR_school placeholder=STR_school outlined)
+            v-select(v-model="grade" label=STR_grade :items="gradeItems" :placeholder="studentInfo.grade" outlined)
+            v-select(v-model="province" label=STR_province :items="provinceItems" :placeholder="studentInfo.province" outlined)
+            v-text-field(v-model="city" label=STR_city :placeholder="studentInfo.city" outlined)
+            v-text-field(v-model="school" label=STR_school :placeholder="studentInfo.school" outlined)
             v-btn(color="purple" large dark @click="onSetStudent" :disabled="disabledButton")=STR_sendInfo
             p(v-if="disabledButton")
               |#{STR_fillInfo}
@@ -64,6 +64,9 @@ export default {
   computed: {
     userId: function() {
       return this.$store.getters.getUserId;
+    },
+    studentInfo: function() {
+      return this.$store.getters.getStudentInfo;
     }
   }
 };

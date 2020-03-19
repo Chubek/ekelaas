@@ -11,8 +11,7 @@ const CourseModule = {
       price: String
     },
     classes: [
-      {
-        classId: String,
+      {        
         classDate: Date,
         classHour: String,
         classParticipants: [Object],
@@ -49,7 +48,7 @@ const CourseModule = {
       state.classes.push(payload);
     },
 
-    PUSH_CLASSPARTICIPANTS(state, payload) {
+    PUSH_CLASS_PARTICIPANTS(state, payload) {
       state.classes.forEach(myClass => {
         if (myClass.classId == payload.classId) {
           myClass.classParticipants.push(payload.classParticipants);

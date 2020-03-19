@@ -9,7 +9,7 @@ div
         v-col(cols="12" sm="6" md="3")
             ul.list
                 li(v-for="(n, index) in numbersCredits" class="creditsLi")
-                    v-text-field(v-model="credits[n]" label=STR_credits placeholder=STR_credits outlined)
+                    v-text-field(v-model="credits[index]" label=STR_credits :placeholder="teacherInfo.credits[index]" outlined)
                     v-btn(color="black" dark icon @click="onDeleteCredit(index)")
                         v-icon.icon-minus
                             |mdi-minus
@@ -18,7 +18,7 @@ div
                         |mdi-plus
             ul.list
                 li(v-for="(n, index) in numbersDegrees" class="degreesLi")
-                    v-text-field(v-model="degrees[n]" label=STR_degrees placeholder=STR_degrees outlined)
+                    v-text-field(v-model="degrees[index]" label=STR_degrees :placeholder="teacherInfo.degrees[index]" outlined)
                     v-btn(color="black" dark icon @click="onDeleteDegree(index)") 
                         v-icon.icon-minus
                             |mdi-minus
@@ -50,7 +50,11 @@ export default {
   computed: {
     userId: function() {
       return this.$store.getters.getUserId;
-    }
+    },
+    teacherInfo: function() {
+      return this.$store.getters.getTeacherInfo;
+    },
+
   },
   methods: {
     onAddCredit: function() {

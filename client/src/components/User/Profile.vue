@@ -15,6 +15,8 @@ div.mainDiv
             |#{STR_firstName}: {{ info.firstName }}
             br/
             |#{STR_lastName}: {{ info.lastName}}
+            br/
+            |#{STR_dateOfBirth}: {{ dateOfBirth }}
         v-card-subtitle(v-if="isTeacher || isAdmin || userIsLoaded")
             |#{STR_phoneNumber}: {{phoneNumber}}
             br/
@@ -53,6 +55,8 @@ div.mainDiv
 
 </template>
 <script>
+import moment from "jalali-moment";
+import _ from "lodash";
 export default {
   name: "Profile",
   data: () => ({
@@ -87,6 +91,13 @@ export default {
     },
     info: function() {
       return this.$store.getters.getLoadedUser.loadedUserInfo;
+    },
+    dateOfBirth: function() {
+      let dOB = this.info.dateOfBirth;
+      console.log("dOB", dOB)
+      dOB = _.replace(dOB, /-/g, "/");
+      console.log("dob", dOB);
+      return moment(dOB, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
     },
     studentInfo: function() {
       return this.$store.getters.getLoadedUser.loadedUserStudentInfo;
@@ -190,7 +201,4 @@ export default {
 
 body, .pageTitle, .mainDiv
   font-family: 'Yekan', Tahoma, sans-serif
-
-
 </style>
-

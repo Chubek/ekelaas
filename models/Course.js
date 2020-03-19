@@ -7,16 +7,14 @@ const CourseSchema = new Schema({
   info: {
     subject: String,
     description: String,
-    price: mongoose.Types.Decimal128
+    price: {
+      type: String,
+      default: "0 IRR"
+    }
   },
-  connectURI: String,
+  connectURL: String,
   classes: [
     {
-      classId: {
-        type: mongoose.Types.ObjectId,
-        auto: true,
-        unique: true
-      },
       classDate: Date,
       classHour: String,
       classParticipants: [String],

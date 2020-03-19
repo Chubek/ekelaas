@@ -24,14 +24,52 @@ router.post("/register", (req, res) => {
     displayName: displayName,
     email: email,
     phoneNumber: phoneNumber
-  }).then(docUser => {
-    if (docUser) {
-      console.log("docUser", docUser);
-      res.status(401).json({ message: "Already exists." });
-      console.log("Data exists.");
-      return false;
-    }
-  });
+  })
+    .then(docUser => {
+      if (docUser) {
+        console.log("docUser", docUser);
+        res.status(401).json({ message: "Already exists.", isSame: "user" });
+        console.log("Data exists.");
+        return false;
+      }
+    })
+    .catch(e => {
+      res.status(500).json({ error: e });
+      console.log(e);
+    });
+
+  UserSchema.findOne({ phoneNumber: phoneNumber })
+    .then(docUser => {
+      if (docUser) {
+        res.status(401).json({ isSame: "phoneNumber" });
+      }
+    })
+    .catch(e => {
+      res.status(500).json({ error: e });
+      console.log(e);
+    });
+
+  UserSchema.findOne({ displayName: displayName })
+    .then(docUser => {
+      if (docUser) {
+        res.status(401).json({ isSame: "displayName" });
+      }
+    })
+    .catch(e => {
+      res.status(500).json({ error: e });
+      console.log(e);
+    });
+
+  UserSchema.findOne({ email: email })
+    .then(docUser => {
+      if (docUser) {
+        res.status(401).json({ isSame: "email" });
+      }
+    })
+    .catch(e => {
+      res.status(500).json({ error: e });
+      console.log(e);
+    });
 
   bcrypt.hash(password, SALT_ROUNDS, (err, hash) => {
     if (err) throw err;
@@ -73,11 +111,10 @@ router.post("/auth", (req, res) => {
   const { displayName, email, phoneNumber, password } = req.body;
 
   if (!password) {
-    res.status(401).json({ message: "Please enter password." });
     return false;
   }
   if (!displayName || !email || !phoneNumber) {
-    res.status(403).json({ message: "No data entered." });
+    res.status(400).json({ message: "No data entered." });
     return false;
   }
   /*
@@ -112,8 +149,9 @@ router.post("/auth", (req, res) => {
       bcrypt
         .compare(password, docUser.password)
         .then(isMatch => {
+          console.log(isMatch);
           if (!isMatch) {
-            res.status(407).json({ message: "Passwords don't match." });
+            res.status(401).json({ message: "Passwords don't match." });
             return false;
           } else {
             jwt.sign(
@@ -178,7 +216,8 @@ router.put("/set/info/", auth, (req, res) => {
         "info.firstName": firstName,
         "info.lastName": lastName,
         "info.dateOfBirth": dateOfBirth,
-        referralCode: referralCode
+        referralCode: referralCode,
+        justCreated: false
       }
     },
     { upsert: true }

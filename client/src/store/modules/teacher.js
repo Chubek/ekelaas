@@ -4,8 +4,14 @@ const TeacherModule = {
   state: {
     teacherId: String,
     info: {
-      credits: Array,
-      degrees: Array
+      credits: [
+        FA.STR_credit,
+        FA.STR_credit,
+        FA.STR_credit,
+        FA.STR_credit,
+        FA.STR_credit
+      ],
+      degrees: [FA.STR_degree, FA.STR_degree]
     },
     students: [
       {
@@ -55,7 +61,7 @@ const TeacherModule = {
           )
           .then(res => {
             resolve(FA.STR_infoEntered);
-            commit("SET_TEACHER_ID", res.data.teacherDoc._id);            
+            commit("SET_TEACHER_ID", res.data.teacherDoc._id);
             commit("SET_TEACHER_INFO", {
               credits: res.data.teacherDoc.info.credits,
               degrees: res.data.teacherDoc.info.degrees
@@ -72,14 +78,18 @@ const TeacherModule = {
 
     loadTeacher({ dispatch, commit }, payload) {
       axios.get(`/teacher/single/${payload}`).then(res => {
-        console.log("resss", res)
-        commit("SET_TEACHER_ID", res.data.teacherDoc._id);        
+        console.log("resss", res);
+        commit("SET_TEACHER_ID", res.data.teacherDoc._id);
         commit("SET_TEACHER_INFO", {
           credits: res.data.teacherDoc.info.credits,
           degrees: res.data.teacherDoc.info.degrees
         });
-        dispatch("setTeacherStudents", res.data.teacherDoc.students);
-        dispatch("setTeacherCourses", res.data.teacherDoc.coursesId);
+        if (res.data.teacherDoc.students.length > 0) {
+          dispatch("setTeacherStudents", res.data.teacherDoc.students);
+        }
+        if (res.data.teacherDoc.coursesId.length > 0) {
+          dispatch("setTeacherCourses", res.data.teacherDoc.coursesId);
+        }
       });
     },
 
@@ -104,7 +114,7 @@ const TeacherModule = {
 
     setTeacherCourses({ commit }, payload) {
       axios
-        .get(`/course/multiple/get?students=${payload}`)
+        .get(`/course/multiple/get?courses=${payload}`)
         .then(res => {
           commit("SET_TEACHER_COURSES", res.data.courseDocs);
         })

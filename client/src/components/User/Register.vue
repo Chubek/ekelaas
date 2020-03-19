@@ -6,7 +6,7 @@ div
     v-card.inputHolder.d-flex.justify-center.text-end(class="d-flex pa-10 ma-10")
       v-alert(v-model="alert" border="right" :color="alertColor" dark dismissible)="{{alertText}}"
       v-col(cols="12" sm="6" md="3")
-          v-text-field(v-model="displayName" label=STR_displayName placeholder=STR_displayName outlined)
+          v-text-field(v-model="displayName" :rules="displayNameRules" label=STR_displayName placeholder=STR_displayName outlined)
           v-text-field(v-model="email" :rules="emailRules" label=STR_email placeholder="ایمیل" type="email" outlined)
           v-text-field(v-model="phoneNumber" :rules="mobileRules" label=STR_phoneNumber placeholder=STR_phoneNumber type="tell" outlined)
           v-text-field(v-model="password" :rules="passwordRules" label=STR_password placeholder=STR_password type="password" outlined)
@@ -27,6 +27,12 @@ export default {
     phoneNumber: "",
     password: "",
     confirmPassword: "",
+    displayNameRules: [
+      v => {
+        const pattern = /^[A-Za-z0-9]+$/;
+        return pattern.test(v) || FA.STR_invalidDisplayName;
+      }
+    ],
     emailRules: [
       v => {
         const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -70,7 +76,7 @@ export default {
           this.alert = true;
           this.alertText = res.message;
           this.alertColor = "blue";
-          this.$router.push({ path: `/profile/${res.id}` });
+          this.$router.push({ path: `/redirect/to/profile/${res.id}` });
         })
         .catch(e => {
           this.alert = true;

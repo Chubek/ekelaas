@@ -7,11 +7,10 @@ div
     v-card.inputHolder.d-flex.justify-center.text-end(class="d-flex pa-10 ma-10")
         v-alert(v-model="alert" border="right" :color="alertColor" dark dismissible)="{{alertText}}"
         v-col(cols="12" sm="6" md="3")
-            v-text-field(v-model="firstName" label=STR_firstName placeholder=STR_firstName outlined)
-            v-text-field(v-model="lastName" label=STR_lastName placeholder=STR_lastName outlined)            
+            v-text-field(v-model="firstName" label=STR_firstName :placeholder="info.firstName" outlined)
+            v-text-field(v-model="lastName" label=STR_lastName :placeholder="info.lastName" outlined)            
             h5.labelTitle=STR_dateOfBirth
-            v-date-picker(v-model="dateOfBirth" title=STR_dateOfBirth locale="fa" class="datePicker")
-            v-text-field(v-model="referral" label=STR_referral placeholder=STR_referral outlined)
+            v-date-picker(v-model="dateOfBirth" title=STR_dateOfBirth :show-current="info.dateOfBirth" first-day-of-week="6" locale="fa" class="datePicker")            
             v-btn(color="purple" large :disabled="filled" dark @click="onSendInfo")=STR_sendInfo
             br/
             p(v-if="filled")
@@ -52,6 +51,11 @@ export default {
           this.alertColor = "red";
           this.alertText = e;
         });
+    }
+  },
+  computed: {
+    info: function() {
+      return this.$store.getters.getUserInfo;
     }
   }
 };

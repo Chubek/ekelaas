@@ -11,8 +11,8 @@ new Vue({
   store,
   vuetify,
   render: h => h(App),
-  created: function() {
-    if (localStorage.getItem("token")) {
+  created: function () {    
+    if (localStorage.getItem("token") && this.$route.path != "/logout") {
       this.$store.dispatch("logInOnCreate");
     }
   }
