@@ -11,7 +11,7 @@ const CourseModule = {
       price: String
     },
     classes: [
-      {        
+      {
         classDate: Date,
         classHour: String,
         classParticipants: [Object],
@@ -70,7 +70,10 @@ const CourseModule = {
             { headers: { "x-auth-token": localStorage.getItem("token") } }
           )
           .then(res => {
-            resolve(FA.STR_infoEntered);
+            resolve({
+              message: FA.STR_infoEntered,
+              id: res.data.courseDoc._id
+            });
             commit("SET_COURSE_ID", res.data.courseDoc._id);
             commit("SET_COURSE_INFO", res.data.courseDoc.info);
           })

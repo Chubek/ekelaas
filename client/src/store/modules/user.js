@@ -74,9 +74,9 @@ const UserModule = {
       }
     },
 
-    SET_AUTO_COMPLETE_USERS(state, payload) {
-      if (payload.info.firstName || payload.info.lastName) {
-        payload.forEach(user => {
+    SET_AUTO_COMPLETE_USERS(state, payload) {      
+      payload.forEach(user => {
+        if (user.info.firstName || user.info.lastName) {
           state.autoCompleteUsers.push(
             user.displayName +
               " " +
@@ -86,12 +86,10 @@ const UserModule = {
               user.info.lastName +
               ")"
           );
-        });
-      } else {
-        payload.forEach(user => {
-          state.autoCompleteUsers.push(user.displayName);
-        });
-      }
+        } else {
+          state.autoCompleteUsers.push(user.displayName)
+        }
+      });
     }
   },
   actions: {
@@ -363,6 +361,7 @@ const UserModule = {
 
     loadAutoCompleteUsers({ commit }) {
       axios.get("/user/all").then(res => {
+        console.log("docuSers", res);
         commit("SET_AUTO_COMPLETE_USERS", res.data.docUsers);
       });
     }

@@ -6,12 +6,12 @@ div
     v-card.inputHolder.d-flex.justify-center.text-end(class="d-flex pa-10 ma-10")
       v-alert(v-model="alert" border="right" :color="alertColor" dark dismissible)="{{alertText}}"
       v-col(cols="12" sm="6" md="3")
-          v-text-field(v-model="displayName" :rules="displayNameRules" label=STR_displayName placeholder=STR_displayName outlined)
-          v-text-field(v-model="email" :rules="emailRules" label=STR_email placeholder="ایمیل" type="email" outlined)
-          v-text-field(v-model="phoneNumber" :rules="mobileRules" label=STR_phoneNumber placeholder=STR_phoneNumber type="tell" outlined)
-          v-text-field(v-model="password" :rules="passwordRules" label=STR_password placeholder=STR_password type="password" outlined)
-          v-text-field(v-model="confirmPassword" :rules="[confirmPasswordRules]"  label=STR_confirmPassword type="password" placeholder=STR_confirmPassword outlined)
-          v-btn(color="purple" large dark @click="onRegister")=STR_registerButton
+          v-text-field(v-model="displayName" :rules="displayNameRules" append-icon="mdi-account-outline" label=STR_displayName placeholder=STR_displayName outlined)
+          v-text-field(v-model="email" :rules="emailRules" label=STR_email append-icon="mdi-email-outline" placeholder="ایمیل" type="email" outlined)
+          v-text-field(v-model="phoneNumber" :rules="mobileRules" label=STR_phoneNumber append-icon="mdi-cellphone" placeholder=STR_phoneNumber type="tell" outlined)
+          v-text-field(v-model="password" :rules="passwordRules" label=STR_password :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" placeholder=STR_password :type="showPassword ? 'text' : 'password'" @click:append="showPassword = !showPassword" outlined)
+          v-text-field(v-model="confirmPassword" :append-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'" :rules="[confirmPasswordRules]"  label=STR_confirmPassword :type="showConfirmPassword ? 'text' : 'password'" @click:append="showConfirmPassword = !showConfirmPassword" placeholder=STR_confirmPassword outlined)
+          v-btn(color="primary" large dark @click="onRegister")=STR_registerButton
                  
 
 
@@ -27,6 +27,8 @@ export default {
     phoneNumber: "",
     password: "",
     confirmPassword: "",
+    showPassword: false,
+    showConfirmPassword: false,
     displayNameRules: [
       v => {
         const pattern = /^[A-Za-z0-9]+$/;

@@ -93,10 +93,8 @@ export default {
       return this.$store.getters.getLoadedUser.loadedUserInfo;
     },
     dateOfBirth: function() {
-      let dOB = this.info.dateOfBirth;
-      console.log("dOB", dOB)
-      dOB = _.replace(dOB, /-/g, "/");
-      console.log("dob", dOB);
+      let dOB = this.info.dateOfBirth;      
+      dOB = _.replace(dOB, /-/g, "/");      
       return moment(dOB, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
     },
     studentInfo: function() {

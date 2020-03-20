@@ -25,7 +25,7 @@ div
                 v-btn(color="black" dark icon @click="onAddDegree")
                     v-icon.icon
                         |mdi-plus
-            v-btn(color="purple" large dark @click="onSubmitInfo")=STR_sendInfo
+            v-btn(color="primary" large dark @click="onSubmitInfo")=STR_sendInfo
 
 </template>
 <script>
@@ -67,10 +67,16 @@ export default {
     },
 
     onSubmitInfo: function() {
+      let degreesFiltered = this.degrees.filter(degree => {
+        return degree != null;
+      });
+      let creditsFiltered = this.credits.filter(credit => {
+        return credit != null;
+      });
       this.$store
         .dispatch("editTeacher", {
-          credits: this.credits,
-          degrees: this.degrees
+          credits: creditsFiltered,
+          degrees: degreesFiltered
         })
         .then(res => {
           this.alert = true;

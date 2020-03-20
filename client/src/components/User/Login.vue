@@ -7,9 +7,9 @@ div
     v-card.inputHolder.d-flex.justify-center(class="d-flex pa-10 ma-10")
         v-alert(v-model="alert" border="right" :color="alertColor" dark dismissible)="{{alertText}}"
         v-col(cols="12" sm="6" md="3")
-            v-text-field(v-model="loginString" label=STR_loginString placeholder=STR_loginString outlined)
-            v-text-field(v-model="password" label=STR_password placeholder=STR_password type="password" outlined)
-            v-btn(color="purple" large dark @click="onLogin")=STR_loginButton
+            v-text-field(v-model="loginString" append-icon="mdi-login-variant" label=STR_loginString placeholder=STR_loginString outlined)
+            v-text-field(v-model="password" label=STR_password placeholder=STR_password :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="showPassword ? 'text' : 'password'" @click:append="showPassword = !showPassword" outlined)
+            v-btn(color="primary" large dark @click="onLogin")=STR_loginButton
 </template>
 <script>
 export default {
@@ -17,7 +17,7 @@ export default {
   data: () => ({
     loginString: null,
     password: null,
-
+    showPassword: false,
     alert: false,
     alertColor: null,
     alertText: null
@@ -35,7 +35,7 @@ export default {
           this.alert = true;
           this.alertColor = "blue";
           this.alertText = res;
-          this.$router.push({path: "/"})
+          this.$router.push({ path: "/" });
         })
         .catch(e => {
           this.alert = true;

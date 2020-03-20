@@ -79,7 +79,9 @@ const strings = {
   STR_grade: "مقطع",
   STR_province: "استان",
   STR_city: "شهر",
-  STR_school: "مدرسه"
+  STR_school: "مدرسه",
+
+  STR_invalidPrice: "قیمت باید فقط عدد باشد."
 };
 
 export default strings;

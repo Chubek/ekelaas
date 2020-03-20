@@ -111,6 +111,7 @@ const StudentModule = {
         .get(`/student/single/${payload}`)
         .then(res => {
           commit("SET_STUDENT_ID", res.data.studentDoc._id);
+          commit("SET_STUDENT_INFO", res.data.studentDoc.info);
           if (res.data.studentDoc.favoriteCourses.length > 0) {
             dispatch("setFavoriteCourses", res.data.studentDoc.favoriteCourses);
           }
@@ -120,11 +121,11 @@ const StudentModule = {
               res.data.studentDoc.favoriteTeachers
             );
           }
-          if (res.data.studentDoc.taken_courses.length > 0) {
+          if (res.data.studentDoc.takenCoursesId.length > 0) {
             dispatch("setTakenCourses", res.data.studentDoc.taken_courses);
           }
 
-          if (res.data.studentDoc.engaged_courses.length > 0) {
+          if (res.data.studentDoc.engagedTeachersId.length > 0) {
             dispatch("setEngagedTeachers", res.data.studentDoc.engaged_courses);
           }
         })

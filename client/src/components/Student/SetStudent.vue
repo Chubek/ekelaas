@@ -12,7 +12,7 @@ div
             v-select(v-model="province" label=STR_province :items="provinceItems" :placeholder="studentInfo.province" outlined)
             v-text-field(v-model="city" label=STR_city :placeholder="studentInfo.city" outlined)
             v-text-field(v-model="school" label=STR_school :placeholder="studentInfo.school" outlined)
-            v-btn(color="purple" large dark @click="onSetStudent" :disabled="disabledButton")=STR_sendInfo
+            v-btn(color="primary" large dark @click="onSetStudent" :disabled="disabledButton")=STR_sendInfo
             p(v-if="disabledButton")
               |#{STR_fillInfo}
 </template>

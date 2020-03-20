@@ -12,15 +12,15 @@ div
             h5.labelTitle=STR_dateOfBirth
             p.dOBTitle="{{ dateOB }}"
             v-date-picker(v-model="dateOfBirth" :value="info.dateOfBirth" :show-current="false" first-day-of-week="6" locale="fa" class="datePicker")            
-            v-btn(color="purple" large :disabled="filled" dark @click="onSendInfo")=STR_sendInfo
+            v-btn(color="primary" large :disabled="filled" dark @click="onSendInfo")=STR_sendInfo
             br/
             p(v-if="filled")
               |#{STR_fillFurther}
 
 </template>
 <script>
-import moment from "jalali-moment"
-import _ from "lodash"
+import moment from "jalali-moment";
+import _ from "lodash";
 export default {
   name: "SetInfo",
   data: () => ({
@@ -62,11 +62,13 @@ export default {
     },
     dateOB: function() {
       let dOB = this.info.dateOfBirth;
-      console.log("dOB", dOB)
+      console.log("dOB", dOB);
       dOB = _.replace(dOB, /-/g, "/");
       console.log("dob", dOB);
-      return moment(dOB, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
-    },
+      return moment(dOB, "YYYY/MM/DD")
+        .locale("fa")
+        .format("YYYY/MM/DD");
+    }
   }
 };
 </script>

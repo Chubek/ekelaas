@@ -26,7 +26,7 @@ div
                 v-btn(color="black" dark icon @click="onAddDegree")
                     v-icon.icon
                         |mdi-plus
-            v-btn(color="purple" large dark :disabled="disabledButton" @click="onSubmitInfo")=STR_sendInfo
+            v-btn(color="primary" large dark :disabled="disabledButton" @click="onSubmitInfo")=STR_sendInfo
             p(v-if="disabledButton")
               |#{STR_fillInfo}
 </template>
@@ -53,8 +53,7 @@ export default {
     },
     teacherInfo: function() {
       return this.$store.getters.getTeacherInfo;
-    },
-
+    }
   },
   methods: {
     onAddCredit: function() {
@@ -70,10 +69,16 @@ export default {
     },
 
     onSubmitInfo: function() {
+      let degreesFiltered = this.degrees.filter(degree => {
+        return degree != null;
+      });
+      let creditsFiltered = this.credits.filter(credit => {
+        return credit != null;
+      });
       this.$store
         .dispatch("setUpTeacher", {
-          credits: this.credits,
-          degrees: this.degrees
+          credits: creditsFiltered,
+          degrees: degreesFiltered
         })
         .then(res => {
           this.alert = true;
