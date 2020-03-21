@@ -3,6 +3,8 @@ include ../../assets/locale/FA.pug
 
 div    
     h2.pageTitle
+        v-icon.icon
+          |mdi-bus-school
         |#{STR_studentHeader}
     v-card.inputHolder.d-flex.justify-center.text-end(class="d-flex pa-10 ma-10")
         v-alert(v-model="alert" border="right" :color="alertColor" dark dismissible)="{{alertText}}"
@@ -49,6 +51,8 @@ export default {
   },
   methods: {
     onSetStudent: function() {
+      this.showIcon = "hideClass";
+      this.showCircle = "showClass";
       this.$store
         .dispatch("editStudent", {
           grade: this.grade,
@@ -56,9 +60,9 @@ export default {
           city: this.city,
           school: this.school
         })
-        .then(res => {
-          this.showIcon = "hideClass";
-          this.showCircle = "showClass";
+        .then(res => { 
+          this.showIcon = "showClass";
+          this.showCircle = "hideClass";         
           this.alert = true;
           this.alertColor = "blue";
           this.alertText = res;

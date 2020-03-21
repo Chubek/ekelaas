@@ -4,6 +4,8 @@ include ../../assets/locale/FA.pug
 div
     SetInfo(@clicked="onClickSetInfo")
     h2.pageTitle
+        v-icon.icon
+          |mdi-bus-school
         |#{STR_studentHeader}
     v-card.inputHolder.d-flex.justify-center.text-end(class="d-flex pa-10 ma-10")
         v-alert(v-model="alert" border="right" :color="alertColor" dark dismissible)="{{alertText}}"
@@ -13,6 +15,9 @@ div
             v-text-field(v-model="city" label=STR_city :placeholder="studentInfo.city" outlined)
             v-text-field(v-model="school" label=STR_school :placeholder="studentInfo.school" outlined)
             v-btn(color="primary" large dark @click="onSetStudent" :disabled="disabledButton")=STR_sendInfo
+              v-icon(:class="showIcon")
+                |mdi-check-all
+              v-progress-circular(color="white" indeterminate :class="showCircle")
             p(v-if="disabledButton")
               |#{STR_fillInfo}
 </template>
@@ -34,10 +39,14 @@ export default {
     alert: false,
     alertColor: null,
     alertText: null,
-    disabledButton: true
+    disabledButton: true, 
+    showIcon: "showClass",
+    showCircle: "hideClass"
   }),
   methods: {
     onSetStudent: function() {
+      this.showIcon = "hideClass";
+      this.showCircle = "showClass";
       this.$store
         .dispatch("setUpStudent", {
           grade: this.grade,
@@ -46,6 +55,8 @@ export default {
           school: this.school
         })
         .then(res => {
+          this.showIcon = "showClass";
+          this.showCircle = "hideClass";
           this.alert = true;
           this.alertColor = "blue";
           this.alertText = res;
@@ -80,4 +91,10 @@ body, .pageTitle, .inputHolder
 
 .inputHolder
   font-weight: 1000
+
+.showClass
+  display: inline
+
+.hideClass
+  display: none
 </style>

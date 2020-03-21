@@ -112,19 +112,24 @@ router.put("/add/class/:courseid", auth, (req, res) => {
     });
 });
 
-router.put("/set/class/:classid", auth, (req, res) => {
+router.put("/set/class/:courseId/:classIndex", auth, (req, res) => {
   const userId = req.user.id;
-  const classId = req.params.classid;
+  const classIndex = req.params.classIndex;
+  const courseId = req.params.courseId;
   const { classDate, classHour, classParticipants, classNotes } = req.body;
-
+  if (!classDate || !classHour || !classParticipants || !classNotes) {
+    res.status(401).json({ message: "Data not sent." });
+    console.log("Data not sent.");
+    return false;
+  }
   CourseSchema.findOneAndUpdate(
-    { "classes.$.classId": classId, teacherId: userId },
+    { _id: courseId, teacherId: userId, classes: classes[classIndex] },
     {
       $set: {
-        "classes$.classDate": classDate,
-        "classes$.classHour": classHour,
-        "classes$.classParticipants": classParticipants,
-        "classes$.classNotes": classNotes
+        "classes.$.classDate": classDate,
+        "classes.$.classHour": classHour,
+        "classes.$.classParticipants": classParticipants,
+        "classes.$.classNotes": classNotes
       }
     },
     { upsert: true, new: true }

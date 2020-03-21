@@ -2,13 +2,15 @@
 include ../../assets/locale/FA.pug
 div
     h2.pageTitle
+        v-icon.icon
+          |mdi-feather
         |#{STR_teacherHeader}    
     v-card.inputHolder.d-flex.justify-center.text-ed(class="d-flex pa-10 ma-10")
         v-alert(v-model="alert" border="right" :color="alertColor" dark dismissible)="{{alertText}}"
         v-col(cols="12" sm="6" md="3")
             ul.list
                 li(v-for="(n, index) in numbersCredits" class="creditsLi")
-                    v-text-field(v-model="credits[index]" label=STR_credits :placeholder="teacherInfo.credits[index]" outlined)
+                    v-text-field(v-model="credits[index]" label=STR_credits append-icon="mdi-show-print" :placeholder="teacherInfo.credits[index]" outlined)
                     v-btn(color="black" dark icon @click="onDeleteCredit(index)")
                         v-icon.icon-minus
                             |mdi-minus
@@ -17,7 +19,7 @@ div
                         |mdi-plus
             ul.list
                 li(v-for="(n, index) in numbersDegrees" class="degreesLi")
-                    v-text-field(v-model="degrees[index]" label=STR_degrees :placeholder="teacherInfo.degrees[index]" outlined)
+                    v-text-field(v-model="degrees[index]" label=STR_degrees append-icon="mdi-math-compass" :placeholder="teacherInfo.degrees[index]" outlined)
                     v-btn(color="black" dark icon @click="onDeleteDegree(index)") 
                         v-icon.icon-minus
                             |mdi-minus
@@ -26,6 +28,9 @@ div
                     v-icon.icon
                         |mdi-plus
             v-btn(color="primary" large dark @click="onSubmitInfo")=STR_sendInfo
+              v-icon(:class="showIcon")
+                |mdi-check-all
+              v-progress-circular(color="white" indeterminate :class="showCircle")
 
 </template>
 <script>
@@ -39,7 +44,9 @@ export default {
     disabledButton: true,
     alert: false,
     alertColor: null,
-    alertText: null
+    alertText: null,
+    showIcon: "showClass",
+    showCircle: "hideClass"
   }),
   created: function() {
     this.numbersCredits = this.computeNumbersCredits();
@@ -67,6 +74,8 @@ export default {
     },
 
     onSubmitInfo: function() {
+      this.showIcon = "hideClass";
+      this.showCircle = "showClass";
       let degreesFiltered = this.degrees.filter(degree => {
         return degree != null;
       });
@@ -79,6 +88,8 @@ export default {
           degrees: degreesFiltered
         })
         .then(res => {
+          this.showIcon = "showClass";
+          this.showCircle = "hideClass";
           this.alert = true;
           this.alertColor = "blue";
           this.alertText = res;
@@ -144,4 +155,10 @@ export default {
 
 .icon-minus
   margin-top: 50%
+
+.showClass
+  display: inline
+
+.hideClass
+  display: none
 </style>

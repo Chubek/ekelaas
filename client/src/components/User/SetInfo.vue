@@ -3,16 +3,24 @@ include ../../assets/locale/FA.pug
 
 div
     h2.pageTitle
+        v-icon.icon
+          |mdi-id-card
         |#{STR_infoHeader}
     v-card.inputHolder.d-flex.justify-center.text-end(class="d-flex pa-10 ma-10")
         v-alert(v-model="alert" border="right" :color="alertColor" dark dismissible)="{{alertText}}"
         v-col(cols="12" sm="6" md="3")
-            v-text-field(v-model="firstName" label=STR_firstName :placeholder="info.firstName" outlined)
-            v-text-field(v-model="lastName" label=STR_lastName :placeholder="info.lastName" outlined)            
-            h5.labelTitle=STR_dateOfBirth
+            v-text-field(v-model="firstName" append-icon="mdi-human-child" label=STR_firstName :placeholder="info.firstName" outlined)
+            v-text-field(v-model="lastName" append-icon="mdi-human-male-child" label=STR_lastName :placeholder="info.lastName" outlined)            
+            h5.labelTitle
+              v-icon.icon
+                |mdi-calendar
+              |#{STR_dateOfBirth}
             p.dOBTitle="{{ dateOB }}"
             v-date-picker(v-model="dateOfBirth" :value="info.dateOfBirth" :show-current="false" first-day-of-week="6" locale="fa" class="datePicker")            
             v-btn(color="primary" large :disabled="filled" dark @click="onSendInfo")=STR_sendInfo
+              v-icon(:class="showIcon")
+                |mdi-check-all
+              v-progress-circular(color="white" indeterminate :class="showCircle")
             br/
             p(v-if="filled")
               |#{STR_fillFurther}
@@ -31,10 +39,14 @@ export default {
     filled: false,
     alert: false,
     alertColor: null,
-    alertText: null
+    alertText: null,
+    showIcon: "showClass",
+    showCircle: "hideClass"
   }),
   methods: {
     onSendInfo: function() {
+      this.showIcon = "hideClass";
+      this.showCircle = "showClass";
       this.$store
         .dispatch("setUserInfo", {
           firstName: this.firstName,
@@ -43,6 +55,8 @@ export default {
           referralCode: this.referral
         })
         .then(res => {
+          this.showIcon = "showClass";
+          this.showCircle = "hideClass";
           this.alert = true;
           this.alertColor = "blue";
           this.alertText = res;
@@ -93,4 +107,13 @@ body, .pageTitle, .inputHolder
 
 .datePicker
   margin-bottom: 2rem
+  
+  
+.showClass
+  display: inline
+
+.hideClass
+  display: none
+
+
 </style>

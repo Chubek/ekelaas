@@ -4,7 +4,7 @@ div
     h2.pageTitle
         v-icon.icon
           |mdi-clipboard-file-outline
-        |#{STR_courseHeader}
+        |#{STR_courseEditHeader}
     v-card.inputHolder.d-flex.justify-center.text-end(class="d-flex pa-10 ma-10")
         v-alert(v-model="alert" border="right" ::color="alertColor" dark dismissible)="{{alertText}}"
         v-col(cols="12" sm="6" md="3")
@@ -37,10 +37,21 @@ export default {
     showIcon: "showClass",
     showCircle: "hideClass"
   }),
+  created: function() {
+    this.subject = this.courseInfo.subject;
+    this.description = this.courseInfo.description;
+    this.price = this.courseInfo.price;
+  },
+  computed: {
+    courseInfo: function() {
+      return this.$store.getters.getCourseInfo;
+    }
+  },
   methods: {
     onSubmitInfo: function() {
       this.$store
-        .dispatch("setUpCourse", {
+        .dispatch("editCourse", {
+          courseId: this.$route.params.courseId,
           subject: this.subject,
           description: this.description,
           price: this.price
@@ -51,7 +62,7 @@ export default {
           this.alert = true;
           this.alertColor = "blue";
           this.alertText = res.message;
-          this.$router.push(`{ path: /set/class/${res.id}}`);
+          this.$router.push({ path: "/view/created-courses" });
         })
         .catch(e => {
           this.alert = true;
@@ -67,15 +78,14 @@ export default {
 @include font('Yekan', '../../assets/fonts/Yekan')
 
 body, .pageTitle, .inputHolder
-  font-family: 'Yekan', Tahoma, sans-serif
+    font-family: 'Yekan', Tahoma, sans-serif
 
 .inputHolder
-  font-weight: 1000
+    font-weight: 1000
 
 .showClass
-  display: inline
+    display: inline
 
 .hideClass
-  display: none
-
+    display: none
 </style>

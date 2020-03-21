@@ -13,6 +13,7 @@ import SetClass from "../components/Course/SetClass.vue";
 import Profile from "../components/User/Profile.vue";
 import Logout from "../components/User/Logout.vue";
 import RedirectToProfile from "../components/Utils/RedirectToProfile.vue";
+import EditCourseInfo from "../components/Course/EditCourseInfo.vue"
 import authGuard from "./Guards/authGuard";
 import registerGuard from "./Guards/registerGuard";
 import teacherGuard from "./Guards/teacherGuard";
@@ -70,6 +71,12 @@ const routes = [
     path: "/set/info-course",
     name: " ثبت اطلاعات دوره",
     component: SetCourse,
+    afterEnter: teacherGuard
+  },
+  {
+    path: "/edit/info-course/:courseId",
+    name: " ثبت اطلاعات دوره",
+    component: EditCourseInfo,
     afterEnter: teacherGuard
   },
   {

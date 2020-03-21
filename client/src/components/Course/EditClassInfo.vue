@@ -4,7 +4,7 @@ div
     h2.pageTitle
         v-icon.icon
           |mdi-chair-class
-        |#{STR_courseClassHeader}    
+        |#{STR_courseEditClassHeader}    
     v-card.inputHolder.d-flex.justify-center.text-end(class="d-sm-flex pa-10 ma-10")
         v-card(elevation="11").counter
         v-btn(color="red" dark icon @click="onAddCounter")
@@ -49,7 +49,7 @@ div
                         td
                             v-textarea(v-model="notes[index]"   label=STR_notes append-icon="mdi-note-multiple-outline")
                         td
-                            v-btn(color="red" dark large @click="onAddClass(index)")=STR_sendInfo
+                            v-btn(color="red" dark large @click="onAddClass(index)")=STR_editInfo
                               v-icon(:class="showIcon[index]")
                                 |mdi-check-all
                               v-progress-circular(color="white" indeterminate :class="showCircle[index]")
@@ -91,8 +91,6 @@ export default Vue.extend({
     this.$store.dispatch("loadAutoCompleteUsers");
     for (let i = 0; i < this.counter; i++) {
       this.jalaliDates.push(null);
-      this.dates.push(new Date().toISOString().substr(0, 10));
-      this.times.push("00:00");
       this.numbersList.push(i);
       this.menuDate.push(false);
       this.menuTime.push(false);
@@ -102,6 +100,12 @@ export default Vue.extend({
     for (let i = 0; i < this.counter; i++) {
       this.convertToJalali(i);
     }
+    this.classInfo.forEach(classs => {
+      this.dates.push(classs.classDate);
+      this.times.push(classs.classHour);
+      this.participants.push(classs.classParticipants);
+      this.notes.push(classs.notes);
+    });
   },
   watch: {
     counter: function(newCounter, oldCounter) {
@@ -150,7 +154,8 @@ export default Vue.extend({
       this.showIcon[index] = "hideClass";
       this.showCircle[index] = "showClass";
       this.$store
-        .dispatch("pushCourseClasses", {
+        .dispatch("editCourseClasses", {
+          classIndex: index,
           courseId: this.$route.params.courseId,
           classDate: this.dates[index],
           classHour: this.times[index],
@@ -162,10 +167,6 @@ export default Vue.extend({
           this.snackBarText = `جلسه‌ی ${index} ذخیره گشت.`;
           this.showIcon[index] = "showClass";
           this.showCircle[index] = "hideClass";
-          this.numbersList.splice(index, 1);
-          if (this.counter > 0) {
-            this.counter -= 1;
-          }
         })
         .catch(e => {
           this.snackBar = true;
@@ -188,6 +189,9 @@ export default Vue.extend({
   computed: {
     autoCompleteUsers: function() {
       return this.$store.getters.getAutoCompleteUsers;
+    },
+    classInfo: function() {
+      return this.$store.getters.getCourseClasses;
     }
   }
 });
@@ -197,12 +201,11 @@ export default Vue.extend({
 @include font('Yekan', '../../assets/fonts/Yekan')
 
 body, .pageTitle, .inputHolder, .datePicker, .timePicker
-  font-family: 'Yekan', Tahoma, sans-serif
+    font-family: 'Yekan', Tahoma, sans-serif
 
 .inputHolder
-  font-weight: 1000
+    font-weight: 1000
 
 .counter
-  display: flex
-
+    display: flex
 </style>

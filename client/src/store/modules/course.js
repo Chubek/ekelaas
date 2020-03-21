@@ -48,12 +48,12 @@ const CourseModule = {
       state.classes.push(payload);
     },
 
-    PUSH_CLASS_PARTICIPANTS(state, payload) {
-      state.classes.forEach(myClass => {
-        if (myClass.classId == payload.classId) {
-          myClass.classParticipants.push(payload.classParticipants);
-        }
-      });
+    EDIT_COURSE_CLASSES(state, payload) {
+      state.classes[payload.classIndex].classDate = payload.classDate;
+      state.classes[payload.classIndex].classHour = payload.classHour;
+      state.classes[payload.classIndex].classParticipants =
+        payload.classParticipants;
+      state.classes[payload.classIndex].classNotes = payload.classNotes;
     }
   },
   actions: {
@@ -85,13 +85,43 @@ const CourseModule = {
           });
       });
     },
+    editCourse({ dispatch, commit }, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .put(`/course/set/info/${payload.courseId}`, {
+            subject: payload.subject,
+            description: payload.description,
+            price: payload.price
+          })
+          .then(res => {
+            resolve("Ok");
+            commit("SET_COURSE_ID", res.data.courseDoc._id);
+            dispatch("setCourseTeacher", res.data.courseDoc.teacherId);
+            if (res.data.courseDoc.students.length > 0) {
+              dispatch("setCourseStudents", res.data.courseDoc.students);
+            }
+            commit("SET_COURSE_INFO", res.data.courseDoc.info);
+            if (res.data.courseDoc.classes.length > 0) {
+              commit("SET_COURSE_CLASSES", res.data.courseDoc.classes);
+            }
+          })
+          .catch(e => {
+            reject(e);
+            console.log(e);
+          });
+      });
+    },
     loadCourse({ dispatch, commit }, payload) {
       axios.get(`/course/single/${payload}`).then(res => {
         commit("SET_COURSE_ID", res.data.courseDoc._id);
         dispatch("setCourseTeacher", res.data.courseDoc.teacherId);
-        dispatch("setCourseStudents", res.data.courseDoc.students);
+        if (res.data.courseDoc.students.length > 0) {
+          dispatch("setCourseStudents", res.data.courseDoc.students);
+        }
         commit("SET_COURSE_INFO", res.data.courseDoc.info);
-        commit("SET_COURSE_CLASSES", res.data.courseDoc.classes);
+        if (res.data.courseDoc.classes.length > 0) {
+          commit("SET_COURSE_CLASSES", res.data.courseDoc.classes);
+        }
       });
     },
 
@@ -130,30 +160,73 @@ const CourseModule = {
     },
 
     pushCourseClasses({ commit }, payload) {
-      axios
-        .put(
-          `/course/add/class/${payload.courseId}`,
-          {
-            classDate: payload.classDate,
-            classHour: payload.classHour,
-            classParticipants: payload.classParticipants,
-            classNotes: payload.classNotes
-          },
-          { headers: { "x-auth-token": localStorage.getItem("token") } }
-        )
-        .then(res => {
-          commit("PUSH_COURSE_CLASSES", {
-            classId: res.data.courseDoc.classes.classId,
-            classDate: payload.classDate,
-            classHour: payload.classHour,
-            classParticipants: payload.classParticipants,
-            classNotes: payload.classNotes
+      return new Promise((resolve, reject) => {
+        axios
+          .put(
+            `/course/add/class/${payload.courseId}`,
+            {
+              classDate: payload.classDate,
+              classHour: payload.classHour,
+              classParticipants: payload.classParticipants,
+              classNotes: payload.classNotes
+            },
+            { headers: { "x-auth-token": localStorage.getItem("token") } }
+          )
+          .then(() => {
+            resolve("Ok");
+            commit("PUSH_COURSE_CLASSES", {
+              classDate: payload.classDate,
+              classHour: payload.classHour,
+              classParticipants: payload.classParticipants,
+              classNotes: payload.classNotes
+            });
+          })
+          .catch(e => {
+            reject(e);
+            console.log(e);
           });
-        })
-        .catch(e => console.log(e));
+      });
+    },
+    editCourseClass({ commit }, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .put(
+            `/course/set/class/${payload.courseId}/${payload.classIndex}`,
+            {
+              classDate: payload.classDate,
+              classHour: payload.classHour,
+              classParticipants: payload.classParticipants,
+              classNotes: payload.classNotes
+            },
+            { headers: { "x-auth-token": localStorage.getItem("token") } }
+          )
+          .then(() => {
+            resolve("Ok");
+            commit("EDIT_COURSE_CLASSES", {
+              classIndex: payload.classIndex,
+              classDate: payload.classDate,
+              classHour: payload.classHour,
+              classParticipants: payload.classParticipants,
+              classNotes: payload.classNotes
+            });
+          })
+          .catch(e => {
+            if (e.response.status == 401) {
+              reject(FA.STR_infoNotEntered);
+            }
+            console.log(e);
+          });
+      });
     }
   },
-  getters: {}
+  getters: {
+    getCourseInfo: state => {
+      return state.info;
+    },
+    getCourseClasses: state => {
+      return state.classes;
+    }
+  }
 };
 
 export default CourseModule;

@@ -21,6 +21,9 @@ div.mainDiv
             |#{STR_phoneNumber}: {{phoneNumber}}
             br/
             |#{STR_email}: {{email}}
+        v-btn(to="/set/info" color="primary" v-if="userIsLoaded" large fab)
+          v-icon.icon
+            |mdi-circle-edit-outline
     v-card.flex-column.text-start(class="d-flex pa-10 ma-10" v-if="loadedIsStudent")        
         h3.pageSubTitle
             |#{STR_studentTitle}
@@ -32,6 +35,9 @@ div.mainDiv
             |#{STR_city}: {{ studentInfo.city }}
             br/
             |#{STR_school}: {{ studentInfo.school }}
+        v-btn(to="/edit/info-student" color="primary" v-if="isStudent && userIsLoaded" large fab)
+          v-icon.icon
+            |mdi-circle-edit-outline
     v-card.inputHolder.flex-column.text-start(class="d-flex pa-10 ma-10" v-if="loadedIsTeacher")
         v-btn(color="red" dark :disabled="isFavorite ^ isTeacher" large @click="onAddTeacherFavorite")=STR_addTeacherFavorite
         br/
@@ -51,6 +57,9 @@ div.mainDiv
         v-card(v-for="(degree, index) in teacherInfo.degrees" style='white-space:pre;' :key="(index * 10) + 2")
           v-card-title
             |{{ degree }}
+        v-btn(to="/edit/info-teacher" color="primary" v-if="isTeacher && userIsLoaded" large fab)
+          v-icon.icon
+            |mdi-circle-edit-outline
 
 
 </template>
@@ -93,9 +102,11 @@ export default {
       return this.$store.getters.getLoadedUser.loadedUserInfo;
     },
     dateOfBirth: function() {
-      let dOB = this.info.dateOfBirth;      
-      dOB = _.replace(dOB, /-/g, "/");      
-      return moment(dOB, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
+      let dOB = this.info.dateOfBirth;
+      dOB = _.replace(dOB, /-/g, "/");
+      return moment(dOB, "YYYY/MM/DD")
+        .locale("fa")
+        .format("YYYY/MM/DD");
     },
     studentInfo: function() {
       return this.$store.getters.getLoadedUser.loadedUserStudentInfo;
