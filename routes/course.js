@@ -147,24 +147,26 @@ router.put("/set/class/:courseId/:classIndex", auth, (req, res) => {
     });
 });
 
-router.put("/remove/class/:courseId/:classIndex", auth, (req, res) => {
+router.put("/remove/class/:courseId/:classIndex", (req, res) => {
   const classIndex = req.params.classIndex;
   const courseId = req.params.courseId;
-
-  CourseSchema.findOneAndUpdate(
-    { _id: courseId },
-    {
-      $pop: {
-        classes: classes[classIndex]
-      }
-    },
-    { new: true }
-  )
-    .then(courseDoc => res.status(200).json({ courseDoc }))
-    .catch(e => {
-      res.status(500).json({ error: e.message });
-      console.log(e);
-    });
+  console.log(classIndex);
+  CourseSchema.findOne({ _id: courseId }).then(courseDoc => {
+    CourseSchema.findOneAndUpdate(
+      { _id: courseId },
+      {
+        $pull: {
+          classes: courseDoc.classes[classIndex]
+        }
+      },
+      { new: true }
+    )
+      .then(courseDoc => res.status(200).json({ courseDoc }))
+      .catch(e => {
+        res.status(500).json({ error: e.message });
+        console.log(e);
+      });
+  });
 });
 
 router.get("/all/:limit", (req, res) => {

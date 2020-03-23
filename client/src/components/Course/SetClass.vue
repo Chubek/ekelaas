@@ -1,72 +1,74 @@
 <template lang="pug">
 include ../../assets/locale/FA.pug
-div(v-if="isReady")
-    h2.pageTitle
-        v-icon.icon
-          |mdi-chair-class
-        |#{STR_courseClassHeader}    
-    v-card.inputHolder.d-flex.justify-center.text-end(class="d-sm-flex pa-10 ma-10")
-        v-card(elevation="11").counter
-        v-btn(color="red" dark icon @click="onAddCounter")
-            v-icon.icon
-                |mdi-plus
-        p="{{counter}}"
-        v-btn(color="red" dark icon @click="onSubtractCounter")
-            v-icon.icon
-                |mdi-minus
-        v-simple-table(dense)        
-                tbody
-                tr
-                    th=STR_session
-                    th=STR_classDate
-                    th=STR_classHour
-                    th=STR_classParticipants
-                    th=STR_classNotes
-                    tr(v-for="(n, index) in numbersList")
-                        td
-                            p="{{index + 1}}"
-                        td
-                          v-col(cols="14" sm="14")
-                            v-menu(ref="menuDateRef" v-model="menuDate[index]" :close-on-content-click="false" :return-value.sync="dates[index]" transition="scale-transition offset-y"  max-width="290px" min-width="290px")
-                              template(v-slot:activator="{ on }")
-                                v-text-field(v-model="jalaliDates[index]", label=STR_classDate append-icon="mdi-calendar" readonly v-on="on")
-                              v-date-picker(v-model="dates[index]" :min="minDate" scrollable no-title locale="fa" first-day-of-week="6" class="datePicker")
-                                v-spacer/
-                                v-btn(color="primary" @click="menu[index] = false")=STR_cancel
-                                v-btn(color="primary" @click="$refs.menuDateRef[index].save(dates[index]); convertToJalali(index)")=STR_ok
-                        td
-                          v-col(cols="14" sm="14")
-                            v-menu(ref="menuTimeRef" v-model="menuTime[index]" :close-on-content-click="false" :return-value.sync="times[index]" transition="scale-transition offset-y"  max-width="290px" min-width="290px")
-                              template(v-slot:activator="{ on }")
-                                v-text-field(v-model="times[index]", label=STR_classTime append-icon="mdi-clock-outline" readonly v-on="on")
-                              v-time-picker(v-model="times[index]" format="24hr" class="timePicker")
-                                v-spacer/
-                                v-btn(color="primary" @click="menu[index] = false")=STR_cancel
-                                v-btn(color="primary" @click="$refs.menuTimeRef[index].save(times[index])")=STR_ok
+div
+  v-progress-circular(color="blue" :size="100" indeterminate class="loader" v-if="!isReady")
+  div(v-if="isReady")
+      h2.pageTitle
+          v-icon.icon
+            |mdi-chair-school
+          |#{STR_courseClassHeader}    
+      v-card.inputHolder.d-flex.justify-center.text-end(class="d-sm-flex pa-10 ma-10")
+          v-card(elevation="11").counter
+          v-btn(color="red" dark icon @click="onAddCounter")
+              v-icon.icon
+                  |mdi-plus
+          p="{{counter}}"
+          v-btn(color="red" dark icon @click="onSubtractCounter")
+               v-icon.icon
+                  |mdi-minus
+          v-simple-table(dense)        
+                  tbody
+                  tr
+                      th=STR_session
+                      th=STR_classDate
+                      th=STR_classHour
+                      th=STR_classParticipants
+                      th=STR_classNotes
+                      tr(v-for="(n, index) in numbersList")
+                          td
+                             p="{{index + 1}}"
+                          td
+                            v-col(cols="14" sm="14")
+                              v-menu(ref="menuDateRef" v-model="menuDate[index]" :close-on-content-click="false" :return-value.sync="dates[index]" transition="scale-transition offset-y"  max-width="290px" min-width="290px")
+                                template(v-slot:activator="{ on }")
+                                  v-text-field(v-model="jalaliDates[index]", label=STR_classDate append-icon="mdi-calendar" readonly v-on="on")
+                                v-date-picker(v-model="dates[index]" :min="minDate" scrollable no-title locale="fa" first-day-of-week="6" class="datePicker")
+                                  v-spacer/
+                                  v-btn(color="primary" @click="menu[index] = false")=STR_cancel
+                                  v-btn(color="primary" @click="$refs.menuDateRef[index].save(dates[index]); convertToJalali(index)")=STR_ok
+                          td
+                            v-col(cols="14" sm="14")
+                              v-menu(ref="menuTimeRef" v-model="menuTime[index]" :close-on-content-click="false" :return-value.sync="times[index]" transition="scale-transition offset-y"  max-width="290px" min-width="290px")
+                                template(v-slot:activator="{ on }")
+                                  v-text-field(v-model="times[index]", label=STR_classTime append-icon="mdi-clock-outline" readonly v-on="on")
+                                v-time-picker(v-model="times[index]" format="24hr" class="timePicker")
+                                  v-spacer/
+                                  v-btn(color="primary" @click="menu[index] = false")=STR_cancel
+                                  v-btn(color="primary" @click="$refs.menuTimeRef[index].save(times[index])")=STR_ok
                             
-                        td
-                            v-autocomplete(v-model="participants[index]" append-icon="mdi-face-outline" label=STR_students multiple small-chips chips dense :items="autoCompleteUsers")
-                        td
-                            v-textarea(v-model="notes[index]"   label=STR_notes append-icon="mdi-note-multiple-outline")
-                        td
-                            v-btn(color="red" dark large v-if="!isSubmitted[index]" @click="onAddClass(index)")=STR_sendInfo
-                              v-icon(:class="showIcon[index]")
-                                |mdi-check-all
-                              v-progress-circular(color="white" indeterminate :class="showCircle[index]")
+                          td
+                              v-autocomplete(v-model="participants[index]" append-icon="mdi-face-outline" label=STR_students multiple small-chips chips dense :items="autoCompleteUsers")
+                          td
+                              v-textarea(v-model="notes[index]"   label=STR_notes append-icon="mdi-note-multiple-outline")
+                          td
+                              v-btn(color="red" dark large v-if="!isSubmitted[index]" @click="onAddClass(index)")=STR_sendInfo
+                                v-icon(:class="showIcon[index]")
+                                  |mdi-check-all
+                                v-progress-circular(color="white" indeterminate :class="showCircle[index]")
 
-                            v-btn(color="lime" large v-if="isSubmitted[index]" dark @click="onEditInfo(index)")=STR_editInfo
-                              v-icon(:class="showIcon[index]")
-                                |mdi-check-all
-                              v-progress-circular(color="white" indeterminate :class="showCircle[index]")
-                            v-btn(color="red" dark v-if="!isSubmitted[index]" icon @click="onRemoveSession(index)")
-                                v-icon.icon
-                                    |mdi-delete
-                            v-btn(color="lime" dark v-if="isSubmitted[index]" icon @click="onPopSession(index)")
-                                v-icon.icon
-                                    |mdi-delete
+                              v-btn(color="lime" large v-if="isSubmitted[index]" dark @click="onEditInfo(index)")=STR_editInfo
+                                v-icon(:class="showIcon[index]")
+                                  |mdi-check-all
+                                v-progress-circular(color="white" indeterminate :class="showCircle[index]")
+                              v-btn(color="red" dark v-if="!isSubmitted[index]" icon @click="onRemoveSession(index)")
+                                  v-icon.icon
+                                      |mdi-delete
+                              v-btn(color="lime" dark v-if="isSubmitted[index]" icon @click="onPopSession(index)")
+                                  v-icon.icon
+                                      |mdi-delete
 
-                        v-snackbar(v-model="snackBar")
-                          |{{snackBarText}} #[v-btn(color="pink" @click="snackBar = false")=STR_ok]
+                          v-snackbar(v-model="snackBar")
+                            |{{snackBarText}} #[v-btn(color="pink" @click="snackBar = false")=STR_ok]
 
                         
             
@@ -106,6 +108,9 @@ export default Vue.extend({
       .then(res => {
         console.log(res);
         this.classInfo = res.data.courseDoc.classes;
+        if (this.classInfo.length == 0) {
+          this.isReady = true;
+        }
       });
     for (let i = 0; i < this.counter; i++) {
       this.jalaliDates.push(null);
@@ -132,26 +137,20 @@ export default Vue.extend({
         this.showIcon.push("showClass");
         this.showCircle.push("hideClass");
         this.isSubmitted.push(false);
-      } else if (oldCounter > newCounter) {
-        this.dates.pop();
-        this.menuDate.pop();
-        this.menuTime.pop();
-        this.jalaliDates.pop();
-        this.showIcon.pop();
-        this.showCircle.pop();
-        this.isSubmitted.pop();
       }
     },
-    classInfo: function(newReady) {
-      if (newReady) {
+    classInfo: function(newInfo) {
+      if (newInfo.length > 0) {
         this.classInfo.forEach((classs, index) => {
           console.log("array", this.classInfo[index]);
           console.log(classs);
           console.log("index", index);
-          this.dates[index] = classs.classDate;
+          this.dates[index] = classs.classDate.substr(0, 10);
+          this.convertToJalali(index);
           this.times[index] = classs.classHour;
-          this.participants.push(classs.participants);
-          this.notes.push(classs.notes);
+          this.participants.push(classs.classParticipants);
+          this.notes.push(classs.classNotes);
+          this.isSubmitted[index] = true;
         });
         this.isReady = true;
       }
@@ -175,6 +174,7 @@ export default Vue.extend({
     },
 
     onRemoveSession: function(index) {
+      console.log("removesession", "onRemoveSession");
       this.numbersList.splice(index, 1);
       if (this.counter > 0) {
         this.counter -= 1;
@@ -197,7 +197,7 @@ export default Vue.extend({
         .then(() => {
           this.snackBar = true;
           this.isSubmitted[index] = true;
-          this.snackBarText = `جلسه‌ی ${index} ذخیره گشت.`;
+          this.snackBarText = `جلسه‌ی ${index + 1} ذخیره گشت.`;
           this.showIcon[index] = "showClass";
           this.showCircle[index] = "hideClass";
           this.numbersList.splice(index, 1);
@@ -205,6 +205,7 @@ export default Vue.extend({
             this.counter -= 1;
           }
           this.isSubmitted[index] = true;
+          console.log(this.isSubmitted[index]);
         })
         .catch(e => {
           this.showIcon[index] = "showClass";
@@ -239,7 +240,7 @@ export default Vue.extend({
         })
         .then(() => {
           this.snackBar = true;
-          this.snackBarText = `جلسه‌ی ${index} ذخیره گشت.`;
+          this.snackBarText = `جلسه‌ی ${index + 1} ذخیره گشت.`;
           this.showIcon[index] = "showClass";
           this.showCircle[index] = "hideClass";
         })
@@ -255,9 +256,18 @@ export default Vue.extend({
           courseId: this.$route.params.courseId
         })
         .then(res => {
+          this.dates[index] = new Date().toISOString().substr(0, 10);
+          this.times[index] = "00:00";
+          this.notes[index] = "";
+          this.participants[index] = [];
+          this.menuDate[index] = false;
+          this.menuTime[index] = false;
+          this.convertToJalali(index);
+          this.showIcon[index] = "showClass";
+          this.showCircle[index] = "hideClass";
+          this.isSubmitted[index] = false;
           this.snackBar = true;
           this.snackBarText = res;
-          this.onRemoveSession(index);
         })
         .catch(e => {
           this.snackBar = true;
@@ -287,11 +297,23 @@ body, .pageTitle, .inputHolder, .datePicker, .timePicker
 
 .pageTitle
   display: flex
+  margin-right: 1rem
+
+.icon
+  margin-left: 0.5rem
 
 .showClass
   display: inline
 
 .hideClass
   display: none
+
+.loader
+  position: absolute
+  top: 50%
+  left: 50%
+  margin-right: -50%
+  transform: translate(-50%, -50%)
+
 
 </style>

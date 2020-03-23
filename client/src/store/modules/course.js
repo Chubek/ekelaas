@@ -57,7 +57,7 @@ const CourseModule = {
     },
 
     REMOVE_COURSE_CLASSES(state, payload) {
-      this.classes.splice(payload, 1);
+      state.classes.splice(payload, 1);
     }
   },
   actions: {
@@ -237,7 +237,12 @@ const CourseModule = {
     removeCourseClass({ commit }, payload) {
       return new Promise((resolve, reject) => {
         axios
-          .put(`/remove/class/${payload.courseId}/${payload.classIndex}`)
+          .put(
+            `/course/remove/class/${payload.courseId}/${payload.classIndex}`,
+            {
+              headers: { "x-auth-token": localStorage.getItem("token") }
+            }
+          )
           .then(res => {
             console.log(res);
             resolve(FA.STR_classRemoved);
