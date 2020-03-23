@@ -54,6 +54,10 @@ const CourseModule = {
       state.classes[payload.classIndex].classParticipants =
         payload.classParticipants;
       state.classes[payload.classIndex].classNotes = payload.classNotes;
+    },
+
+    REMOVE_COURSE_CLASSES(state, payload) {
+      this.classes.splice(payload, 1);
     }
   },
   actions: {
@@ -112,16 +116,22 @@ const CourseModule = {
       });
     },
     loadCourse({ dispatch, commit }, payload) {
-      axios.get(`/course/single/${payload}`).then(res => {
-        commit("SET_COURSE_ID", res.data.courseDoc._id);
-        dispatch("setCourseTeacher", res.data.courseDoc.teacherId);
-        if (res.data.courseDoc.students.length > 0) {
-          dispatch("setCourseStudents", res.data.courseDoc.students);
-        }
-        commit("SET_COURSE_INFO", res.data.courseDoc.info);
-        if (res.data.courseDoc.classes.length > 0) {
-          commit("SET_COURSE_CLASSES", res.data.courseDoc.classes);
-        }
+      return new Promise((resolve, reject) => {
+        axios
+          .get(`/course/single/${payload}`)
+          .then(res => {
+            resolve(res);
+            commit("SET_COURSE_ID", res.data.courseDoc._id);
+            dispatch("setCourseTeacher", res.data.courseDoc.teacherId);
+            if (res.data.courseDoc.students.length > 0) {
+              dispatch("setCourseStudents", res.data.courseDoc.students);
+            }
+            commit("SET_COURSE_INFO", res.data.courseDoc.info);
+            if (res.data.courseDoc.classes.length > 0) {
+              commit("SET_COURSE_CLASSES", res.data.courseDoc.classes);
+            }
+          })
+          .catch(e => reject(e));
       });
     },
 
@@ -160,6 +170,7 @@ const CourseModule = {
     },
 
     pushCourseClasses({ commit }, payload) {
+      console.log(payload.classDate);
       return new Promise((resolve, reject) => {
         axios
           .put(
@@ -172,7 +183,8 @@ const CourseModule = {
             },
             { headers: { "x-auth-token": localStorage.getItem("token") } }
           )
-          .then(() => {
+          .then(res => {
+            console.log("courseRes", res);
             resolve("Ok");
             commit("PUSH_COURSE_CLASSES", {
               classDate: payload.classDate,
@@ -182,6 +194,9 @@ const CourseModule = {
             });
           })
           .catch(e => {
+            if (e.response.status == 401) {
+              reject(FA.STR_infoNotEntered);
+            }
             reject(e);
             console.log(e);
           });
@@ -200,7 +215,8 @@ const CourseModule = {
             },
             { headers: { "x-auth-token": localStorage.getItem("token") } }
           )
-          .then(() => {
+          .then(res => {
+            console.log(res);
             resolve("Ok");
             commit("EDIT_COURSE_CLASSES", {
               classIndex: payload.classIndex,
@@ -214,6 +230,21 @@ const CourseModule = {
             if (e.response.status == 401) {
               reject(FA.STR_infoNotEntered);
             }
+            console.log(e);
+          });
+      });
+    },
+    removeCourseClass({ commit }, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .put(`/remove/class/${payload.courseId}/${payload.classIndex}`)
+          .then(res => {
+            console.log(res);
+            resolve(FA.STR_classRemoved);
+            commit("REMOVE_COURSE_CLASSES", payload.classIndex);
+          })
+          .catch(e => {
+            reject(e);
             console.log(e);
           });
       });

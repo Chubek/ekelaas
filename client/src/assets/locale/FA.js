@@ -67,7 +67,7 @@ const strings = {
   STR_passwordsDontMatch: "رمزهای عبور یکی نیستند.",
   STR_invalidMobile:
     "شماره موبایل باید ایرانسل، رایتل، تالیا یا همراه اول باشد.",
-  
+
   STR_invalidDisplayName: "نام کاربری باید لاتین باشد.",
 
   STR_credit: "سابقه",
@@ -81,7 +81,9 @@ const strings = {
   STR_city: "شهر",
   STR_school: "مدرسه",
 
-  STR_invalidPrice: "قیمت باید فقط عدد باشد."
+  STR_invalidPrice: "قیمت باید فقط عدد باشد.",
+
+  STR_classRemoved: "کلاس پاک شد."
 };
 
 export default strings;

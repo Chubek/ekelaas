@@ -10,10 +10,10 @@ div
     v-card.inputHolder.d-flex.justify-center.text-end(class="d-flex pa-10 ma-10")
         v-alert(v-model="alert" border="right" :color="alertColor" dark dismissible)="{{alertText}}"
         v-col(cols="12" sm="6" md="3")
-            v-select(v-model="grade" label=STR_grade :items="gradeItems" :placeholder="studentInfo.grade" outlined)
-            v-select(v-model="province" label=STR_province :items="provinceItems" :placeholder="studentInfo.province" outlined)
-            v-text-field(v-model="city" label=STR_city :placeholder="studentInfo.city" outlined)
-            v-text-field(v-model="school" label=STR_school :placeholder="studentInfo.school" outlined)
+            v-select(v-model="grade" label=STR_grade append-icon="mdi-id-card" :items="gradeItems" :placeholder="studentInfo.grade" outlined)
+            v-select(v-model="province" label=STR_province :items="provinceItems" append-icon="mdi-map-marker" :placeholder="studentInfo.province" outlined)
+            v-text-field(v-model="city" label=STR_city append-icon="mdi-map-marker" :placeholder="studentInfo.city" outlined)
+            v-text-field(v-model="school" label=STR_school append-icon="mdi-bus-school" :placeholder="studentInfo.school" outlined)
             v-btn(color="primary" large dark @click="onSetStudent" :disabled="disabledButton")=STR_sendInfo
               v-icon(:class="showIcon")
                 |mdi-check-all
@@ -39,7 +39,7 @@ export default {
     alert: false,
     alertColor: null,
     alertText: null,
-    disabledButton: true, 
+    disabledButton: true,
     showIcon: "showClass",
     showCircle: "hideClass"
   }),
@@ -97,4 +97,11 @@ body, .pageTitle, .inputHolder
 
 .hideClass
   display: none
+
+.pageTitle
+  display: flex
+  margin-right: 1rem
+
+.icon
+  margin-left: 0.5rem
 </style>

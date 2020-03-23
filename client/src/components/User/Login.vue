@@ -3,6 +3,8 @@ include ../../assets/locale/FA.pug
 
 div
     h2.pageTitle
+        v-icon.icon
+          |mdi-account-key
         |#{STR_loginHeader}
     v-card.inputHolder.d-flex.justify-center(class="d-flex pa-10 ma-10")
         v-alert(v-model="alert" border="right" :color="alertColor" dark dismissible)="{{alertText}}"
@@ -55,4 +57,11 @@ body, .pageTitle, .inputHolder
 
 .inputHolder
   font-weight: 1000
+
+.pageTitle
+  display: flex
+  margin-right: 1rem
+
+.icon
+  margin-left: 0.5rem
 </style>

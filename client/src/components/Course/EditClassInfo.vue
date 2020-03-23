@@ -49,7 +49,7 @@ div
                         td
                             v-textarea(v-model="notes[index]"   label=STR_notes append-icon="mdi-note-multiple-outline")
                         td
-                            v-btn(color="red" dark large @click="onAddClass(index)")=STR_editInfo
+                            v-btn(color="red" dark large @click="onEditInfo(index)")=STR_editInfo
                               v-icon(:class="showIcon[index]")
                                 |mdi-check-all
                               v-progress-circular(color="white" indeterminate :class="showCircle[index]")
@@ -94,8 +94,8 @@ export default Vue.extend({
       this.numbersList.push(i);
       this.menuDate.push(false);
       this.menuTime.push(false);
-      this.showIcon.append(true);
-      this.showCircle.append(false);
+      this.showIcon.push("showClass");
+      this.showCircle.push("hideClass");
     }
     for (let i = 0; i < this.counter; i++) {
       this.convertToJalali(i);
@@ -114,8 +114,8 @@ export default Vue.extend({
         this.times.push("00:00");
         this.jalaliDates.push(null);
         this.convertToJalali(newCounter - 1);
-        this.showIcon.append(true);
-        this.showCircle.append(false);
+        this.showIcon.push("showClass");
+        this.showCircle.push("hideClass");
       } else if (oldCounter > newCounter) {
         this.dates.pop();
         this.menuDate.pop();
@@ -150,7 +150,7 @@ export default Vue.extend({
       }
     },
 
-    onAddClass: function(index) {
+    onEditInfo: function(index) {
       this.showIcon[index] = "hideClass";
       this.showCircle[index] = "showClass";
       this.$store
@@ -201,11 +201,14 @@ export default Vue.extend({
 @include font('Yekan', '../../assets/fonts/Yekan')
 
 body, .pageTitle, .inputHolder, .datePicker, .timePicker
-    font-family: 'Yekan', Tahoma, sans-serif
+  font-family: 'Yekan', Tahoma, sans-serif
 
 .inputHolder
-    font-weight: 1000
+  font-weight: 1000
 
 .counter
-    display: flex
+  display: flex
+
+.pageTitle
+  display: flex
 </style>

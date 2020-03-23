@@ -11,7 +11,7 @@ div
         v-col(cols="12" sm="6" md="3")
             ul.list
                 li(v-for="(n, index) in numbersCredits" class="creditsLi")
-                    v-text-field(v-model="credits[index]" label=STR_credits append-icon="mdi-show-print" :placeholder="teacherInfo.credits[index]" outlined)
+                    v-text-field(v-model="credits[index]" label=STR_credits append-icon="mdi-content-copy" :placeholder="teacherInfo.credits[index]" outlined)
                     v-btn(color="black" dark icon @click="onDeleteCredit(index)")
                         v-icon.icon-minus
                             |mdi-minus
@@ -148,4 +148,9 @@ export default {
 .hideClass
   display: none
 
+.pageTitle
+  display: flex
+  margin-right: 1rem
+.icon
+  margin-left: 0.5rem
 </style>

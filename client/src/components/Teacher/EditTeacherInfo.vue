@@ -4,7 +4,7 @@ div
     h2.pageTitle
         v-icon.icon
           |mdi-feather
-        |#{STR_teacherHeader}    
+        |#{STR_editTeacherHeader}    
     v-card.inputHolder.d-flex.justify-center.text-ed(class="d-flex pa-10 ma-10")
         v-alert(v-model="alert" border="right" :color="alertColor" dark dismissible)="{{alertText}}"
         v-col(cols="12" sm="6" md="3")
@@ -51,6 +51,10 @@ export default {
   created: function() {
     this.numbersCredits = this.computeNumbersCredits();
     this.numbersDegrees = this.computeNumbersDegrees();
+  },
+  mounted: function() {
+    this.credits = this.teacherInfo.credits;
+    this.degrees = this.teacherInfo.degrees;
   },
   computed: {
     userId: function() {
@@ -161,4 +165,11 @@ export default {
 
 .hideClass
   display: none
+
+.pageTitle
+  display: flex
+  margin-right: 1rem
+
+.icon
+  margin-left: 0.5rem
 </style>

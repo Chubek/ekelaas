@@ -8,9 +8,9 @@ div
     v-card.inputHolder.d-flex.justify-center.text-end(class="d-flex pa-10 ma-10")
         v-alert(v-model="alert" border="right" ::color="alertColor" dark dismissible)="{{alertText}}"
         v-col(cols="12" sm="6" md="3")
-            v-text-field(v-model="subject" label=STR_subject placeholder=STR_subject outlined)
-            v-text-field(v-model="description" label=STR_description placeholder=STR_description outlined)
-            v-text-field(v-model="price" :rules="priceRules" label=STR_price placeholder=STR_price outlined)
+            v-text-field(v-model="subject" append-icon="mdi-abjad-arabic" label=STR_subject placeholder=STR_subject outlined)
+            v-text-field(v-model="description" append-icon="mdi-card-text" label=STR_description placeholder=STR_description outlined)
+            v-text-field(v-model="price" append-icon="mdi-currency-rial" :rules="priceRules" label=STR_price placeholder=STR_price outlined)
             v-btn(color="primary" large dark @click="onSubmitInfo")=STR_sendInfo
               v-icon(:class="showIcon")
                 |mdi-check-all
@@ -51,7 +51,7 @@ export default {
           this.alert = true;
           this.alertColor = "blue";
           this.alertText = res.message;
-          this.$router.push(`{ path: /set/class/${res.id}}`);
+          this.$router.push({ path: `/set/class/${res.id}` });
         })
         .catch(e => {
           this.alert = true;
@@ -77,5 +77,12 @@ body, .pageTitle, .inputHolder
 
 .hideClass
   display: none
+
+.pageTitle
+  display: flex
+  margin-right: 1rem
+
+.icon
+  margin-left: 0.5rem
 
 </style>

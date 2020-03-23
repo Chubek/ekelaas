@@ -2,7 +2,8 @@
 include ../../assets/locale/FA.pug
 div.mainDiv
     h2.pageTitle
-
+        v-icon.icon
+          |mdi-card-account-details-outline
         |#{STR_profileHeader}
     v-card.flex-column.text-start(class="d-flex pa-10 ma-10")
         v-btn(color="blue" dark x-large @click="onMakeStudent" class="flex-nowrap" :disabled="!loadedIsNone" v-if="userIsLoaded && loadedIsNone")=STR_makeStudent
@@ -10,7 +11,7 @@ div.mainDiv
         v-btn(color="blue" dark x-large @click="onMakeTeacher" class="flex-nowrap" :disabled="!loadedIsNone" v-if="isAdmin && loadedIsNone")=STR_makeTeacher
         br/
         h3
-            |#{STR_infoTitle}
+            |#[v-icon="mdi-account"] #{STR_infoTitle} 
         v-card-title
             |#{STR_firstName}: {{ info.firstName }}
             br/
@@ -26,7 +27,7 @@ div.mainDiv
             |mdi-circle-edit-outline
     v-card.flex-column.text-start(class="d-flex pa-10 ma-10" v-if="loadedIsStudent")        
         h3.pageSubTitle
-            |#{STR_studentTitle}
+            |#[v-icon="mdi-bus-school"] #{STR_studentTitle}
         v-card-title
             |#{STR_grade}: {{ studentInfo.grade }}
             br/
@@ -44,7 +45,7 @@ div.mainDiv
         v-btn(color="red" dark :disabled="isEngaged ^ isTeacher" large @click="onAddTeacherEngaged")=STR_addTeacherEngaged
         br/
         h3.pageSubTitle
-            |#{STR_teacherTitle}
+            |#[v-icon="mdi-feather"] #{STR_teacherTitle}
         br/
         h5 
           |#{STR_credits}: #[br/]
@@ -210,4 +211,11 @@ export default {
 
 body, .pageTitle, .mainDiv
   font-family: 'Yekan', Tahoma, sans-serif
+
+.pageTitle
+  display: flex
+  margin-right: 1rem
+
+.icon
+  margin-left: 0.5rem
 </style>

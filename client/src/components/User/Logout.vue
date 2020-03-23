@@ -23,4 +23,7 @@ export default {
 body, .mainDiv
   font-family: 'Yekan', Tahoma, sans-serif
 
+.pageTitle
+  display: flex
+
 </style>

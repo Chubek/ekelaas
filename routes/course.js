@@ -87,12 +87,17 @@ router.put("/add/student/:courseid", auth, (req, res) => {
 });
 
 router.put("/add/class/:courseid", auth, (req, res) => {
-  const userId = req.user.id;
   const courseId = req.params.courseid;
   const { classDate, classHour, classParticipants, classNotes } = req.body;
+  console.log(courseId);
+  if (!classDate || !classHour || !classParticipants || !classNotes) {
+    res.status(401).json({ message: "Data not entered." });
+    console.log("Data not entered.");
+    return false;
+  }
 
   CourseSchema.findOneAndUpdate(
-    { _id: courseId, teacherId: userId },
+    { _id: courseId },
     {
       $push: {
         classes: {
@@ -103,9 +108,11 @@ router.put("/add/class/:courseid", auth, (req, res) => {
         }
       }
     },
-    { upsert: true, new: true }
+    { new: true }
   )
-    .then(courseDoc => res.status(200).json({ courseDoc }))
+    .then(courseDoc =>
+      res.status(200).json({ message: "Class added.", courseDoc })
+    )
     .catch(e => {
       res.status(500).json({ error: e.message });
       console.log(e);
@@ -113,7 +120,6 @@ router.put("/add/class/:courseid", auth, (req, res) => {
 });
 
 router.put("/set/class/:courseId/:classIndex", auth, (req, res) => {
-  const userId = req.user.id;
   const classIndex = req.params.classIndex;
   const courseId = req.params.courseId;
   const { classDate, classHour, classParticipants, classNotes } = req.body;
@@ -123,7 +129,7 @@ router.put("/set/class/:courseId/:classIndex", auth, (req, res) => {
     return false;
   }
   CourseSchema.findOneAndUpdate(
-    { _id: courseId, teacherId: userId, classes: classes[classIndex] },
+    { _id: courseId, classes: classes[classIndex] },
     {
       $set: {
         "classes.$.classDate": classDate,
@@ -132,7 +138,27 @@ router.put("/set/class/:courseId/:classIndex", auth, (req, res) => {
         "classes.$.classNotes": classNotes
       }
     },
-    { upsert: true, new: true }
+    { new: true }
+  )
+    .then(courseDoc => res.status(200).json({ courseDoc }))
+    .catch(e => {
+      res.status(500).json({ error: e.message });
+      console.log(e);
+    });
+});
+
+router.put("/remove/class/:courseId/:classIndex", auth, (req, res) => {
+  const classIndex = req.params.classIndex;
+  const courseId = req.params.courseId;
+
+  CourseSchema.findOneAndUpdate(
+    { _id: courseId },
+    {
+      $pop: {
+        classes: classes[classIndex]
+      }
+    },
+    { new: true }
   )
     .then(courseDoc => res.status(200).json({ courseDoc }))
     .catch(e => {
@@ -154,7 +180,7 @@ router.get("/all/:limit", (req, res) => {
 
 router.get("/single/:courseid", (req, res) => {
   const courseId = req.params.courseid;
-
+  console.log("courseID", courseId);
   CourseSchema.findOne({ _id: courseId })
     .then(courseDoc => res.status(200).json({ courseDoc }))
     .catch(e => {
@@ -164,8 +190,13 @@ router.get("/single/:courseid", (req, res) => {
 });
 
 router.get("/multiple/get", (req, res) => {
-  const courseIds = req.query.courses;
+  let courseIds = req.query.courses;
   console.log("courses", courseIds);
+  if (courseIds.split(",").length > 0) {
+    courseIds = courseIds.split(",");
+  } else {
+    courseIds = [courseIds];
+  }
   CourseSchema.find({ _id: { $all: courseIds } })
     .then(courseDocs => res.status(200).json({ courseDocs }))
     .catch(e => {

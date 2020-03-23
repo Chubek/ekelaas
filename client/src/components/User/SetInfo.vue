@@ -43,6 +43,11 @@ export default {
     showIcon: "showClass",
     showCircle: "hideClass"
   }),
+  mounted: function() {
+    this.firstName = this.info.firstName;
+    this.lastName = this.info.lastName;
+    this.dateOfBirth = this.info.dateOfBirth;
+  },
   methods: {
     onSendInfo: function() {
       this.showIcon = "hideClass";
@@ -115,5 +120,11 @@ body, .pageTitle, .inputHolder
 .hideClass
   display: none
 
+.pageTitle
+  display: flex
+  margin-right: 1rem
+
+.icon
+  margin-left: 0.5rem
 
 </style>

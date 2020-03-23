@@ -74,20 +74,22 @@ const UserModule = {
       }
     },
 
-    SET_AUTO_COMPLETE_USERS(state, payload) {      
+    SET_AUTO_COMPLETE_USERS(state, payload) {
       payload.forEach(user => {
-        if (user.info.firstName || user.info.lastName) {
-          state.autoCompleteUsers.push(
-            user.displayName +
-              " " +
-              "(" +
-              user.info.firstName +
-              " " +
-              user.info.lastName +
-              ")"
-          );
-        } else {
-          state.autoCompleteUsers.push(user.displayName)
+        if (user.types.type === "Student") {
+          if (user.info.firstName || user.info.lastName) {
+            state.autoCompleteUsers.push(
+              user.displayName +
+                " " +
+                "(" +
+                user.info.firstName +
+                " " +
+                user.info.lastName +
+                ")"
+            );
+          } else {
+            state.autoCompleteUsers.push(user.displayName);
+          }
         }
       });
     }

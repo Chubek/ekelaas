@@ -43,7 +43,7 @@ export default {
     showIcon: "showClass",
     showCircle: "hideClass"
   }),
-  created: function() {
+  mounted: function() {
     this.grade = this.studentInfo.grade;
     this.province = this.studentInfo.province;
     this.city = this.studentInfo.city;
@@ -60,9 +60,9 @@ export default {
           city: this.city,
           school: this.school
         })
-        .then(res => { 
+        .then(res => {
           this.showIcon = "showClass";
-          this.showCircle = "hideClass";         
+          this.showCircle = "hideClass";
           this.alert = true;
           this.alertColor = "blue";
           this.alertText = res;
@@ -103,4 +103,11 @@ body, .pageTitle, .inputHolder
 
 .hideClass
   display: none
+
+.pageTitle
+  display: flex
+  margin-right: 1rem
+
+.icon
+  margin-right: 0.5rem
 </style>

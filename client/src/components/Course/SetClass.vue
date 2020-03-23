@@ -1,6 +1,6 @@
 <template lang="pug">
 include ../../assets/locale/FA.pug
-div
+div(v-if="isReady")
     h2.pageTitle
         v-icon.icon
           |mdi-chair-class
@@ -30,13 +30,13 @@ div
                             v-menu(ref="menuDateRef" v-model="menuDate[index]" :close-on-content-click="false" :return-value.sync="dates[index]" transition="scale-transition offset-y"  max-width="290px" min-width="290px")
                               template(v-slot:activator="{ on }")
                                 v-text-field(v-model="jalaliDates[index]", label=STR_classDate append-icon="mdi-calendar" readonly v-on="on")
-                              v-date-picker(v-model="dates[index]" scrollable no-title locale="fa" first-day-of-week="6" class="datePicker")
+                              v-date-picker(v-model="dates[index]" :min="minDate" scrollable no-title locale="fa" first-day-of-week="6" class="datePicker")
                                 v-spacer/
                                 v-btn(color="primary" @click="menu[index] = false")=STR_cancel
                                 v-btn(color="primary" @click="$refs.menuDateRef[index].save(dates[index]); convertToJalali(index)")=STR_ok
                         td
                           v-col(cols="14" sm="14")
-                            v-menu(ref="menuTimeRef" v-model="menuTime[index]" :close-on-content-click="false" :return-value.sync="dates[index]" transition="scale-transition offset-y"  max-width="290px" min-width="290px")
+                            v-menu(ref="menuTimeRef" v-model="menuTime[index]" :close-on-content-click="false" :return-value.sync="times[index]" transition="scale-transition offset-y"  max-width="290px" min-width="290px")
                               template(v-slot:activator="{ on }")
                                 v-text-field(v-model="times[index]", label=STR_classTime append-icon="mdi-clock-outline" readonly v-on="on")
                               v-time-picker(v-model="times[index]" format="24hr" class="timePicker")
@@ -49,16 +49,24 @@ div
                         td
                             v-textarea(v-model="notes[index]"   label=STR_notes append-icon="mdi-note-multiple-outline")
                         td
-                            v-btn(color="red" dark large @click="onAddClass(index)")=STR_sendInfo
+                            v-btn(color="red" dark large v-if="!isSubmitted[index]" @click="onAddClass(index)")=STR_sendInfo
                               v-icon(:class="showIcon[index]")
                                 |mdi-check-all
                               v-progress-circular(color="white" indeterminate :class="showCircle[index]")
-                            v-btn(color="red" dark icon @click="onRemoveSession(index)")
+
+                            v-btn(color="lime" large v-if="isSubmitted[index]" dark @click="onEditInfo(index)")=STR_editInfo
+                              v-icon(:class="showIcon[index]")
+                                |mdi-check-all
+                              v-progress-circular(color="white" indeterminate :class="showCircle[index]")
+                            v-btn(color="red" dark v-if="!isSubmitted[index]" icon @click="onRemoveSession(index)")
+                                v-icon.icon
+                                    |mdi-delete
+                            v-btn(color="lime" dark v-if="isSubmitted[index]" icon @click="onPopSession(index)")
                                 v-icon.icon
                                     |mdi-delete
 
                         v-snackbar(v-model="snackBar")
-                          |{{snackBarText}} [v-btn(color="pink" @click="snackBar = false")=STR_ok]
+                          |{{snackBarText}} #[v-btn(color="pink" @click="snackBar = false")=STR_ok]
 
                         
             
@@ -84,11 +92,21 @@ export default Vue.extend({
     menuTime: [],
     showIcon: [],
     showCircle: [],
+    isSubmitted: [],
     snackBarText: null,
-    snackBar: false
+    snackBar: false,
+    minDate: new Date().toISOString().substr(0, 10),
+    classInfo: null,
+    isReady: false
   }),
   created: function() {
     this.$store.dispatch("loadAutoCompleteUsers");
+    this.$store
+      .dispatch("loadCourse", this.$route.params.courseId)
+      .then(res => {
+        console.log(res);
+        this.classInfo = res.data.courseDoc.classes;
+      });
     for (let i = 0; i < this.counter; i++) {
       this.jalaliDates.push(null);
       this.dates.push(new Date().toISOString().substr(0, 10));
@@ -96,8 +114,9 @@ export default Vue.extend({
       this.numbersList.push(i);
       this.menuDate.push(false);
       this.menuTime.push(false);
-      this.showIcon.append(true);
-      this.showCircle.append(false);
+      this.showIcon.push("showClass");
+      this.showCircle.push("hideClass");
+      this.isSubmitted.push(false);
     }
     for (let i = 0; i < this.counter; i++) {
       this.convertToJalali(i);
@@ -110,8 +129,9 @@ export default Vue.extend({
         this.times.push("00:00");
         this.jalaliDates.push(null);
         this.convertToJalali(newCounter - 1);
-        this.showIcon.append(true);
-        this.showCircle.append(false);
+        this.showIcon.push("showClass");
+        this.showCircle.push("hideClass");
+        this.isSubmitted.push(false);
       } else if (oldCounter > newCounter) {
         this.dates.pop();
         this.menuDate.pop();
@@ -119,6 +139,21 @@ export default Vue.extend({
         this.jalaliDates.pop();
         this.showIcon.pop();
         this.showCircle.pop();
+        this.isSubmitted.pop();
+      }
+    },
+    classInfo: function(newReady) {
+      if (newReady) {
+        this.classInfo.forEach((classs, index) => {
+          console.log("array", this.classInfo[index]);
+          console.log(classs);
+          console.log("index", index);
+          this.dates[index] = classs.classDate;
+          this.times[index] = classs.classHour;
+          this.participants.push(classs.participants);
+          this.notes.push(classs.notes);
+        });
+        this.isReady = true;
       }
     }
   },
@@ -145,7 +180,9 @@ export default Vue.extend({
         this.counter -= 1;
       }
     },
-
+    setIsReady: function() {
+      this.isReady = true;
+    },
     onAddClass: function(index) {
       this.showIcon[index] = "hideClass";
       this.showCircle[index] = "showClass";
@@ -159,6 +196,7 @@ export default Vue.extend({
         })
         .then(() => {
           this.snackBar = true;
+          this.isSubmitted[index] = true;
           this.snackBarText = `جلسه‌ی ${index} ذخیره گشت.`;
           this.showIcon[index] = "showClass";
           this.showCircle[index] = "hideClass";
@@ -166,8 +204,11 @@ export default Vue.extend({
           if (this.counter > 0) {
             this.counter -= 1;
           }
+          this.isSubmitted[index] = true;
         })
         .catch(e => {
+          this.showIcon[index] = "showClass";
+          this.showCircle[index] = "hideClass";
           this.snackBar = true;
           this.snackBarText = e;
         });
@@ -183,6 +224,45 @@ export default Vue.extend({
       this.jalaliDates[index] = moment(date, "YYYY/MM/DD")
         .locale("fa")
         .format("YYYY/MM/DD");
+    },
+    onEditInfo: function(index) {
+      this.showIcon[index] = "hideClass";
+      this.showCircle[index] = "showClass";
+      this.$store
+        .dispatch("editCourseClasses", {
+          classIndex: index,
+          courseId: this.$route.params.courseId,
+          classDate: this.dates[index],
+          classHour: this.times[index],
+          classParticipants: this.participants[index],
+          classNotes: this.notes[index]
+        })
+        .then(() => {
+          this.snackBar = true;
+          this.snackBarText = `جلسه‌ی ${index} ذخیره گشت.`;
+          this.showIcon[index] = "showClass";
+          this.showCircle[index] = "hideClass";
+        })
+        .catch(e => {
+          this.snackBar = true;
+          this.snackBarText = e;
+        });
+    },
+    onPopSession: function(index) {
+      this.$store
+        .dispatch("removeCourseClass", {
+          classIndex: index,
+          courseId: this.$route.params.courseId
+        })
+        .then(res => {
+          this.snackBar = true;
+          this.snackBarText = res;
+          this.onRemoveSession(index);
+        })
+        .catch(e => {
+          this.snackBar = true;
+          this.snackBarText = e;
+        });
     }
   },
   computed: {
@@ -204,5 +284,14 @@ body, .pageTitle, .inputHolder, .datePicker, .timePicker
 
 .counter
   display: flex
+
+.pageTitle
+  display: flex
+
+.showClass
+  display: inline
+
+.hideClass
+  display: none
 
 </style>

@@ -6,15 +6,16 @@ div
           |mdi-clipboard-file-outline
         |#{STR_courseEditHeader}
     v-card.inputHolder.d-flex.justify-center.text-end(class="d-flex pa-10 ma-10")
-        v-alert(v-model="alert" border="right" ::color="alertColor" dark dismissible)="{{alertText}}"
+        v-alert(v-model="alert" border="right" :color="alertColor" dark dismissible)="{{alertText}}"
         v-col(cols="12" sm="6" md="3")
-            v-text-field(v-model="subject" label=STR_subject placeholder=STR_subject outlined)
-            v-text-field(v-model="description" label=STR_description placeholder=STR_description outlined)
-            v-text-field(v-model="price" :rules="priceRules" label=STR_price placeholder=STR_price outlined)
-            v-btn(color="primary" large dark @click="onSubmitInfo")=STR_sendInfo
+            v-text-field(v-model="subject" append-icon="mdi-abjad-arabic" label=STR_subject placeholder=STR_subject outlined)
+            v-text-field(v-model="description" append-icon="mdi-card-text"  label=STR_description placeholder=STR_description outlined)
+            v-text-field(v-model="price" append-icon="mdi-currency-rial" :rules="priceRules" label=STR_price placeholder=STR_price outlined)
+            v-btn(color="primary" large dark @click="onSubmitInfo")=STR_editInfo
               v-icon(:class="showIcon")
                 |mdi-check-all
               v-progress-circular(color="white" indeterminate :class="showCircle")
+           
 
 </template>
 <script>
@@ -37,15 +38,18 @@ export default {
     showIcon: "showClass",
     showCircle: "hideClass"
   }),
-  created: function() {
-    this.subject = this.courseInfo.subject;
-    this.description = this.courseInfo.description;
-    this.price = this.courseInfo.price;
-  },
   computed: {
     courseInfo: function() {
       return this.$store.getters.getCourseInfo;
     }
+  },
+  beforeCreate: function() {
+    this.$store.dispatch("loadCourse", this.$route.params.courseId);
+  },
+  mounted: function() {
+    this.subject = this.courseInfo.subject;
+    this.description = this.courseInfo.description;
+    this.price = this.courseInfo.price;
   },
   methods: {
     onSubmitInfo: function() {
@@ -78,14 +82,22 @@ export default {
 @include font('Yekan', '../../assets/fonts/Yekan')
 
 body, .pageTitle, .inputHolder
-    font-family: 'Yekan', Tahoma, sans-serif
+  font-family: 'Yekan', Tahoma, sans-serif
 
 .inputHolder
-    font-weight: 1000
+  font-weight: 1000
 
 .showClass
-    display: inline
+  display: inline
 
 .hideClass
-    display: none
+  display: none
+
+
+.pageTitle
+  display: flex
+  margin-right: 1rem
+
+.icon
+  margin-right: 0.5rem
 </style>
