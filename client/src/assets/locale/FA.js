@@ -27,6 +27,7 @@ const strings = {
   STR_emailExists: "ایمیل وجود دارد.",
   STR_phoneNumberExists: "شماره تلفن وجود دارد.",
   STR_infoNotEntered: "اطلاعات وارد نشده است.",
+  STR_loggedIn: "با موفقیت وارد شدید.",
 
   STR_provinces: [
     "تهران",

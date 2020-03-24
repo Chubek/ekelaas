@@ -10,7 +10,8 @@ const CourseSchema = new Schema({
     price: {
       type: String,
       default: "0 IRR"
-    }
+    },
+    school: String
   },
   connectURL: String,
   classes: [
@@ -20,7 +21,8 @@ const CourseSchema = new Schema({
       classParticipants: [String],
       classNotes: String
     }
-  ]
+  ],
+  schoolId: String
 });
 
 module.exports = mongoose.model("Course", CourseSchema);

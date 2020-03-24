@@ -23,7 +23,8 @@ const StudentSchema = new Schema({
       takenDate: Date,
       finalScore: mongoose.Types.Decimal128
     }
-  ]
+  ],
+  schoolId: String
 });
 
 module.exports = mongoose.model("Student", StudentSchema);

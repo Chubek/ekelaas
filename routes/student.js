@@ -5,9 +5,9 @@ const auth = require("../middleware/auth");
 
 router.post("/setup", auth, (req, res) => {
   const userId = req.user.id;
-  const { grade, province, city, school } = req.body;
+  const { grade, province, city, school, schoolId } = req.body;
 
-  if (!grade || !province || !city || !school) {
+  if (!grade || !province || !city || !school || !schoolId) {
     res.status(401).json({ message: "No data entered." });
     console.log("No data entered.");
     return false;
@@ -15,6 +15,7 @@ router.post("/setup", auth, (req, res) => {
 
   const Student = new StudentSchema({
     userId: userId,
+    schoolId: schoolId,
     "info.grade": grade,
     "info.province": province,
     "info.city": city,
@@ -27,7 +28,7 @@ router.post("/setup", auth, (req, res) => {
       {
         $set: {
           "types.type": "Student",
-          "types.studentId": studentDoc._id,          
+          "types.studentId": studentDoc._id
         }
       },
       { upsert: true }

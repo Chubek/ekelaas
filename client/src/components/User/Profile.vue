@@ -8,7 +8,7 @@ div.mainDiv
     v-card.flex-column.text-start(class="d-flex pa-10 ma-10")
         v-btn(color="blue" dark x-large @click="onMakeStudent" class="flex-nowrap" :disabled="!loadedIsNone" v-if="userIsLoaded && loadedIsNone")=STR_makeStudent
         br/
-        v-btn(color="blue" dark x-large @click="onMakeTeacher" class="flex-nowrap" :disabled="!loadedIsNone" v-if="isAdmin && loadedIsNone")=STR_makeTeacher
+        v-btn(color="blue" dark x-large @click="onMakeTeacher" class="flex-nowrap" :disabled="!loadedIsNone" v-if="isSchool && loadedIsNone")=STR_makeTeacher
         br/
         h3
             |#[v-icon="mdi-account"] #{STR_infoTitle} 
@@ -18,7 +18,7 @@ div.mainDiv
             |#{STR_lastName}: {{ info.lastName}}
             br/
             |#{STR_dateOfBirth}: {{ dateOfBirth }}
-        v-card-subtitle(v-if="isTeacher || isAdmin || userIsLoaded")
+        v-card-subtitle(v-if="isTeacher || isSchool || userIsLoaded")
             |#{STR_phoneNumber}: {{phoneNumber}}
             br/
             |#{STR_email}: {{email}}
@@ -69,10 +69,11 @@ import moment from "jalali-moment";
 import _ from "lodash";
 export default {
   name: "Profile",
-  data: () => ({
-    isAdmin: true
-  }),
+  data: () => ({}),
   computed: {
+    isSchool: function() {
+      return this.$store.getters.getSchoolIsLoggedIn;
+    },
     isTeacher: function() {
       return this.$store.getters.getUserType === "Teacher";
     },
