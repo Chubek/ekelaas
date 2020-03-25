@@ -2,6 +2,7 @@ const UserSchema = require("../models/User");
 const CourseSchema = require("../models/Course");
 const StudentSchema = require("../models/Student");
 const TeacherSchema = require("../models/Teacher");
+const SchoolSchema = require("../models/School");
 const router = require("express").Router();
 const auth = require("../middleware/auth");
 
@@ -50,7 +51,21 @@ router.post("/setup", auth, (req, res) => {
         },
         { upsert: true }
       )
-        .then(() => res.status(200).json({ courseDoc }))
+        .then(() => {
+          SchoolSchema.findOneAndUpdate(
+            { _id: schoolId },
+            {
+              $addToSet: {
+                coursesId: courseDoc._id
+              }
+            }
+          )
+            .then(() => res.status(200).json({ courseDoc }))
+            .catch(e => {
+              res.status(500).json({ error: e.message });
+              console.log(e);
+            });
+        })
         .catch(e => {
           res.status(500).json({ error: e.message });
           console.log(e);
@@ -59,7 +74,7 @@ router.post("/setup", auth, (req, res) => {
   });
 });
 
-router.put("/set/info/:courseid", auth, (req, res) => {  
+router.put("/set/info/:courseid", auth, (req, res) => {
   const courseId = req.params.courseid;
   const {
     subject,
@@ -84,7 +99,21 @@ router.put("/set/info/:courseid", auth, (req, res) => {
     },
     { upsert: true }
   )
-    .then(courseDoc => res.status(200).json({ courseDoc }))
+    .then(courseDoc => {
+      SchoolSchema.findOneAndUpdate(
+        { _id: schoolId },
+        {
+          $addToSet: {
+            coursesId: courseDoc._id
+          }
+        }
+      )
+        .then(() => res.status(200).json({ courseDoc }))
+        .catch(e => {
+          res.status(500).json({ error: e.message });
+          console.log(e);
+        });
+    })
     .catch(e => {
       res.status(500).json({ error: e.message });
       console.log(e);

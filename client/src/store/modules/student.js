@@ -61,7 +61,7 @@ const StudentModule = {
     }
   },
   actions: {
-    setUpStudent({ commit }, payload) {
+    setUpStudent({ dispatch, commit }, payload) {
       return new Promise((resolve, reject) => {
         axios
           .post(
@@ -80,6 +80,7 @@ const StudentModule = {
             commit("SET_STUDENT_ID", res.data.studentDoc._id);
             commit("SET_STUDENT_INFO", res.data.studentDoc.info);
             commit("SET_STUDENT_SCHOOL_ID", res.data.studentDoc.schoolId);
+            dispatch("loadSchool", res.data.studentDoc.schoolId);
           })
           .catch(e => {
             if (e.response.status == 401) {
@@ -89,7 +90,7 @@ const StudentModule = {
           });
       });
     },
-    editStudent({ commit, state }, payload) {
+    editStudent({ dispatch, commit, state }, payload) {
       return new Promise((resolve, reject) => {
         axios
           .put(
@@ -107,7 +108,8 @@ const StudentModule = {
             resolve("Ok");
             commit("SET_STUDENT_ID", res.data.studentDoc._id);
             commit("SET_STUDENT_INFO", res.data.studentDoc.info);
-            ommit("SET_STUDENT_SCHOOL_ID", res.data.studentDoc.schoolId);
+            commit("SET_STUDENT_SCHOOL_ID", res.data.studentDoc.schoolId);
+            dispatch("loadSchool", res.data.studentDoc.schoolId);
           })
           .catch(e => {
             reject(e);
@@ -137,6 +139,8 @@ const StudentModule = {
           if (res.data.studentDoc.engagedTeachersId.length > 0) {
             dispatch("setEngagedTeachers", res.data.studentDoc.engaged_courses);
           }
+          commit("SET_STUDENT_SCHOOL_ID", res.data.studentDoc.schoolId);
+          dispatch("loadSchool", res.data.studentDoc.schoolId);
         })
         .catch(e => console.log(e));
     },

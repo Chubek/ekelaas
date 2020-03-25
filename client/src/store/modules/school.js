@@ -46,13 +46,35 @@ const SchoolModule = {
       state.teachers = payload;
     },
     PUSH_SCHOOL_TEACHERS(state, payload) {
-      state.teachers.push(payload);
+      payload.data.teacherDocs.forEach((teacher, index) => {
+        state.teachers.push({
+          teacherId: teacher._id,
+          userId: payload.data.userDocs[index]._id,
+          firstName: payload.data.userDocs[index].info.firstName,
+          lastName: payload.data.userDocs[index].info.lastName
+        });
+      });
     },
     SET_SCHOOL_STUDENTS(state, payload) {
-      state.students = payload;
+      payload.data.studentDocs.forEach((student, index) => {
+        state.students.push({
+          studentId: student._id,
+          userId: payload.data.userDocs[index]._id,
+          firstName: payload.data.userDocs[index].info.firstName,
+          lastName: payload.data.userDocs[index].info.firstName,
+          grade: student.info.grade
+        });
+      });
     },
     PUSH_SCHOOL_COURES(state, payload) {
-      state.students.push(payload);
+      payload.data.courseDocs.forEach(course => {
+        state.courses.push({
+          courseId: course._id,
+          subject: course.info.subject,
+          description: course.info.description,
+          price: course.info.price
+        });
+      });
     }
   },
   actions: {
@@ -293,6 +315,15 @@ const SchoolModule = {
     },
     getSchoolInfo: state => {
       return state.info;
+    },
+    getSchoolTeachers: state => {
+      return state.teachers;
+    },
+    getSchoolStudents: state => {
+      return state.students;
+    },
+    getSchoolCourses: state => {
+      return state.courses;
     }
   }
 };

@@ -238,8 +238,19 @@ router.get("/all/students", schoolAuth, (req, res) => {
   const schoolId = req.school.id;
 
   StudentSchema.find({ schoolId: schoolId })
-    .then(schoolDocs => {
-      res.status(200).json({ schoolDocs });
+    .then(studentDocs => {
+      let studentIds = [];
+      studentDocs.forEach(studentDoc => {
+        studentIds.push(studentDoc._id);
+      });
+      UserSchema.find({ "types.studentId": { $all: studentIds } })
+        .then(userDocs => {
+          res.status(200).json({ userDocs, studentDocs });
+        })
+        .catch(e => {
+          res.status(200).json({ error: e.message });
+          console.log(e);
+        });
     })
     .catch(e => {
       res.status(500).json({ error: e.message });
@@ -265,7 +276,18 @@ router.get("/all/teachers", schoolAuth, (req, res) => {
 
   TeacherSchema.find({ schoolId: schoolId })
     .then(teacherDocs => {
-      res.status(200).json({ teacherDocs });
+      let teacherIds = [];
+      teacherDocs.forEach(teacherDoc => {
+        teacherIds.push(teacherDoc._id);
+      });
+      UserSchema.find({ "types.teacherId": { $all: teacherIds } })
+        .then(userDocs => {
+          res.status(200).json({ userDocs, teacherDocs });
+        })
+        .catch(e => {
+          res.status(200).json({ error: e.message });
+          console.log(e);
+        });
     })
     .catch(e => {
       res.status(500).json({ error: e.message });

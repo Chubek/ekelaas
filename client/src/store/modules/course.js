@@ -92,6 +92,7 @@ const CourseModule = {
               id: res.data.courseDoc._id
             });
             commit("SET_COURSE_ID", res.data.courseDoc._id);
+            commit("SET_COURSE_TEACHER", res.data.courseDoc.teacherId);
             commit("SET_COURSE_SCHOOL_ID", res.data.courseDoc.schoolId);
             commit("SET_CONNECT_URL", res.data.courseDoc.connectURL);
             commit("SET_COURSE_INFO", res.data.courseDoc.info);
@@ -119,6 +120,7 @@ const CourseModule = {
             resolve("Ok");
             commit("SET_COURSE_ID", res.data.courseDoc._id);
             commit("SET_COURSE_SCHOOL_ID", res.data.courseDoc.schoolId);
+            commit("SET_COURSE_TEACHER", res.data.courseDoc.teacherId);
             commit("SET_CONNECT_URL", res.data.courseDoc.connectURL);
             dispatch("setCourseTeacher", res.data.courseDoc.teacherId);
             if (res.data.courseDoc.students.length > 0) {
@@ -144,6 +146,7 @@ const CourseModule = {
             commit("SET_COURSE_ID", res.data.courseDoc._id);
             commit("SET_COURSE_SCHOOL_ID", res.data.courseDoc.schoolId);
             commit("SET_CONNECT_URL", res.data.courseDoc.connectURL);
+            commit("SET_COURSE_TEACHER", res.data.courseDoc.teacherId);
             dispatch("setCourseTeacher", res.data.courseDoc.teacherId);
             if (res.data.courseDoc.students.length > 0) {
               dispatch("setCourseStudents", res.data.courseDoc.students);
@@ -283,6 +286,9 @@ const CourseModule = {
     },
     getCourseClasses: state => {
       return state.classes;
+    },
+    getCourseTeacher: state => {
+      return state.teacher;
     }
   }
 };
