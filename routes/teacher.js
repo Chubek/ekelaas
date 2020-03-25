@@ -5,7 +5,7 @@ const auth = require("../middleware/auth");
 
 router.post("/setup", auth, (req, res) => {
   const userId = req.user.id;
-  const { credits, degrees } = req.body;
+  const { credits, degrees, school, schoolId } = req.body;
   if (!credits || credits.length == 0 || !degrees || degrees.length == 0) {
     res.status(401).json({ message: "No data entered." });
     console.log("No data entered.");
@@ -13,6 +13,8 @@ router.post("/setup", auth, (req, res) => {
   }
   const Teacher = new TeacherSchema({
     userId: userId,
+    schoolId: schoolId,
+    "info.school": school,
     "info.credits": credits,
     "info.degrees": degrees
   });

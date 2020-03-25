@@ -27,6 +27,7 @@ div
                 v-btn(color="black" dark icon @click="onAddDegree")
                     v-icon.icon
                         |mdi-plus
+            v-autocomplete(v-model="school" label=STR_school append-icon="mdi-bus-school" :placeholder="teacherInfo.school" multiple small-chips chips dense :items="autoCompleteSchools" outlined)
             v-btn(color="primary" large dark @click="onSubmitInfo")=STR_sendInfo
               v-icon(:class="showIcon")
                 |mdi-check-all
@@ -41,6 +42,7 @@ export default {
     numbersDegrees: null,
     credits: [],
     degrees: [],
+    school: null,
     disabledButton: true,
     alert: false,
     alertColor: null,
@@ -51,10 +53,12 @@ export default {
   created: function() {
     this.numbersCredits = this.computeNumbersCredits();
     this.numbersDegrees = this.computeNumbersDegrees();
+    this.$store.dispatch("loadAutoCompleteSchools");
   },
   mounted: function() {
     this.credits = this.teacherInfo.credits;
     this.degrees = this.teacherInfo.degrees;
+    this.school = { name: this.teacherInfo.school, id: this.teacherSchoolId };
   },
   computed: {
     userId: function() {
@@ -62,6 +66,12 @@ export default {
     },
     teacherInfo: function() {
       return this.$store.getters.getTeacherInfo;
+    },
+    autoCompleteSchools: function() {
+      return this.$store.getters.getAutoCompleteSchools;
+    },
+    teacherSchoolId: function() {
+      return this.$store.getters.getTeacheSchoolId;
     }
   },
   methods: {
@@ -89,7 +99,9 @@ export default {
       this.$store
         .dispatch("editTeacher", {
           credits: creditsFiltered,
-          degrees: degreesFiltered
+          degrees: degreesFiltered,
+          school: this.school.name,
+          schoolId: this.school.id
         })
         .then(res => {
           this.showIcon = "showClass";

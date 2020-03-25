@@ -28,7 +28,7 @@ const strings = {
   STR_phoneNumberExists: "شماره تلفن وجود دارد.",
   STR_infoNotEntered: "اطلاعات وارد نشده است.",
   STR_loggedIn: "با موفقیت وارد شدید.",
-
+  STR_schoolUpdated: "مدرسه به روز شد.",
   STR_provinces: [
     "تهران",
     "گیلان",

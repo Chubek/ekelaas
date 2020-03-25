@@ -7,9 +7,23 @@ const auth = require("../middleware/auth");
 
 router.post("/setup", auth, (req, res) => {
   const userId = req.user.id;
-  const { subject, description, price } = req.body;
+  const {
+    subject,
+    description,
+    price,
+    connectURL,
+    school,
+    schoolId
+  } = req.body;
 
-  if (!subject || !description || !price) {
+  if (
+    !subject ||
+    !description ||
+    !price ||
+    !connectURL ||
+    !school ||
+    !schoolId
+  ) {
     res.status(401).json({ message: "no data entered" });
     console.log("no data enetered.");
     return false;
@@ -18,6 +32,9 @@ router.post("/setup", auth, (req, res) => {
   TeacherSchema.findOne({ userId: userId }).then(teacherDoc => {
     const Course = new CourseSchema({
       teacherId: teacherDoc._id,
+      schoolId: schoolId,
+      connectURL: connectURL,
+      "info.school": school,
       "info.subject": subject,
       "info.description": description,
       "info.price": price.toString()
@@ -42,15 +59,24 @@ router.post("/setup", auth, (req, res) => {
   });
 });
 
-router.put("/set/info/:courseid", auth, (req, res) => {
-  const userId = req.user.id;
+router.put("/set/info/:courseid", auth, (req, res) => {  
   const courseId = req.params.courseid;
-  const { subject, description, price } = req.body;
+  const {
+    subject,
+    description,
+    price,
+    connectURL,
+    school,
+    schoolId
+  } = req.body;
 
   CourseSchema.findOneAndUpdate(
-    { _id: courseId, teacherId: userId },
+    { _id: courseId },
     {
       $set: {
+        connectURL: connectURL,
+        schoolId: schoolId,
+        "info.school": school,
         "info.subject": subject,
         "info.description": description,
         "info.price": price.toString()

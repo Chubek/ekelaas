@@ -8,8 +8,11 @@ const CourseModule = {
     info: {
       subject: String,
       description: String,
-      price: String
+      price: String,
+      school: String
     },
+    schoolId: String,
+    connectURL: String,
     classes: [
       {
         classDate: Date,
@@ -21,6 +24,9 @@ const CourseModule = {
   },
   mutations: {
     SET_COURSE_ID(state, payload) {
+      state.courseId = payload;
+    },
+    SET_COURSE_SCHOOL_ID(state, payload) {
       state.courseId = payload;
     },
 
@@ -38,6 +44,10 @@ const CourseModule = {
 
     SET_COURSE_INFO(state, payload) {
       state.info = payload;
+    },
+
+    SET_CONNECT_URL(state, payload) {
+      state.connectURL = payload;
     },
 
     SET_COURSE_CLASSES(state, payload) {
@@ -69,7 +79,10 @@ const CourseModule = {
             {
               subject: payload.subject,
               description: payload.description,
-              price: payload.price
+              price: payload.price,
+              school: payload.school,
+              schoolId: payload.schoolId,
+              connectURL: payload.connectURL
             },
             { headers: { "x-auth-token": localStorage.getItem("token") } }
           )
@@ -79,6 +92,8 @@ const CourseModule = {
               id: res.data.courseDoc._id
             });
             commit("SET_COURSE_ID", res.data.courseDoc._id);
+            commit("SET_COURSE_SCHOOL_ID", res.data.courseDoc.schoolId);
+            commit("SET_CONNECT_URL", res.data.courseDoc.connectURL);
             commit("SET_COURSE_INFO", res.data.courseDoc.info);
           })
           .catch(e => {
@@ -95,11 +110,16 @@ const CourseModule = {
           .put(`/course/set/info/${payload.courseId}`, {
             subject: payload.subject,
             description: payload.description,
-            price: payload.price
+            price: payload.price,
+            school: payload.school,
+            schoolId: payload.schoolId,
+            connectURL: payload.connectURL
           })
           .then(res => {
             resolve("Ok");
             commit("SET_COURSE_ID", res.data.courseDoc._id);
+            commit("SET_COURSE_SCHOOL_ID", res.data.courseDoc.schoolId);
+            commit("SET_CONNECT_URL", res.data.courseDoc.connectURL);
             dispatch("setCourseTeacher", res.data.courseDoc.teacherId);
             if (res.data.courseDoc.students.length > 0) {
               dispatch("setCourseStudents", res.data.courseDoc.students);
@@ -122,6 +142,8 @@ const CourseModule = {
           .then(res => {
             resolve(res);
             commit("SET_COURSE_ID", res.data.courseDoc._id);
+            commit("SET_COURSE_SCHOOL_ID", res.data.courseDoc.schoolId);
+            commit("SET_CONNECT_URL", res.data.courseDoc.connectURL);
             dispatch("setCourseTeacher", res.data.courseDoc.teacherId);
             if (res.data.courseDoc.students.length > 0) {
               dispatch("setCourseStudents", res.data.courseDoc.students);

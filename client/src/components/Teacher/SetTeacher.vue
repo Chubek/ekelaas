@@ -28,6 +28,7 @@ div
                 v-btn(color="black" dark icon @click="onAddDegree")
                     v-icon.icon
                         |mdi-plus
+            v-autocomplete(v-model="school" label=STR_school append-icon="mdi-bus-school" :placeholder="teacherInfo.school" multiple small-chips chips dense :items="autoCompleteSchools" outlined)
             v-btn(color="primary" large dark :disabled="disabledButton" @click="onSubmitInfo")=STR_sendInfo
               v-icon(:class="showIcon")
                 |mdi-check-all
@@ -47,6 +48,7 @@ export default {
     numbersDegrees: [0, 1],
     credits: [],
     degrees: [],
+    school: null,
     disabledButton: true,
     alert: false,
     alertColor: null,
@@ -54,12 +56,19 @@ export default {
     showIcon: "showClass",
     showCircle: "hideClass"
   }),
+  created: function() {
+    this.$store.dispatch("loadAutoCompleteSchools");
+  },
   computed: {
     userId: function() {
       return this.$store.getters.getUserId;
     },
     teacherInfo: function() {
       return this.$store.getters.getTeacherInfo;
+    },
+    autoCompleteSchools: function() {
+      return;
+      this.$store.getters.getAutoCompleteSchools;
     }
   },
   methods: {
@@ -87,11 +96,13 @@ export default {
       this.$store
         .dispatch("setUpTeacher", {
           credits: creditsFiltered,
-          degrees: degreesFiltered
+          degrees: degreesFiltered,
+          school: school.name,
+          schoolId: school.id
         })
         .then(res => {
           this.showIcon = "showClass";
-          this.showCircle = "hideClass"
+          this.showCircle = "hideClass";
           this.alert = true;
           this.alertColor = "blue";
           this.alertText = res;

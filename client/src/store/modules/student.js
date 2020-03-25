@@ -3,6 +3,7 @@ import FA from "../../assets/locale/FA";
 const StudentModule = {
   state: {
     studentId: String,
+    schoolId: String,
     info: {
       grade: FA.STR_grade,
       province: FA.STR_province,
@@ -17,6 +18,10 @@ const StudentModule = {
   mutations: {
     SET_STUDENT_ID(state, payload) {
       state.studentId = payload;
+    },
+
+    SET_STUDENT_SCHOOL_ID(state, payload) {
+      state.schoolId = payload;
     },
 
     SET_STUDENT_INFO(state, payload) {
@@ -65,7 +70,8 @@ const StudentModule = {
               grade: payload.grade,
               province: payload.province,
               city: payload.city,
-              school: payload.school
+              school: payload.school,
+              schoolId: payload.schoolId
             },
             { headers: { "x-auth-token": localStorage.getItem("token") } }
           )
@@ -73,6 +79,7 @@ const StudentModule = {
             resolve(FA.STR_infoEntered);
             commit("SET_STUDENT_ID", res.data.studentDoc._id);
             commit("SET_STUDENT_INFO", res.data.studentDoc.info);
+            commit("SET_STUDENT_SCHOOL_ID", res.data.studentDoc.schoolId);
           })
           .catch(e => {
             if (e.response.status == 401) {
@@ -91,7 +98,8 @@ const StudentModule = {
               grade: payload.grade,
               province: payload.province,
               city: payload.city,
-              school: payload.school
+              school: payload.school,
+              schoolId: schoolId
             },
             { headers: { "x-auth-token": localStorage.getItem("token") } }
           )
@@ -99,6 +107,7 @@ const StudentModule = {
             resolve("Ok");
             commit("SET_STUDENT_ID", res.data.studentDoc._id);
             commit("SET_STUDENT_INFO", res.data.studentDoc.info);
+            ommit("SET_STUDENT_SCHOOL_ID", res.data.studentDoc.schoolId);
           })
           .catch(e => {
             reject(e);

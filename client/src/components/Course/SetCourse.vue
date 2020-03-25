@@ -11,6 +11,8 @@ div
             v-text-field(v-model="subject" append-icon="mdi-abjad-arabic" label=STR_subject placeholder=STR_subject outlined)
             v-text-field(v-model="description" append-icon="mdi-card-text" label=STR_description placeholder=STR_description outlined)
             v-text-field(v-model="price" append-icon="mdi-currency-rial" :rules="priceRules" label=STR_price placeholder=STR_price outlined)
+            v-text-field(v-model="connectURL" append-icon="mdi-adobe" label=STR_connectURL placeholder=STR_connectURL outlined)
+            v-autocomplete(v-model="school" label=STR_school append-icon="mdi-bus-school" :placeholder="courseInfo.school" small-chips chips dense :items="autoCompleteSchools" outlined)
             v-btn(color="primary" large dark @click="onSubmitInfo")=STR_sendInfo
               v-icon(:class="showIcon")
                 |mdi-check-all
@@ -25,6 +27,8 @@ export default {
     subject: null,
     description: null,
     price: null,
+    school: null,
+    connectURL: null,
     priceRules: [
       v => {
         const pattern = /^[0-9]+$/;
@@ -37,13 +41,19 @@ export default {
     showIcon: "showClass",
     showCircle: "hideClass"
   }),
+  created: function() {
+    this.$store.dispatch("loadAutoCompleteSchools");
+  },
   methods: {
     onSubmitInfo: function() {
       this.$store
         .dispatch("setUpCourse", {
           subject: this.subject,
           description: this.description,
-          price: this.price
+          price: this.price,
+          school: this.school.name,
+          schoolId: this.school.id,
+          connectURL: this.connectURL
         })
         .then(res => {
           this.showIcon = "showClass";
@@ -58,6 +68,11 @@ export default {
           this.alertColor = "red";
           this.alertText = e;
         });
+    }
+  },
+  computed: {
+    autoCompleteSchools: function() {
+      return this.$store.getters.getAutoCompleteSchools;
     }
   }
 };

@@ -189,7 +189,48 @@ const SchoolModule = {
           });
       });
     },
-
+    editSchool({ commit }, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .put(
+            "/school/set/info",
+            {
+              name: payload.name,
+              grade: payload.grade,
+              landlineNumber: payload.landlineNumber,
+              address: payload.address
+            },
+            {
+              headers: {
+                "x-auth-token-school": localStorage.get("schoolToken")
+              }
+            }
+          )
+          .then(res => {
+            resolve(FA.STR_schoolUpdated);
+            commit("SET_SCHOOL_DATA", {
+              schoolId: res.data.docSchool._id,
+              idName: res.data.docSchool.idName,
+              email: res.data.docSchool.email,
+              mobileNumber: res.data.docSchool.mobileNumber
+            });
+            commit("SET_SCHOOL_INFO", res.data.docSchool.info);
+            if (res.data.docSchool.studentsId.length > 0) {
+              dispatch("setSchoolStudents");
+            }
+            if (res.data.docSchool.teachersId.length > 0) {
+              dispatch("setSchoolTeachers");
+            }
+            if (res.data.docSchool.coursesId.length > 0) {
+              dispatch("setSchoolCourses");
+            }
+          })
+          .catch(e => {
+            reject(e);
+            console.log(e);
+          });
+      });
+    },
     setSchoolTeachers({ commit }) {
       axios
         .get(
@@ -249,6 +290,9 @@ const SchoolModule = {
     },
     getSchoolIsLoggedIn: state => {
       return state.schooLoggedIn;
+    },
+    getSchoolInfo: state => {
+      return state.info;
     }
   }
 };

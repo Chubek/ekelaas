@@ -12,7 +12,7 @@ div
             v-select(v-model="grade" label=STR_grade append-icon="mdi-id-card" :items="gradeItems" :placeholder="studentInfo.grade" outlined)
             v-select(v-model="province" label=STR_province append-icon="mdi-map-marker" :items="provinceItems" :placeholder="studentInfo.province" outlined)
             v-text-field(v-model="city" label=STR_city append-icon="mdi-map-marker" :placeholder="studentInfo.city" outlined)
-            v-text-field(v-model="school" append-icon="mdi-bus-school" label=STR_school :placeholder="studentInfo.school" outlined)
+            v-autocomplete(v-model="school" label=STR_school append-icon="mdi-bus-school" :placeholder="studentInfo.school" small-chips chips dense :items="autoCompleteSchools" outlined)
             v-btn(color="primary" x-large dark @click="onSetStudent")=STR_sendInfo
               v-icon(:class="showIcon")
                 |mdi-check-all
@@ -58,7 +58,8 @@ export default {
           grade: this.grade,
           province: this.province,
           city: this.city,
-          school: this.school
+          school: this.school.name,
+          schoolId: this.school.id
         })
         .then(res => {
           this.showIcon = "showClass";
@@ -84,7 +85,14 @@ export default {
     },
     studentInfo: function() {
       return this.$store.getters.getStudentInfo;
+    },
+    autoCompleteSchools: function() {
+      return;
+      this.$store.getters.getAutoCompleteSchools;
     }
+  },
+  created: function() {
+    this.$store.dispatch("loadAutoCompleteSchools");
   }
 };
 </script>

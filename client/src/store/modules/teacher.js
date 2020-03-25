@@ -11,8 +11,10 @@ const TeacherModule = {
         FA.STR_credit,
         FA.STR_credit
       ],
-      degrees: [FA.STR_degree, FA.STR_degree]
+      degrees: [FA.STR_degree, FA.STR_degree],
+      school: String
     },
+    schoolId: String,
     students: [
       {
         student: Object,
@@ -25,6 +27,10 @@ const TeacherModule = {
   mutations: {
     SET_TEACHER_ID(state, payload) {
       state.teacherId = payload;
+    },
+
+    SET_TEACHER_SCHOOL_ID(state, payload) {
+      state.schoolId = payload;
     },
 
     SET_TEACHER_INFO(state, payload) {
@@ -55,7 +61,9 @@ const TeacherModule = {
             "/teacher/setup",
             {
               credits: payload.credits,
-              degrees: payload.degrees
+              degrees: payload.degrees,
+              school: payload.school,
+              schoolId: payload.schoolId
             },
             { headers: { "x-auth-token": localStorage.getItem("token") } }
           )
@@ -66,6 +74,7 @@ const TeacherModule = {
               credits: res.data.teacherDoc.info.credits,
               degrees: res.data.teacherDoc.info.degrees
             });
+            commit("SET_TEACHER_CLASS_ID", res.data.teacherDoc.schoolId);
           })
           .catch(e => {
             if (e.response.status == 401) {
@@ -82,17 +91,17 @@ const TeacherModule = {
             `"/set/info/${state.teacherId}`,
             {
               credits: payload.credits,
-              degrees: payload.degrees
+              degrees: payload.degrees,
+              school: payload.school,
+              schoolId: payload.schoolId
             },
             { headers: { "x-auth-token": localStorage.getItem("token") } }
           )
           .then(res => {
             resolve("Ok");
             commit("SET_TEACHER_ID", res.data.teacherDoc._id);
-            commit("SET_TEACHER_INFO", {
-              credits: res.data.teacherDoc.info.credits,
-              degrees: res.data.teacherDoc.info.degrees
-            });
+            commit("SET_TEACHER_INFO", res.data.teacherDoc.info);
+            commit("SET_TEACHER_CLASS_ID", res.data.teacherDoc.schoolId);
           })
           .catch(e => {
             reject(e);
@@ -104,10 +113,8 @@ const TeacherModule = {
       axios.get(`/teacher/single/${payload}`).then(res => {
         console.log("resss", res);
         commit("SET_TEACHER_ID", res.data.teacherDoc._id);
-        commit("SET_TEACHER_INFO", {
-          credits: res.data.teacherDoc.info.credits,
-          degrees: res.data.teacherDoc.info.degrees
-        });
+        commit("SET_TEACHER_INFO", res.data.teacherDoc.info);
+        commit("SET_TEACHER_CLASS_ID", res.data.teacherDoc.schoolId);
         if (res.data.teacherDoc.students.length > 0) {
           dispatch("setTeacherStudents", res.data.teacherDoc.students);
         }
@@ -194,6 +201,9 @@ const TeacherModule = {
     },
     getTeacherId: state => {
       return state.teacherId;
+    },
+    getTeacherSchoolId: state => {
+      return state.schoolId;
     }
   }
 };

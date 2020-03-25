@@ -76,7 +76,13 @@ router.post("/register", (req, res) => {
       idName: idName,
       mobileNumber: mobileNumber,
       email: email,
-      password: hash
+      password: hash,
+      info: {
+        name: name,
+        grade: grade,
+        landlineNumber: landlineNumber,
+        address: address
+      }
     });
 
     School.save()
@@ -86,10 +92,6 @@ router.post("/register", (req, res) => {
           process.env.JWT_SECRET,
           (err, token) => {
             if (err) throw err;
-            docSchool.info.name = name;
-            docSchool.info.grade = grade;
-            docSchool.info.landlineNumber = landlineNumber;
-            docSchool.info.address = address;
             res.status(200).json({ schoolToken: token, docSchool });
           }
         );
@@ -169,6 +171,31 @@ router.post("/add/teacher", schoolAuth, (req, res) => {
       res.status(200).json({ docTeacher });
     })
     .then(e => {
+      res.status(500).json({ error: e.message });
+      console.log(e);
+    });
+});
+
+router.put("/set/info", schoolAuth, (req, res) => {
+  const schoolId = req.school.id;
+  const { name, grade, landlineNumber, address } = req.body;
+
+  SchoolSchema.findOneAndUpdate(
+    { _id: schoolId },
+    {
+      $set: {
+        "info.name": name,
+        "info.grade": grade,
+        "info.landlineNumber": landlineNumber,
+        "info.address": address
+      }
+    },
+    { new: true }
+  )
+    .then(docSchool => {
+      res.status(200).json({ docSchool });
+    })
+    .catch(e => {
       res.status(500).json({ error: e.message });
       console.log(e);
     });

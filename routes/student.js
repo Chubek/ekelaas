@@ -44,12 +44,13 @@ router.post("/setup", auth, (req, res) => {
 router.put("/set/info/:studentId", auth, (req, res) => {
   const userId = req.user.id;
   const studentId = req.params.studentId;
-  const { grade, province, city, school } = req.body;
+  const { grade, province, city, school, schoolId } = req.body;
 
   StudentSchema.findOneAndUpdate(
     { _id: studentId, userId: userId },
     {
       $set: {
+        schoolId: schoolId,
         "info.grade": grade,
         "info.province": province,
         "info.city": city,

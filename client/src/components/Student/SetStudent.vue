@@ -13,7 +13,7 @@ div
             v-select(v-model="grade" label=STR_grade append-icon="mdi-id-card" :items="gradeItems" :placeholder="studentInfo.grade" outlined)
             v-select(v-model="province" label=STR_province :items="provinceItems" append-icon="mdi-map-marker" :placeholder="studentInfo.province" outlined)
             v-text-field(v-model="city" label=STR_city append-icon="mdi-map-marker" :placeholder="studentInfo.city" outlined)
-            v-autocomplete(v-model="school" label=STR_school append-icon="mdi-bus-school" :placeholder="studentInfo.school" multiple small-chips chips dense :items="autoCompleteSchools" outlined)
+            v-autocomplete(v-model="school" label=STR_school append-icon="mdi-bus-school" :placeholder="studentInfo.school" small-chips chips dense :items="autoCompleteSchools" outlined)
             v-btn(color="primary" large dark @click="onSetStudent" :disabled="disabledButton")=STR_sendInfo
               v-icon(:class="showIcon")
                 |mdi-check-all
