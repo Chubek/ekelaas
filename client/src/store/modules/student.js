@@ -100,7 +100,7 @@ const StudentModule = {
               province: payload.province,
               city: payload.city,
               school: payload.school,
-              schoolId: schoolId
+              schoolId: payload.schoolId
             },
             { headers: { "x-auth-token": localStorage.getItem("token") } }
           )

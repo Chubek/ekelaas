@@ -84,7 +84,19 @@ const strings = {
 
   STR_invalidPrice: "قیمت باید فقط عدد باشد.",
 
-  STR_classRemoved: "کلاس پاک شد."
+  STR_classRemoved: "کلاس پاک شد.",
+
+  STR_home: "خانه",
+  STR_logIn: "ورود",
+  STR_logInSchool: "ورود مدرسه",
+  STR_about: "درباره‌ی ما",
+  STR_contact: "تماس",
+  STR_profile: "پروفایل",
+  STR_teachers: "معلمین",
+  STR_courses: "دور‌ه‌ها",
+  STR_students: "دانش‌آموزان",
+  STR_profileSchool: "پروفایل مدرسه",
+  STR_logOut: "خروج"
 };
 
 export default strings;

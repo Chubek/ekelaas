@@ -87,8 +87,7 @@ export default {
       return this.$store.getters.getStudentInfo;
     },
     autoCompleteSchools: function() {
-      return;
-      this.$store.getters.getAutoCompleteSchools;
+      return this.$store.getters.getAutoCompleteSchools;
     }
   },
   created: function() {

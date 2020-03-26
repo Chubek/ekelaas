@@ -11,9 +11,15 @@ new Vue({
   store,
   vuetify,
   render: h => h(App),
-  created: function () {    
+  created: function() {
     if (localStorage.getItem("token") && this.$route.path != "/logout") {
       this.$store.dispatch("logInOnCreate");
+    } else if (
+      localStorage.getItem(
+        "schoolToken" && this.$route.path != "/school/logout"
+      )
+    ) {
+      this.$store.dispatch("schoolLogInOnCreate");
     }
   }
 }).$mount("#app");

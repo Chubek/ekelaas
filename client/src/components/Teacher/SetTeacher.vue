@@ -67,8 +67,7 @@ export default {
       return this.$store.getters.getTeacherInfo;
     },
     autoCompleteSchools: function() {
-      return;
-      this.$store.getters.getAutoCompleteSchools;
+      return this.$store.getters.getAutoCompleteSchools;
     }
   },
   methods: {
@@ -97,8 +96,8 @@ export default {
         .dispatch("setUpTeacher", {
           credits: creditsFiltered,
           degrees: degreesFiltered,
-          school: school.name,
-          schoolId: school.id
+          school: this.school.name,
+          schoolId: this.school.id
         })
         .then(res => {
           this.showIcon = "showClass";

@@ -47,8 +47,7 @@ export default {
       return this.$store.getters.getCourseInfo;
     },
     autoCompleteSchools: function() {
-      return;
-      this.$store.getters.getAutoCompleteSchools;
+      return this.$store.getters.getAutoCompleteSchools;
     }
   },
   created: function() {
@@ -72,7 +71,7 @@ export default {
           price: this.price,
           school: this.school.name,
           schoolId: this.school.id,
-          connectURL: connectURL
+          connectURL: this.connectURL
         })
         .then(res => {
           this.showIcon = "showClass";

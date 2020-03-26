@@ -35,11 +35,8 @@ const SchoolModule = {
           id: school._id
         });
       });
-    },
-    SET_SCHOOL_COURSES(state, payload) {
-      state.courses = payload;
-    },
-    PUSH_SCHOOL_COURES(state, payload) {
+    },   
+    PUSH_SCHOOL_COURSES(state, payload) {
       state.courses.push(payload);
     },
     SET_SCHOOL_TEACHERS(state, payload) {
@@ -66,7 +63,7 @@ const SchoolModule = {
         });
       });
     },
-    PUSH_SCHOOL_COURES(state, payload) {
+    SET_SCHOOL_COURSES(state, payload) {
       payload.data.courseDocs.forEach(course => {
         state.courses.push({
           courseId: course._id,
@@ -211,7 +208,7 @@ const SchoolModule = {
           });
       });
     },
-    editSchool({ commit }, payload) {
+    editSchool({ dispatch, commit }, payload) {
       return new Promise((resolve, reject) => {
         axios
           .put(
@@ -286,7 +283,7 @@ const SchoolModule = {
           commit("SET_SCHOOL_COURSES", res);
         });
     },
-    loadSchool({ commit }, payload) {
+    loadSchool({ dispatch, commit }, payload) {
       axios.get(`/school/single/${payload}`).then(res => {
         commit("SET_SCHOOL_INFO", res.data.docSchool.info);
         if (res.data.docSchool.studentsId.length > 0) {
@@ -304,6 +301,12 @@ const SchoolModule = {
       axios.get("/school/all").then(res => {
         commit("SET_AUTO_COMPLETE_USERS", res.data.docSchools);
       });
+    },
+    schoolLogOut({ commit, state }) {
+      localStorage.removeItem("schoolToken");
+      state.loggedIn = false;
+      commit("SET_SCHOOL_DATA", null);
+      commit("SET_SCHOOL_INFO", null);
     }
   },
   getters: {
@@ -327,3 +330,5 @@ const SchoolModule = {
     }
   }
 };
+
+export default SchoolModule;

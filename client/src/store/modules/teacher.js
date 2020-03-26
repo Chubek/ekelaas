@@ -54,7 +54,7 @@ const TeacherModule = {
     }
   },
   actions: {
-    setUpTeacher({ commit }, payload) {
+    setUpTeacher({ dispatch, commit }, payload) {
       return new Promise((resolve, reject) => {
         axios
           .post(
