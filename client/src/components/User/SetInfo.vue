@@ -29,8 +29,10 @@ div
 <script>
 import moment from "jalali-moment";
 import _ from "lodash";
+import FA from "../../assets/locale/FA";
 export default {
   name: "SetInfo",
+  title: FA.titles.setInfo,
   data: () => ({
     firstName: null,
     lastName: null,
@@ -112,8 +114,8 @@ body, .pageTitle, .inputHolder
 
 .datePicker
   margin-bottom: 2rem
-  
-  
+
+
 .showClass
   display: inline
 
@@ -126,5 +128,4 @@ body, .pageTitle, .inputHolder
 
 .icon
   margin-left: 0.5rem
-
 </style>

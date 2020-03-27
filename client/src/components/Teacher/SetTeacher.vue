@@ -38,8 +38,10 @@ div
 </template>
 <script>
 import SetInfo from "../User/SetInfo";
+import FA from "../../assets/locale/FA"
 export default {
   name: "SetTeacher",
+  title: FA.titles.setTeacher,
   components: {
     SetInfo
   },

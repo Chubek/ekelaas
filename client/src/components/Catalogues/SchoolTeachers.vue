@@ -15,14 +15,53 @@ div.mainDiv
                     v-icon.icon
                         |mdi-card-account-details
 
+                v-btn(color="red" medium v-if="onIsSchool(course.schoolId)" @click="onDeleteTeacher(teacher.teacherId)")=STR_delete
+                    v-icon.icon
+                        |mdi-delete
+
+    v-snackbar(v-model="snackBar")
+        |{{snackBarText}} #[v-btn(color="pink" @click="snackBar = false")=STR_ok]
+
 </template>
 <script>
+import axios from "axios";
+import FA from "../../assets/locale/FA";
+
 export default {
   name: "TeacherStudents",
+  title: FA.titles.viewTeachers,
   data: () => ({}),
   computed: {
     schoolTeachers: function() {
       return this.$store.getters.getSchoolTeachers;
+    },
+    schoolId: function() {
+      return this.$store.getters.getSchoolId;
+    }
+  },
+  methods: {
+    onDeleteCourse: function(teacherId) {
+      axios
+        .delete(
+          `/school/delete/teacher/${teacherId}`,
+          { blank: "blank" },
+          {
+            headers: {
+              "x-auth-token-school": localStorage.getItem("schoolToken")
+            }
+          }
+        )
+        .then(() => {
+          this.snackBar = true;
+          this.snackBarText = FA.teacherDeleted;
+        })
+        .catch(e => {
+          this.snackBar = true;
+          this.snackBarText = e;
+        });
+    },
+    onIsSchool: function(teacherSchoolId) {
+      return this.schoolId === teacherSchoolId;
     }
   }
 };
@@ -32,13 +71,13 @@ export default {
 @include font('Yekan', '../../assets/fonts/Yekan')
 
 body, .mainDiv
-    font-family: 'Yekan', Tahoma, sans-serif
+  font-family: 'Yekan', Tahoma, sans-serif
 
 
 .pageTitle
-    display: flex
-    margin-right: 1rem
+  display: flex
+  margin-right: 1rem
 
 .icon
-    margin-left: 0.5rem
+  margin-left: 0.5rem
 </style>

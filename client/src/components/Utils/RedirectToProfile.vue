@@ -7,8 +7,10 @@ div.mainDiv
 
 </template>
 <script>
+import FA from "../../assets/locale/FA"
 export default {
   name: "RedirectToProfile",
+  title: FA.titles.redirectToProfile,
   computed: {
     userId: function() {
       return this.$route.params.userId;

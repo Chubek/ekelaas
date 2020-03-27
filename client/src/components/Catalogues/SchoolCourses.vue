@@ -18,15 +18,55 @@ div.mainDiv
                 v-btn(color="primary" medium :to="'/view/info-course/' + course.userId ")=STR_toCoursePage
                     v-icon.icon
                         |mdi-card-chair-school
+                v-btn(color="red" medium v-if="onIsSchool(course.schoolId)" @click="onDeleteCourse(course.courseId)")=STR_delete
+                    v-icon.icon
+                        |mdi-delete
 
+
+    v-snackbar(v-model="snackBar")
+        |{{snackBarText}} #[v-btn(color="pink" @click="snackBar = false")=STR_ok]
 </template>
 <script>
+import axios from "axios";
+import FA from "../../assets/locale/FA";
 export default {
   name: "SchoolStudents",
-  data: () => ({}),
+  title: FA.titles.viewCourse,
+  data: () => ({
+    snackBar: false,
+    snackBarText: null
+  }),
   computed: {
     schoolCourses: function() {
       return this.$store.getters.getSchoolCourses;
+    },
+    schoolId: function() {
+      return this.$store.getters.getSchoolId;
+    }
+  },
+  methods: {
+    onDeleteCourse: function(courseId) {
+      axios
+        .delete(
+          `/school/delete/course/${courseId}`,
+          { blank: "blank" },
+          {
+            headers: {
+              "x-auth-token-school": localStorage.getItem("schoolToken")
+            }
+          }
+        )
+        .then(() => {
+          this.snackBar = true;
+          this.snackBarText = FA.courseDeleted;
+        })
+        .catch(e => {
+          this.snackBar = true;
+          this.snackBarText = e;
+        });
+    },
+    onIsSchool: function(courseSchoolId) {
+      return this.schoolId === courseSchoolId;
     }
   }
 };
@@ -36,13 +76,13 @@ export default {
 @include font('Yekan', '../../assets/fonts/Yekan')
 
 body, .mainDiv
-    font-family: 'Yekan', Tahoma, sans-serif
+  font-family: 'Yekan', Tahoma, sans-serif
 
 
 .pageTitle
-    display: flex
-    margin-right: 1rem
+  display: flex
+  margin-right: 1rem
 
 .icon
-    margin-left: 0.5rem
+  margin-left: 0.5rem
 </style>

@@ -96,7 +96,42 @@ const strings = {
   STR_courses: "دور‌ه‌ها",
   STR_students: "دانش‌آموزان",
   STR_profileSchool: "پروفایل مدرسه",
-  STR_logOut: "خروج"
+  STR_logOut: "خروج",
+
+  STR_schoolGrades: ["دبستان", "دبیرستان دوره اول", "دبیرستان دوره اوم"],
+
+  STR_teacherDeleted: "معلم پاک شد.",
+  STR_studentDeleted: "دانش‌آموز پاک شد.",
+  STR_courseDeleted: "دوره پاک شد.",
+
+  STR_register: "ثبت نام",
+  STR_registerSchool: "ثبت نام مدرسه",
+
+  titles: {
+    home: "خانه",
+    redirectToProfile: "انتقال به پروفایل",
+    setInfo: "ثبت اطلاعات کاربری",
+    register: "ثبت نام",
+    profile: "پروفایل",
+    logout: "خروج",
+    login: "ورود",
+    setTeacher: "ثبت اطلاعات معلمی",
+    editTeacher: "ویرایش اطلاعات معلمی",
+    setStudent: "ثبت اطلاعات دانش‌آموزی",
+    editStudent: "ویرایش اطلاعات دانش‌آموزی",
+    registerSchool: "ثبت مدرسه",
+    profileSchool: "پروفایل مدرسه",
+    logoutSchool: "خروج مدرسه",
+    loginSchool: "ورود مدرسه",
+    editSchool: "ویرایش اطلاعات مدرسه",
+    setCourse: "ثبت اطلاعات دوره",
+    setClass: "ثبت اطلاعات کلاس",
+    editCourse: "ویرایش اطلاعات دوره",
+    viewCourse: "مشاهده‌ی اطلاعات دوره",
+    viewTeachers: "مشاهده‌ی معلم‌ها",
+    viewStudents: "مشاهده‌ی دانش‌اموزان",
+    viewCourses: "مشاهده‌ی دوره‌ها"
+  }
 };
 
 export default strings;

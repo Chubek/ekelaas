@@ -9,8 +9,10 @@ div.mainDiv
       v-btn(to="/" large color="white")=STR_returnToHome
 </template>
 <script>
+import FA from "../../assets/locale/FA"
 export default {
   name: "LogoutSchool",
+  title: FA.titles.logoutSchool,
   created: function() {
     this.$store.dispatch("schoolLogOut");
   }

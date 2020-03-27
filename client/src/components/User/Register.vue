@@ -23,6 +23,7 @@ div
 import FA from "../../assets/locale/FA";
 export default {
   name: "Register",
+  title: FA.titles.register,
   data: () => ({
     displayName: "",
     email: "",

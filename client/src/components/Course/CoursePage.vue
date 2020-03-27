@@ -52,8 +52,10 @@ div.mainDiv
 
 </template>
 <script>
+import FA from "../../assets/locale/FA";
 export default {
   name: "CoursePage",
+  title: FA.titles.viewCourse,
   data: () => ({}),
   computed: {
     courseInfo: function() {
@@ -79,14 +81,14 @@ export default {
 @include font('Yekan', '../../assets/fonts/Yekan')
 
 body, .mainDiv
-    font-family: 'Yekan', Tahoma, sans-serif
+  font-family: 'Yekan', Tahoma, sans-serif
 
 
 .pageTitle, .pageSubTitle
-    display: flex
-    margin-right: 1rem
+  display: flex
+  margin-right: 1rem
 
 .icon
-    margin-left: 0.5rem
+  margin-left: 0.5rem
 
 </style>

@@ -1,8 +1,7 @@
 <template lang="pug">
 v-app
   v-app-bar(app color="primary" dark)
-    v-row(:v-if="isUserState" v-for="(link, index) in stateLinks" :key="index" class="menu ma-1 pa-1")
-      v-spacer      
+    v-span(:v-if="isUserState" v-for="(link, index) in stateLinks" :key="index" class="menu pa-1")      
       v-btn(color="green" :to="link.link")="{{ link.text }}"      
         v-icon(right).icon
           |{{ link.icon }}
@@ -26,14 +25,15 @@ export default {
     isGuest: false,
     isUser: false,
     isSchool: false,
-    stateLinks: null
+    stateLinks: null,
+    isUserState: null
   }),
   computed: {
     userInfo: function() {
       return this.$store.getters.getUserInfo;
     },
     loggedIn: function() {
-      return this.$store.getters.loggedIn;
+      return this.$store.getters.getLoggedIn;
     },
     schoolLoggedIn: function() {
       return this.$store.getters.getSchoolLoggedIn;
@@ -48,8 +48,8 @@ export default {
       return this.$store.getters.getSchoolLinks;
     }
   },
-  created: function() {
-    if (!this.loggedIn || !this.schoolLoggedIn) {
+  mounted: function() {
+    if (!this.loggedIn || !this.schoolLoggedIn || this.loggedIn == undefined || this.schoolLoggedIn == undefined) {
       this.isGuest = true;
       this.stateLinks = this.guestLinks;
     }

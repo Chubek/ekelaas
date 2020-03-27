@@ -26,6 +26,7 @@ import FA from "../../assets/locale/FA";
 import SetInfo from "../User/SetInfo";
 export default {
   name: "SetStudent",
+  title: FA.titles.editStudent,
   components: {
     SetInfo
   },

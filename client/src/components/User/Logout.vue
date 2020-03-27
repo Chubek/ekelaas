@@ -7,10 +7,12 @@ div.mainDiv
       br/
       br/
       v-btn(to="/" large color="white")=STR_returnToHome
-</template> 
+</template>
 <script>
+import FA from "../../assets/locale/FA";
 export default {
   name: "Logout",
+  title: FA.titles.logout,
   created: function() {
     this.$store.dispatch("logOut");
   }
@@ -25,5 +27,4 @@ body, .mainDiv
 
 .pageTitle
   display: flex
-
 </style>

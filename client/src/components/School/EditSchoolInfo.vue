@@ -22,6 +22,7 @@ div
 import FA from "../../assets/locale/FA";
 export default {
   name: "Register",
+  title: FA.titles.editSchool,
   data: () => ({
     name: "",
     grade: "",

@@ -76,12 +76,13 @@ div
 
    
 </template>
-<script lang="ts">
-import Vue from "vue";
+<script>
 import moment from "jalali-moment";
 import _ from "lodash";
-export default Vue.extend({
+import FA from "../../assets/locale/FA";
+export default ({
   name: "SetClass",
+  title: FA.titles.setClass,
   data: () => ({
     numbersList: [],
     counter: 10,

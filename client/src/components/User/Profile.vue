@@ -67,8 +67,10 @@ div.mainDiv
 <script>
 import moment from "jalali-moment";
 import _ from "lodash";
+import FA from "../../assets/locale/FA";
 export default {
   name: "Profile",
+  title: FA.titles.profile,
   data: () => ({}),
   computed: {
     isSchool: function() {

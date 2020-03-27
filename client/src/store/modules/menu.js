@@ -13,9 +13,19 @@ const MenuModule = {
         link: "/login",
         icon: "mdi-login"
       },
+      register: {
+        text: FA.STR_register,
+        link: "/register",
+        icon: "mdi-account-multiple-plus"
+      },
+      registerSchool: {
+        text: FA.STR_registerSchool,
+        link: "/register-school",
+        icon: "mdi-flask-plus-outline"
+      },
       loginSchool: {
         text: FA.STR_logInSchool,
-        link: "/school/login",
+        link: "/login-school",
         icon: "mdi-bus-school"
       },
       about: {
@@ -40,6 +50,12 @@ const MenuModule = {
         link: null,
         icon: "mdi-card-account-details"
       },
+      profileSchool: {
+        text: FA.STR_profileSchool,
+        link: "/profile-school",
+        icon: "mdi-card-account-details"
+      },
+
       students: {
         text: FA.STR_students,
         link: "/view/students",
@@ -79,7 +95,7 @@ const MenuModule = {
       },
       profile: {
         text: FA.STR_profileSchool,
-        link: "/school/profile",
+        link: "/profile-school",
         icon: "mdi-card-account-details"
       },
       students: {
@@ -109,7 +125,7 @@ const MenuModule = {
       },
       logOut: {
         text: FA.STR_logOut,
-        link: "/school-logout",
+        link: "/logout-school",
         icon: "mdi-logout"
       }
     }

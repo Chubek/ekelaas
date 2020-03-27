@@ -14,8 +14,10 @@ div
             v-btn(color="primary" large dark @click="onLogin")=STR_loginButton
 </template>
 <script>
+import FA from "../../assets/locale/FA"
 export default {
   name: "Login",
+  title: FA.titles.login,
   data: () => ({
     loginString: null,
     password: null,

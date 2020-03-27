@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import Home from "../components/Home.vue";
 import Register from "../components/User/Register.vue";
 import Login from "../components/User/Login.vue";
 import SetInfo from "../components/User/SetInfo.vue";
@@ -12,6 +12,10 @@ import SetCourse from "../components/Course/SetCourse.vue";
 import SetClass from "../components/Course/SetClass.vue";
 import Profile from "../components/User/Profile.vue";
 import Logout from "../components/User/Logout.vue";
+import LogoutSchool from "../components/School/LogoutSchool.vue";
+import ProfileSchool from "../components/School/ProfileSchool.vue";
+import RegisterSchool from "../components/School/RegisterSchool";
+import LoginSchool from "../components/School/LoginSchool.vue";
 import RedirectToProfile from "../components/Utils/RedirectToProfile.vue";
 import EditCourseInfo from "../components/Course/EditCourseInfo.vue";
 import authGuard from "./Guards/authGuard";
@@ -24,82 +28,158 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: Home
+    component: Home,
+    meta: {
+      title: "خانه"
+    }
   },
   {
     path: "/register",
-    name: "ثبت نام",
+    name: "Register",
     component: Register,
-    beforeEnter: registerGuard
+    beforeEnter: registerGuard,
+    meta: {
+      title: "ثبت نام"
+    }
+  },
+  {
+    path: "/register-school",
+    name: "RegisterSchool",
+    component: RegisterSchool,
+    beforeEnter: registerGuard,
+    meta: {
+      title: "ثبت نام"
+    }
   },
   {
     path: "/login",
-    name: "ورود",
-    component: Login
+    name: "Login",
+    component: Login,
+    meta: {
+      title: "ورود"
+    }
+  },
+  {
+    path: "/login-school",
+    name: "LoginSchool",
+    component: LoginSchool,
+    meta: {
+      title: "ورود"
+    }
   },
   {
     path: "/set/info",
-    name: "ثبت اطلاعات",
+    name: "SetInfo",
     component: SetInfo,
-    beforeEnter: authGuard
+    beforeEnter: authGuard,
+    meta: {
+      title: "ثبت اطلاعات کاربری"
+    }
   },
   {
     path: "/set/info-student",
-    name: " ثبت اطلاعات دانش آموزی",
+    name: "SetStudent",
     component: SetStudent,
-    beforeEnter: authGuard
+    beforeEnter: authGuard,
+    meta: {
+      title: " ثبت اطلاعات دانش آموزی"
+    }
   },
   {
     path: "/set/info-teacher",
-    name: " ثبت اطلاعات معلمی",
+    name: "SetTeacher",
     component: SetTeacher,
-    beforeEnter: authGuard
+    beforeEnter: authGuard,
+    meta: {
+      title: " ثبت اطلاعات معلمی"
+    }
   },
   {
     path: "/edit/info-student",
-    name: " ویرایش اطلاعات دانش‌اموزی",
+    name: "EditStudentInfo",
     component: EditStudentInfo,
     //beforeEnter: studentGuard
+    meta: {
+      title: " ویرایش اطلاعات دانش‌اموزی"
+    }
   },
   {
     path: "/edit/info-teacher",
-    name: "ویرایش اطلاعات معلمی",
+    name: "EditTeacherInfo",
     component: EditTeacherInfo,
     //beforeEnter: teacherGuard
+    meta: {
+      title: "ویرایش اطلاعات معلمی"
+    }
   },
   {
     path: "/set/info-course",
-    name: " ثبت اطلاعات دوره",
+    name: "SetCourse",
     component: SetCourse,
     //beforeEnter: teacherGuard
+    meta: {
+      title: "ثبت اطلاعات دوره"
+    }
   },
   {
     path: "/edit/info-course/:courseId",
-    name: "ویرایش اطلاعات دوره",
+    name: "EditCourseInfo",
     component: EditCourseInfo,
     //beforeEnter: teacherGuard
+    meta: {
+      title: "ویرایش اطلاعات دوره"
+    }
   },
   {
     path: "/set/class/:courseId",
-    name: " ثبت اطلاعات کلاس",
-    component: SetClass    
-    //beforeEnter: teacherGuard
+    name: "SetClass",
+    component: SetClass,
+    //beforeEnter: teacherGuard,
+    meta: {
+      title: " ثبت اطلاعات کلاس"
+    }
   },
   {
     path: "/profile/:userId",
-    name: " پروفایل کاربر",
-    component: Profile
+    name: "Profile",
+    component: Profile,
+    meta: {
+      title: "پروفایل کاربر"
+    }
+  },
+  {
+    path: "/profile-school",
+    name: "ProfileSchool",
+    component: ProfileSchool,
+    meta: {
+      title: "پروفایل کاربر"
+    }
   },
   {
     path: "/logout",
-    name: " خروج کاربر",
+    name: "Logout",
     component: Logout,
-    beforeEnter: authGuard
+    beforeEnter: authGuard,
+    meta: {
+      title: "خروج کاربر"
+    }
+  },
+  {
+    path: "/logout-school",
+    name: "LogoutSchool",
+    component: LogoutSchool,
+    beforeEnter: authGuard,
+    meta: {
+      title: "خروج کاربر"
+    }
   },
   {
     path: "/redirect/to/profile/:userId",
-    name: " انتقال به کاربر",
-    component: RedirectToProfile
+    name: "ًRedirectToProfile",
+    component: RedirectToProfile,
+    meta: {
+      title: " انتقال به کاربر"
+    }
   },
   {
     path: "/about",

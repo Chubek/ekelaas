@@ -19,8 +19,10 @@ div.mainDiv
             |mdi-circle-edit-outline
 </template>
 <script>
+import FA from "../../assets/locale/FA"
 export default {
   name: "ProfileSchool",
+  title: FA.titles.profileSchool,
   data: () => ({}),
   computed: {
     info: function() {

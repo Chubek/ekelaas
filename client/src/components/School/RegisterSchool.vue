@@ -14,9 +14,9 @@ div
           v-text-field(v-model="password" :rules="passwordRules" label=STR_password :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" placeholder=STR_password :type="showPassword ? 'text' : 'password'" @click:append="showPassword = !showPassword" outlined)
           v-text-field(v-model="confirmPassword" :append-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'" :rules="[confirmPasswordRules]"  label=STR_confirmPassword :type="showConfirmPassword ? 'text' : 'password'" @click:append="showConfirmPassword = !showConfirmPassword" placeholder=STR_confirmPassword outlined)
           v-text-field(v-model="name" append-icon="mdi-office-building" label=STR_schoolName placeholder=STR_schoolName type="text" outlined)
-          v-text-field(v-model="grade" append-icon="mdi-chair-school" label=STR_schoolGrade placeholder=STR_schoolGrade type="text" outlined)
+          v-select(v-model="grade" :items="gradeItmes" append-icon="mdi-chair-school" label=STR_schoolGrade placeholder=STR_schoolGrade type="text" outlined)
           v-text-field(v-model="landlineNumber" :rules="landlineRules" append-icon="mdi-file-phone-outline" label=STR_schoolLandline placeholder=STR_schoolLandline type="tel" outlined)
-          v-text-field(v-model="address" append-icon="mdi-bus-marker" label=STR_schoolAddress placeholder=STR_schoolAdress type="text" outlined)
+          v-text-field(v-model="address" append-icon="mdi-bus-marker" label=STR_schoolAddress placeholder="آدرس مدرسه" type="text" outlined)
           v-btn(color="primary" large dark @click="onRegister")=STR_registerButton
                  
 
@@ -27,6 +27,7 @@ div
 import FA from "../../assets/locale/FA";
 export default {
   name: "Register",
+  title: FA.titles.registerSchool,
   data: () => ({
     idName: "",
     email: "",
@@ -37,6 +38,7 @@ export default {
     showConfirmPassword: false,
     name: "",
     grade: "",
+    gradeItmes: FA.STR_schoolGrades,
     landlineNumber: "",
     address: "",
     displayNameRules: [

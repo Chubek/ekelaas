@@ -317,4 +317,40 @@ router.get("/all", (req, res) => {
     });
 });
 
+router.delete("/delete/student/:studentId", schoolAuth, (req, res) => {
+  const schoolId = req.school.id;
+  const studentId = req.params.schoolId;
+
+  StudentSchema.findOneAndDelete({ _id: studentId, schoolId: schoolId })
+    .then(() => res.status(204).json({ message: "Student deleted." }))
+    .catch(e => {
+      res.status(500).json({ error: e.message });
+      console.log(e);
+    });
+});
+
+router.delete("/delete/teacher/:teacherId", schoolAuth, (req, res) => {
+  const schoolId = req.school.id;
+  const teacherId = req.params.schoolId;
+
+  TeacherSchema.findOneAndDelete({ _id: teacherId, schoolId: schoolId })
+    .then(() => res.status(204).json({ message: "Teacher deleted." }))
+    .catch(e => {
+      res.status(500).json({ error: e.message });
+      console.log(e);
+    });
+});
+
+router.delete("/delete/course/:courseId", schoolAuth, (req, res) => {
+  const schoolId = req.school.id;
+  const courseId = req.params.schoolId;
+
+  CourseSchema.findOneAndDelete({ _id: courseId, schoolId: schoolId })
+    .then(() => res.status(204).json({ message: "Course deleted." }))
+    .catch(e => {
+      res.status(500).json({ error: e.message });
+      console.log(e);
+    });
+});
+
 module.exports = router;

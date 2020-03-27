@@ -24,6 +24,7 @@ div
 import FA from "../../assets/locale/FA";
 export default {
   name: "SetCourse",
+  title: FA.titles.editCourse,
   data: () => ({
     subject: null,
     description: null,

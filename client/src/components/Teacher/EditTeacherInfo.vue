@@ -35,8 +35,10 @@ div
 
 </template>
 <script>
+import FA from "../../assets/locale/FA"
 export default {
   name: "EditTeacherInfo",
+  title: FA.titles.editTeacher,
   data: () => ({
     numbersCredits: null,
     numbersDegrees: null,
