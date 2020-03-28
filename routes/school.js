@@ -13,9 +13,10 @@ const SALT_ROUNDS = 12;
 router.post("/register", (req, res) => {
   const { idName, mobileNumber, email, password } = req.body;
   const { name, grade, landlineNumber, address } = req.body.info;
-
+  console.log(req.body);
   if (!idName || !mobileNumber || !email || !password) {
     res.status(401).json({ message: "Data not entered." });
+    return false;
   }
 
   SchoolSchema.findOne({
@@ -27,6 +28,7 @@ router.post("/register", (req, res) => {
     .then(docSchool => {
       if (docSchool) {
         res.status(403).json({ message: "Already exists.", isSame: "school" });
+        return false;
       }
     })
     .catch(e => {
@@ -38,6 +40,7 @@ router.post("/register", (req, res) => {
     .then(docSchool => {
       if (docSchool) {
         res.status(403).json({ message: "Already exists.", isSame: "idName" });
+        return false;
       }
     })
     .catch(e => {
@@ -51,6 +54,7 @@ router.post("/register", (req, res) => {
         res
           .status(403)
           .json({ message: "Already exists.", isSame: "mobileNumber" });
+        return false;
       }
     })
     .catch(e => {
@@ -62,6 +66,7 @@ router.post("/register", (req, res) => {
     .then(docSchool => {
       if (docSchool) {
         res.status(403).json({ message: "Already exists.", isSame: "email" });
+        return false;
       }
     })
     .catch(e => {
@@ -105,19 +110,20 @@ router.post("/register", (req, res) => {
 
 router.post("/auth", (req, res) => {
   const { idName, email, mobileNumber, password } = req.body;
-
+  console.log(req.body)
   if (!password) {
     return false;
   }
-  if (!displayName || !email || !phoneNumber) {
+  if (!idName && !email && !mobileNumber) {
     res.status(400).json({ message: "No data entered." });
     return false;
   }
 
-  UserSchema.findOne({
+  SchoolSchema.findOne({
     $or: [{ idName: idName }, { email: email }, { mobileNumber: mobileNumber }]
   })
     .then(docSchool => {
+      console.log(docSchool);
       if (!docSchool) {
         res.status(404).json({ message: "No school." });
         console.log("No school.");
@@ -351,6 +357,12 @@ router.delete("/delete/course/:courseId", schoolAuth, (req, res) => {
       res.status(500).json({ error: e.message });
       console.log(e);
     });
+});
+
+router.get("/decode", schoolAuth, (req, res) => {
+  const schoolId = req.school.id;
+
+  res.status(200).json({ schoolId });
 });
 
 module.exports = router;

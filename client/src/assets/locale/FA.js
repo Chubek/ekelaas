@@ -98,7 +98,7 @@ const strings = {
   STR_profileSchool: "پروفایل مدرسه",
   STR_logOut: "خروج",
 
-  STR_schoolGrades: ["دبستان", "دبیرستان دوره اول", "دبیرستان دوره اوم"],
+  STR_schoolGrades: ["دبستان", "دبیرستان دوره اول", "دبیرستان دوره دوم"],
 
   STR_teacherDeleted: "معلم پاک شد.",
   STR_studentDeleted: "دانش‌آموز پاک شد.",
@@ -131,7 +131,10 @@ const strings = {
     viewTeachers: "مشاهده‌ی معلم‌ها",
     viewStudents: "مشاهده‌ی دانش‌اموزان",
     viewCourses: "مشاهده‌ی دوره‌ها"
-  }
+  },
+
+  STR_landlineInvalid:
+    " خط تلفن باید محتوی کد شهر با خط فاصله باشد مثلا ۳۸۴۴۵۶۰۷-۰5۱."
 };
 
 export default strings;

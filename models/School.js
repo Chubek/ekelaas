@@ -8,7 +8,7 @@ const SchoolSchema = new Schema({
     required: true
   },
   mobileNumber: {
-    type: Number,
+    type: String,
     unique: true,
     required: true
   },
@@ -24,7 +24,7 @@ const SchoolSchema = new Schema({
   info: {
     name: String,
     grade: String,
-    landlineNumber: Number,
+    landlineNumber: String,
     address: String
   },
   studentsId: [String],

@@ -12,12 +12,16 @@ import SetCourse from "../components/Course/SetCourse.vue";
 import SetClass from "../components/Course/SetClass.vue";
 import Profile from "../components/User/Profile.vue";
 import Logout from "../components/User/Logout.vue";
+import SchoolTeachers from "../components/Catalogues/SchoolTeachers.vue";
+import SchoolStudents from "../components/Catalogues/SchoolStudents.vue";
+import SchoolCourses from "../components/Catalogues/SchoolCourses.vue";
 import LogoutSchool from "../components/School/LogoutSchool.vue";
 import ProfileSchool from "../components/School/ProfileSchool.vue";
 import RegisterSchool from "../components/School/RegisterSchool";
 import LoginSchool from "../components/School/LoginSchool.vue";
 import RedirectToProfile from "../components/Utils/RedirectToProfile.vue";
 import EditCourseInfo from "../components/Course/EditCourseInfo.vue";
+import EditSchoolInfo from "../components/School/EditSchoolInfo.vue";
 import authGuard from "./Guards/authGuard";
 import registerGuard from "./Guards/registerGuard";
 //import teacherGuard from "./Guards/teacherGuard";
@@ -75,6 +79,11 @@ const routes = [
     meta: {
       title: "ثبت اطلاعات کاربری"
     }
+  },
+  {
+    path: "/set/info-school",
+    name: "EditSchoolInfo",
+    component: EditSchoolInfo    
   },
   {
     path: "/set/info-student",
@@ -167,8 +176,7 @@ const routes = [
   {
     path: "/logout-school",
     name: "LogoutSchool",
-    component: LogoutSchool,
-    beforeEnter: authGuard,
+    component: LogoutSchool,    
     meta: {
       title: "خروج کاربر"
     }
@@ -177,6 +185,30 @@ const routes = [
     path: "/redirect/to/profile/:userId",
     name: "ًRedirectToProfile",
     component: RedirectToProfile,
+    meta: {
+      title: " انتقال به کاربر"
+    }
+  },
+  {
+    path: "/view/students",
+    name: "ًSchoolStudents",
+    component: SchoolStudents,
+    meta: {
+      title: " انتقال به کاربر"
+    }
+  },
+  {
+    path: "/view/teachers",
+    name: "ًSchoolTeachers",
+    component: SchoolTeachers,
+    meta: {
+      title: " انتقال به کاربر"
+    }
+  },
+  {
+    path: "/view/courses",
+    name: "ًSchoolCourses",
+    component: SchoolCourses,
     meta: {
       title: " انتقال به کاربر"
     }

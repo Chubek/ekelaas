@@ -15,7 +15,7 @@ div
           v-text-field(v-model="confirmPassword" :append-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'" :rules="[confirmPasswordRules]"  label=STR_confirmPassword :type="showConfirmPassword ? 'text' : 'password'" @click:append="showConfirmPassword = !showConfirmPassword" placeholder=STR_confirmPassword outlined)
           v-text-field(v-model="name" append-icon="mdi-office-building" label=STR_schoolName placeholder=STR_schoolName type="text" outlined)
           v-select(v-model="grade" :items="gradeItmes" append-icon="mdi-chair-school" label=STR_schoolGrade placeholder=STR_schoolGrade type="text" outlined)
-          v-text-field(v-model="landlineNumber" :rules="landlineRules" append-icon="mdi-file-phone-outline" label=STR_schoolLandline placeholder=STR_schoolLandline type="tel" outlined)
+          v-text-field(v-model="landlineNumber" append-icon="mdi-file-phone-outline" label=STR_schoolLandline placeholder=STR_schoolLandline type="tel" outlined)
           v-text-field(v-model="address" append-icon="mdi-bus-marker" label=STR_schoolAddress placeholder="آدرس مدرسه" type="text" outlined)
           v-btn(color="primary" large dark @click="onRegister")=STR_registerButton
                  
@@ -67,7 +67,7 @@ export default {
     ],
     landlineRules: [
       v => {
-        const pattern = /^[0-9]+$/;
+        const pattern = /^0\d{2,3}-\d{8}$/;
         return pattern.test(v) || FA.STR_landlineInvalid;
       }
     ],
@@ -102,7 +102,7 @@ export default {
           this.alert = true;
           this.alertText = res.message;
           this.alertColor = "blue";
-          this.$router.push({ path: `/redirect/to/school-profile/${res.id}` });
+          this.$router.push({ path: `/profile-school` });
         })
         .catch(e => {
           this.alert = true;

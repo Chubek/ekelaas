@@ -23,10 +23,14 @@ const SchoolModule = {
   },
   mutations: {
     SET_SCHOOL_DATA(state, payload) {
-      state.userData = payload;
+      state.schoolData = payload;
     },
     SET_SCHOOL_INFO(state, payload) {
       state.info = payload;
+    },
+    SET_SCHOOL_LOGGED_IN(state, payload) {
+      console.log(state.schoolLoggedIn);
+      state.schooLoggedIn = payload;
     },
     SET_AUTO_COMPLETE_SCHOOLS(state, payload) {
       payload.forEach(school => {
@@ -90,6 +94,7 @@ const SchoolModule = {
           .then(res => {
             resolve(FA.STR_loggedIn);
             localStorage.setItem("schoolToken", res.data.token);
+            commit("SET_SCHOOL_LOGGED_IN", true);
             commit("SET_SCHOOL_DATA", {
               schoolId: res.data.docSchool._id,
               idName: res.data.docSchool.idName,
@@ -108,21 +113,27 @@ const SchoolModule = {
             }
           })
           .catch(e => {
-            if (e.response.status == 401) {
+            if (e.response.status == 400) {
               reject(FA.STR_infoNotEntered);
+            }
+            if (e.response.status == 401) {
+              reject(FA.STR_passwordsDontMatch);
+            }
+            if (e.response.status == 404) {
+              reject(FA.STR_noUser);
             }
             reject(e);
             console.log(e);
           });
       });
     },
-    schoolLogInOnCreate({ dispatch, commit, state }) {
+    schoolLogInOnCreate({ dispatch, commit }) {
       axios
-        .post("/school/auth/on/creare", {
+        .post("/school/auth/on/create", {
           jwt: localStorage.getItem("schoolToken")
         })
         .then(res => {
-          state.schoolLoggedIn = true;
+          commit("SET_SCHOOL_LOGGED_IN", true);
           commit("SET_SCHOOL_DATA", {
             schoolId: res.data.docSchool._id,
             idName: res.data.docSchool.idName,
@@ -142,7 +153,7 @@ const SchoolModule = {
         });
     },
 
-    schoolLogInOnRegister({ commit, state }, payload) {
+    schoolLogInOnRegister({ commit }, payload) {
       axios
         .post("/school/auth", {
           idName: payload.idName,
@@ -152,7 +163,7 @@ const SchoolModule = {
         })
         .then(res => {
           localStorage.setItem("schoolToken", res.data.token);
-          state.schoolLoggedIn = true;
+          commit("SET_SCHOOL_LOGGED_IN", true);
           commit("SET_SCHOOL_DATA", {
             schoolId: res.data.docSchool._id,
             idName: res.data.docSchool.idName,
@@ -167,9 +178,9 @@ const SchoolModule = {
       return new Promise((resolve, reject) => {
         axios
           .post("/school/register", {
-            idName: payload.displayName,
+            idName: payload.idName,
             email: payload.email,
-            mobileNumber: payload.phoneNumber,
+            mobileNumber: payload.mobileNumber,
             password: payload.password,
             info: payload.info
           })
@@ -184,29 +195,35 @@ const SchoolModule = {
             dispatch("schoolLogInOnRegister", payload);
           })
           .catch(e => {
+            console.log("e", e);
             if (
-              e.response.status == 401 &&
+              e.response.status == 403 &&
               e.response.data.isSame === "school"
             ) {
               reject(FA.STR_userExists);
-            } else if (e.response.status == 403) {
+            }
+            if (e.response.status == 401) {
               reject(FA.STR_pleaseEnterInfo);
-            } else if (
-              e.response.status == 401 &&
+            }
+            if (
+              e.response.status == 403 &&
               e.response.data.isSame === "idName"
             ) {
               reject(FA.STR_displayNameExists);
-            } else if (
-              e.response.status == 401 &&
+            }
+            if (
+              e.response.status == 403 &&
               e.response.data.isSame === "email"
             ) {
               reject(FA.STR_emailExists);
-            } else if (
-              e.response.status == 401 &&
+            }
+            if (
+              e.response.status == 403 &&
               e.response.data.isSame === "mobileNumber"
             ) {
               reject(FA.STR_phoneNumberExists);
             }
+            reject(e);
             console.log(e);
           });
       });
@@ -305,9 +322,9 @@ const SchoolModule = {
         commit("SET_AUTO_COMPLETE_USERS", res.data.docSchools);
       });
     },
-    schoolLogOut({ commit, state }) {
+    schoolLogOut({ commit }) {
       localStorage.removeItem("schoolToken");
-      state.loggedIn = false;
+      commit("SET_SCHOOL_LOGGED_IN", false);
       commit("SET_SCHOOL_DATA", null);
       commit("SET_SCHOOL_INFO", null);
     }
@@ -320,7 +337,7 @@ const SchoolModule = {
       return state.schooLoggedIn;
     },
     getSchoolId: state => {
-      return state.schoolId
+      return state.schoolData.schoolId;
     },
     getSchoolInfo: state => {
       return state.info;

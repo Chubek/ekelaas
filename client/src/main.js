@@ -19,13 +19,12 @@ new Vue({
   render: h => h(App),
   created: function() {
     if (localStorage.getItem("token") && this.$route.path != "/logout") {
-      this.$store.dispatch("logInOnCreate");
+      this.$store.dispatch("logInOnCreate");      
     } else if (
-      localStorage.getItem(
-        "schoolToken" && this.$route.path != "/school/logout"
-      )
+      localStorage.getItem("schoolToken") &&
+      this.$route.path != "/logout-school"
     ) {
-      this.$store.dispatch("schoolLogInOnCreate");
+      this.$store.dispatch("schoolLogInOnCreate");      
     }
   }
 }).$mount("#app");

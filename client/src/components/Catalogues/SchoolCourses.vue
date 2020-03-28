@@ -6,21 +6,23 @@ div.mainDiv
         v-icon.icon
             |mdi-bus-school
         |#{STR_teacherCatHeader}
-    v-sheet(elevation="2" class="d-flex align-content-start flex-wrap")
-        v-card(v-for="course in schoolCourses" :key="course.courseId")
-            v-card-title
-                |{{ course.subject }}
-            v-card-subtitle
-                |{{ course.description }}
-                hr
-                |{{ course.price }} STR_tomans
-            v-card-actions
-                v-btn(color="primary" medium :to="'/view/info-course/' + course.userId ")=STR_toCoursePage
-                    v-icon.icon
-                        |mdi-card-chair-school
-                v-btn(color="red" medium v-if="onIsSchool(course.schoolId)" @click="onDeleteCourse(course.courseId)")=STR_delete
-                    v-icon.icon
-                        |mdi-delete
+    v-lazy(v-model="lazyActive" :options="{ threshold: .5 }" min-height="200" transition="fade-transition")
+      v-sheet(elevation="2" class="d-flex align-content-start flex-wrap")
+          v-card(v-for="course in schoolCourses" :key="course.courseId")
+              v-card-title
+                  |{{ course.subject }}
+              v-card-subtitle
+                  |{{ course.description }}
+                  hr
+                  |{{ course.price }} STR_tomans
+              hr
+              v-card-actions
+                  v-btn(color="primary" medium :to="'/view/info-course/' + course.userId ")=STR_toCoursePage
+                      v-icon.icon
+                          |mdi-card-chair-school
+                  v-btn(color="red" medium v-if="onIsSchool(course.schoolId)" @click="onDeleteCourse(course.courseId)")=STR_delete
+                      v-icon.icon
+                          |mdi-delete
 
 
     v-snackbar(v-model="snackBar")
@@ -34,7 +36,8 @@ export default {
   title: FA.titles.viewCourse,
   data: () => ({
     snackBar: false,
-    snackBarText: null
+    snackBarText: null,
+    lazyActive: false
   }),
   computed: {
     schoolCourses: function() {

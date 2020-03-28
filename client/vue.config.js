@@ -13,6 +13,9 @@ module.exports = {
       },
       "/course": {
         target: "http://localhost:8000"
+      },
+      "/school": {
+        target: "http://localhost:8000"
       }
     }
   }

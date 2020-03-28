@@ -30,7 +30,7 @@ export default {
     onLogin: function() {
       this.$store
         .dispatch("schoolLogIn", {
-          displayName: this.loginString,
+          idName: this.loginString,
           email: this.loginString,
           mobileNumber: this.loginString,
           password: this.password
@@ -55,15 +55,15 @@ export default {
 @include font('Yekan', '../../assets/fonts/Yekan')
 
 body, .pageTitle, .inputHolder
-    font-family: 'Yekan', Tahoma, sans-serif
+  font-family: 'Yekan', Tahoma, sans-serif
 
 .inputHolder
-    font-weight: 1000
+  font-weight: 1000
 
 .pageTitle
-    display: flex
-    margin-right: 1rem
+  display: flex
+  margin-right: 1rem
 
 .icon
-    margin-left: 0.5rem
+  margin-left: 0.5rem
 </style>
