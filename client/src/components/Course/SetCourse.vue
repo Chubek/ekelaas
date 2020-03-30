@@ -6,13 +6,11 @@ div
           |mdi-clipboard-file-outline
         |#{STR_courseHeader}
     v-card.inputHolder.d-flex.justify-center.text-end(class="d-flex pa-10 ma-10")
-        v-alert(v-model="alert" border="right" ::color="alertColor" dark dismissible)="{{alertText}}"
+        v-alert(v-model="alert" border="right" :color="alertColor" dark dismissible)="{{alertText}}"
         v-col(cols="12" sm="6" md="3")
             v-text-field(v-model="subject" append-icon="mdi-abjad-arabic" label=STR_subject placeholder=STR_subject outlined)
             v-text-field(v-model="description" append-icon="mdi-card-text" label=STR_description placeholder=STR_description outlined)
-            v-text-field(v-model="price" append-icon="mdi-currency-rial" :rules="priceRules" label=STR_price placeholder=STR_price outlined)
-            v-text-field(v-model="connectURL" append-icon="mdi-adobe" label=STR_connectURL placeholder=STR_connectURL outlined)
-            v-autocomplete(v-model="school" label=STR_school append-icon="mdi-bus-school" :placeholder="courseInfo.school" small-chips chips dense :items="autoCompleteSchools" outlined)
+            v-text-field(v-model="connectURL" append-icon="mdi-adobe" label=STR_connectURL placeholder=STR_connectURL type="url" spellcheck="false" outlined)
             v-btn(color="primary" large dark @click="onSubmitInfo")=STR_sendInfo
               v-icon(:class="showIcon")
                 |mdi-check-all
@@ -46,14 +44,14 @@ export default {
     this.$store.dispatch("loadAutoCompleteSchools");
   },
   methods: {
-    onSubmitInfo: function() {
+    onSubmitInfo: function() {      
       this.$store
         .dispatch("setUpCourse", {
           subject: this.subject,
           description: this.description,
-          price: this.price,
-          school: this.school.name,
-          schoolId: this.school.id,
+          price: "",
+          school: this.schoolName,
+          schoolId: this.schoolId,
           connectURL: this.connectURL
         })
         .then(res => {
@@ -74,6 +72,12 @@ export default {
   computed: {
     autoCompleteSchools: function() {
       return this.$store.getters.getAutoCompleteSchools;
+    },
+    schoolId: function() {
+      return this.$store.getters.getSchoolId;
+    },
+    schoolName: function() {
+      return this.$store.getters.getSchoolName;
     }
   }
 };

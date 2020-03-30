@@ -130,9 +130,11 @@ const strings = {
     viewCourse: "مشاهده‌ی اطلاعات دوره",
     viewTeachers: "مشاهده‌ی معلم‌ها",
     viewStudents: "مشاهده‌ی دانش‌اموزان",
-    viewCourses: "مشاهده‌ی دوره‌ها"
+    viewCourses: "مشاهده‌ی دوره‌ها",
+    ourSchools: "مدارس ما"
   },
 
+  STR_guest: "مهمان",
   STR_landlineInvalid:
     " خط تلفن باید محتوی کد شهر با خط فاصله باشد مثلا ۳۸۴۴۵۶۰۷-۰5۱."
 };

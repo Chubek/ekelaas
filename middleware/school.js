@@ -3,7 +3,7 @@ require("dotenv").config();
 
 function school(req, res, next) {
   const token = req.header("x-auth-token-school");
-
+  console.log(JSON.stringify(req.headers));
   if (!token)
     return res.status(401).json({ message: "No token, access denied." });
 

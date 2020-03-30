@@ -81,6 +81,7 @@ const StudentModule = {
             commit("SET_STUDENT_INFO", res.data.studentDoc.info);
             commit("SET_STUDENT_SCHOOL_ID", res.data.studentDoc.schoolId);
             dispatch("loadSchool", res.data.studentDoc.schoolId);
+            dispatch("setAsStudent");
           })
           .catch(e => {
             if (e.response.status == 401) {

@@ -76,6 +76,7 @@ const TeacherModule = {
             });
             commit("SET_TEACHER_SCHOOL_ID", res.data.teacherDoc.schoolId);
             dispatch("loadSchool", res.data.teacherDoc.schoolId);
+            dispatch("setAsTeacher");
           })
           .catch(e => {
             if (e.response.status == 401) {
@@ -112,6 +113,7 @@ const TeacherModule = {
       });
     },
     loadTeacher({ dispatch, commit }, payload) {
+      console.log("loadTeacherCalled")
       axios.get(`/teacher/single/${payload}`).then(res => {
         console.log("resss", res);
         commit("SET_TEACHER_ID", res.data.teacherDoc._id);

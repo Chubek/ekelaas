@@ -1,6 +1,7 @@
 require("dotenv").config({ path: __dirname + "/.env" });
 const SchoolSchema = require("../models/School");
 const TeacherSchema = require("../models/Teacher");
+const UserSchema = require("../models/User");
 const CourseSchema = require("../models/Course");
 const StudentSchema = require("../models/Student");
 const router = require("express").Router();
@@ -110,7 +111,7 @@ router.post("/register", (req, res) => {
 
 router.post("/auth", (req, res) => {
   const { idName, email, mobileNumber, password } = req.body;
-  console.log(req.body)
+  console.log(req.body);
   if (!password) {
     return false;
   }
@@ -240,8 +241,8 @@ router.post("/auth/on/create", (req, res) => {
     });
 });
 
-router.get("/all/students", schoolAuth, (req, res) => {
-  const schoolId = req.school.id;
+router.get("/all/students/:schoolId", (req, res) => {
+  const schoolId = req.params.schoolId;
 
   StudentSchema.find({ schoolId: schoolId })
     .then(studentDocs => {
@@ -264,10 +265,10 @@ router.get("/all/students", schoolAuth, (req, res) => {
     });
 });
 
-router.get("/all/courses", schoolAuth, (req, res) => {
-  const schoolId = req.school.id;
-
-  CoursesSchema.find({ schoolId: schoolId })
+router.get("/all/courses/:schoolId", (req, res) => {
+  const schoolId = req.params.schoolId;
+  console.log(req.params);
+  CourseSchema.find({ schoolId: schoolId })
     .then(courseDocs => {
       res.status(200).json({ courseDocs });
     })
@@ -277,8 +278,8 @@ router.get("/all/courses", schoolAuth, (req, res) => {
     });
 });
 
-router.get("/all/teachers", schoolAuth, (req, res) => {
-  const schoolId = req.school.id;
+router.get("/all/teachers/:schoolId", (req, res) => {
+  const schoolId = req.params.schoolId;
 
   TeacherSchema.find({ schoolId: schoolId })
     .then(teacherDocs => {
@@ -328,7 +329,14 @@ router.delete("/delete/student/:studentId", schoolAuth, (req, res) => {
   const studentId = req.params.schoolId;
 
   StudentSchema.findOneAndDelete({ _id: studentId, schoolId: schoolId })
-    .then(() => res.status(204).json({ message: "Student deleted." }))
+    .then(() => {
+      UserSchema.findOneAndDelete({ "types.studentId": studentId })
+        .then(() => res.status(204).json({ message: "Student deleted." }))
+        .catch(e => {
+          res.status(500).json({ error: e.message });
+          console.log(e);
+        });
+    })
     .catch(e => {
       res.status(500).json({ error: e.message });
       console.log(e);
@@ -340,7 +348,14 @@ router.delete("/delete/teacher/:teacherId", schoolAuth, (req, res) => {
   const teacherId = req.params.schoolId;
 
   TeacherSchema.findOneAndDelete({ _id: teacherId, schoolId: schoolId })
-    .then(() => res.status(204).json({ message: "Teacher deleted." }))
+    .then(() => {
+      UserSchema.findOneAndDelete({ "types.teacherId": teacherId })
+        .then(() => res.status(204).json({ message: "Teacher deleted." }))
+        .catch(e => {
+          res.status(500).json({ error: e.message });
+          console.log(e);
+        });
+    })
     .catch(e => {
       res.status(500).json({ error: e.message });
       console.log(e);

@@ -12,6 +12,7 @@ import SetCourse from "../components/Course/SetCourse.vue";
 import SetClass from "../components/Course/SetClass.vue";
 import Profile from "../components/User/Profile.vue";
 import Logout from "../components/User/Logout.vue";
+import CoursePage from "../components/Course/CoursePage.vue";
 import SchoolTeachers from "../components/Catalogues/SchoolTeachers.vue";
 import SchoolStudents from "../components/Catalogues/SchoolStudents.vue";
 import SchoolCourses from "../components/Catalogues/SchoolCourses.vue";
@@ -21,6 +22,7 @@ import RegisterSchool from "../components/School/RegisterSchool";
 import LoginSchool from "../components/School/LoginSchool.vue";
 import RedirectToProfile from "../components/Utils/RedirectToProfile.vue";
 import EditCourseInfo from "../components/Course/EditCourseInfo.vue";
+import OurSchools from "../components/OurSchools.vue";
 import EditSchoolInfo from "../components/School/EditSchoolInfo.vue";
 import authGuard from "./Guards/authGuard";
 import registerGuard from "./Guards/registerGuard";
@@ -83,7 +85,7 @@ const routes = [
   {
     path: "/set/info-school",
     name: "EditSchoolInfo",
-    component: EditSchoolInfo    
+    component: EditSchoolInfo
   },
   {
     path: "/set/info-student",
@@ -165,6 +167,11 @@ const routes = [
     }
   },
   {
+    path: "/profile-course/:courseId",
+    name: "CoursePage",
+    component: CoursePage
+  },
+  {
     path: "/logout",
     name: "Logout",
     component: Logout,
@@ -176,7 +183,7 @@ const routes = [
   {
     path: "/logout-school",
     name: "LogoutSchool",
-    component: LogoutSchool,    
+    component: LogoutSchool,
     meta: {
       title: "خروج کاربر"
     }
@@ -190,7 +197,7 @@ const routes = [
     }
   },
   {
-    path: "/view/students",
+    path: "/view-students",
     name: "ًSchoolStudents",
     component: SchoolStudents,
     meta: {
@@ -198,7 +205,7 @@ const routes = [
     }
   },
   {
-    path: "/view/teachers",
+    path: "/view-teachers",
     name: "ًSchoolTeachers",
     component: SchoolTeachers,
     meta: {
@@ -206,9 +213,17 @@ const routes = [
     }
   },
   {
-    path: "/view/courses",
+    path: "/view-courses",
     name: "ًSchoolCourses",
     component: SchoolCourses,
+    meta: {
+      title: " انتقال به کاربر"
+    }
+  },
+  {
+    path: "/our-schools",
+    name: "ًOurSchools",
+    component: OurSchools,
     meta: {
       title: " انتقال به کاربر"
     }

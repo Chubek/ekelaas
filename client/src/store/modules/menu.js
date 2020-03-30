@@ -29,8 +29,8 @@ const MenuModule = {
         icon: "mdi-bus-school"
       },
       about: {
-        text: FA.STR_about,
-        link: "/about",
+        text: FA.titles.ourSchools,
+        link: "/our-schools",
         icon: "mdi-information"
       },
       contact: {
@@ -58,22 +58,22 @@ const MenuModule = {
 
       students: {
         text: FA.STR_students,
-        link: "/view/students",
+        link: "/view-students",
         icon: "mdi-alarm-bell"
       },
       teachers: {
         text: FA.STR_teachers,
-        link: "/view/teachers",
+        link: "/view-teachers",
         icon: "mdi-hail"
       },
       courses: {
         text: FA.STR_courses,
-        link: "/view/courses",
+        link: "/view-courses",
         icon: "mdi-chair-school"
       },
       about: {
-        text: FA.STR_about,
-        link: "/about",
+        text: FA.titles.ourSchools,
+        link: "/our-schools",
         icon: "mdi-information"
       },
       contact: {
@@ -100,22 +100,22 @@ const MenuModule = {
       },
       students: {
         text: FA.STR_students,
-        link: "/view/students",
+        link: "/view-students",
         icon: "mdi-alarm-bell"
       },
       teachers: {
         text: FA.STR_teachers,
-        link: "/view/teachers",
+        link: "/view-teachers",
         icon: "mdi-hail"
       },
       courses: {
         text: FA.STR_courses,
-        link: "/view/courses",
+        link: "/view-courses",
         icon: "mdi-chair-school"
       },
       about: {
-        text: FA.STR_about,
-        link: "/about",
+        text: FA.titles.ourSchools,
+        link: "/our-schools",
         icon: "mdi-information"
       },
       contact: {
@@ -132,7 +132,7 @@ const MenuModule = {
   },
   mutations: {
     SET_PROFILE_ID(state, payload) {
-      state.userLinks.profile.link = `/redirect/to/profile/${payload}`;
+      state.userLinks.profile.link = `/profile/${payload}`;
     }
   },
   actions: {

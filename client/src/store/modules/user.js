@@ -12,8 +12,8 @@ const UserModule = {
       verified: Boolean
     },
     info: {
-      firstName: FA.STR_firstName,
-      lastName: FA.STR_lastName,
+      firstName: FA.STR_notEntered,
+      lastName: FA.STR_notEntered,
       dateOfBirth: new Date().toISOString().substr(0, 10)
     },
     referralCode: String,
@@ -132,7 +132,13 @@ const UserModule = {
               studentId: res.data.docUser.types.studentId,
               teacherId: res.data.docUser.types.teacherId
             });
-            dispatch("loadType");
+            if (res.data.docUser.types.type === "Student") {
+              dispatch("loadTypeStudent", res.data.docUser.types.studentId);
+            }
+            if (res.data.docUser.types.type === "Teacher") {
+              dispatch("loadTypeTeacher", res.data.docUser.types.teacherId);
+            }
+            dispatch("setProfileId", res.data.docUser._id);
           })
           .catch(e => {
             if (e.response.status == 403) {
@@ -179,7 +185,14 @@ const UserModule = {
             studentId: res.data.docUser.types.studentId,
             teacherId: res.data.docUser.types.teacherId
           });
-          dispatch("loadType");
+          console.log("type", res.data.docUser.types.type);
+          if (res.data.docUser.types.type === "Student") {
+            dispatch("loadTypeStudent", res.data.docUser.types.studentId);
+          } else if (res.data.docUser.types.type === "Teacher") {
+            console.log("reachedIf", res.data.docUser.types.teacherId);
+            dispatch("loadTypeTeacher", res.data.docUser.types.teacherId);
+          }
+          dispatch("setProfileId", res.data.docUser._id);
         });
     },
 
@@ -212,7 +225,13 @@ const UserModule = {
             studentId: res.data.docUser.types.studentId,
             teacherId: res.data.docUser.types.teacherId
           });
-          dispatch("loadType");
+          if (res.data.docUser.types.type === "Student") {
+            dispatch("loadTypeStudent", res.data.docUser.types.studentId);
+          }
+          if (res.data.docUser.types.type === "Teacher") {
+            dispatch("loadTypeTeacher", res.data.docUser.types.teacherId);
+          }
+          dispatch("setProfileId", res.data.docUser._id);
         });
     },
 
@@ -261,16 +280,16 @@ const UserModule = {
       });
     },
 
-    loadType({ dispatch, state }) {
-      console.log("typeId", state.typeId);
-      if (state.type == "Student") {
-        dispatch("loadStudent", state.typeId);
-      } else if (state.type == "Teacher") {
-        dispatch("loadTeacher", state.typeId);
-      }
+    loadTypeStudent({ dispatch }, payload) {
+      dispatch("loadStudent", payload);
     },
 
-    setUserInfo({ commit }, payload) {
+    loadTypeTeacher({ dispatch }, payload) {
+      console.log("loadTypeTeacher called")
+      dispatch("loadTeacher", payload);
+    },
+
+    setUserInfo({ commit, state }, payload) {
       return new Promise((resolve, reject) => {
         axios
           .put(
@@ -284,10 +303,9 @@ const UserModule = {
             { headers: { "x-auth-token": localStorage.getItem("token") } }
           )
           .then(res => {
-            if (res.status == 200) {
-              commit("SET_USER_INFO", payload);
-              resolve(FA.STR_infoEntered);
-            }
+            console.log("res", res);
+            commit("SET_USER_INFO", payload);
+            resolve({ message: FA.STR_infoEntered, id: state.userData.userId });
           })
           .catch(e => {
             if (e.response.status == 401) {
@@ -338,22 +356,37 @@ const UserModule = {
             });
         } else if (resUser.data.userDoc.types.type === "Not Set") {
           console.log("hell", "hell");
-          commit("SET_LOADED_USER", {
-            loadedUserId: resUser.data.userDoc._id,
-            loadedUserEmail: resUser.data.userDoc.email,
-            loadedUserType: resUser.data.userDoc.types.type,
-            loadedUserPhoneNumber: resUser.data.userDoc.phoneNumber,
-            loadedUserInfo: {
-              firstName: FA.STR_notEntered,
-              lastName: FA.STR_notEntered,
-              referralCode: FA.STR_notEntered,
-              dateOfBirth: new Date().toISOString().substr(0, 10)
-            }
-          });
+          if (!resUser.data.userDoc.info) {
+            commit("SET_LOADED_USER", {
+              loadedUserId: resUser.data.userDoc._id,
+              loadedUserEmail: resUser.data.userDoc.email,
+              loadedUserType: resUser.data.userDoc.types.type,
+              loadedUserPhoneNumber: resUser.data.userDoc.phoneNumber,
+              loadedUserInfo: {
+                firstName: FA.STR_notEntered,
+                lastName: FA.STR_notEntered,
+                referralCode: FA.STR_notEntered,
+                dateOfBirth: new Date().toISOString().substr(0, 10)
+              }
+            });
+          } else {
+            commit("SET_LOADED_USER", {
+              loadedUserId: resUser.data.userDoc._id,
+              loadedUserEmail: resUser.data.userDoc.email,
+              loadedUserType: resUser.data.userDoc.types.type,
+              loadedUserPhoneNumber: resUser.data.userDoc.phoneNumber,
+              loadedUserInfo: resUser.data.userDoc.info
+            });
+          }
         }
       });
     },
-
+    setAsStudent({ commit }) {
+      commit("SET_TYPE", "Student");
+    },
+    setAsTeacher({ commit }) {
+      commit("SET_TYPE", "Teacher");
+    },
     logOut({ commit, state }) {
       localStorage.removeItem("token");
       state.loggedIn = false;

@@ -12,13 +12,13 @@ const CourseModule = {
       school: String
     },
     schoolId: String,
-    connectURL: String,
+    connectURL: STR_notEntered,
     classes: [
       {
-        classDate: Date,
-        classHour: String,
-        classParticipants: [Object],
-        classNotes: String
+        classDate: FA.STR_notEntered,
+        classHour: FA.STR_notEntered,
+        classParticipants: [FA.STR_notEntered],
+        classNotes: FA.STR_notEntered
       }
     ]
   },
@@ -27,7 +27,7 @@ const CourseModule = {
       state.courseId = payload;
     },
     SET_COURSE_SCHOOL_ID(state, payload) {
-      state.courseId = payload;
+      state.schoolId = payload;
     },
 
     SET_COURSE_TEACHER(state, payload) {
@@ -55,6 +55,9 @@ const CourseModule = {
     },
 
     PUSH_COURSE_CLASSES(state, payload) {
+      if (state.classes[0].classDate === FA.STR_notEntered) {
+        state.classes.splice(0, 1);
+      }
       state.classes.push(payload);
     },
 
@@ -289,6 +292,12 @@ const CourseModule = {
     },
     getCourseTeacher: state => {
       return state.teacher;
+    },
+    getCourseURL: state => {
+      return state.connectURL;
+    },
+    getCourseId: state => {
+      return state.courseId;
     }
   }
 };

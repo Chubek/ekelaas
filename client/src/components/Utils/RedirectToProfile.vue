@@ -16,7 +16,7 @@ export default {
       return this.$route.params.userId;
     }
   },
-  created: function() {
+  mounted: function() {
     this.$router.push({ path: `/profile/${this.userId}` });
   }
 };

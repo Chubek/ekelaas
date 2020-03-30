@@ -1,8 +1,7 @@
 <template lang="pug">
 include ../../assets/locale/FA.pug
 
-div
-    SetInfo(@clicked="onClickSetInfo")
+div    
     h2.pageTitle
         v-icon.icon
           |mdi-bus-school
@@ -13,13 +12,12 @@ div
             v-select(v-model="grade" label=STR_grade append-icon="mdi-id-card" :items="gradeItems" :placeholder="studentInfo.grade" outlined)
             v-select(v-model="province" label=STR_province :items="provinceItems" append-icon="mdi-map-marker" :placeholder="studentInfo.province" outlined)
             v-text-field(v-model="city" label=STR_city append-icon="mdi-map-marker" :placeholder="studentInfo.city" outlined)
-            v-autocomplete(v-model="school" label=STR_school append-icon="mdi-bus-school" :placeholder="studentInfo.school" small-chips chips dense :items="autoCompleteSchools" outlined)
-            v-btn(color="primary" large dark @click="onSetStudent" :disabled="disabledButton")=STR_sendInfo
+            v-autocomplete(v-model="school" label=STR_school append-icon="mdi-bus-school" :placeholder="studentInfo.school" small-chips chips dense :items="autoCompData" @click="getSchoolName" outlined)
+            v-btn(color="primary" large dark @click="onSetStudent")=STR_sendInfo
               v-icon(:class="showIcon")
                 |mdi-check-all
               v-progress-circular(color="white" indeterminate :class="showCircle")
-            p(v-if="disabledButton")
-              |#{STR_fillInfo}
+
 </template>
 <script>
 import FA from "../../assets/locale/FA";
@@ -42,10 +40,14 @@ export default {
     alertText: null,
     disabledButton: true,
     showIcon: "showClass",
-    showCircle: "hideClass"
+    showCircle: "hideClass",
+    autoCompData: null,
+    schoolName: null
   }),
   methods: {
     onSetStudent: function() {
+      this.getSchoolName();
+      console.log(this.schoolName)
       this.showIcon = "hideClass";
       this.showCircle = "showClass";
       this.$store
@@ -53,8 +55,8 @@ export default {
           grade: this.grade,
           province: this.province,
           city: this.city,
-          school: this.school.name,
-          schoolId: this.school.id
+          school: this.schoolName,
+          schoolId: this.school
         })
         .then(res => {
           this.showIcon = "showClass";
@@ -72,6 +74,16 @@ export default {
     },
     onClickSetInfo: function() {
       this.disabledButton = false;
+    },
+    fetchSchoolTitles: function(autoComps) {
+      this.autoCompData = autoComps;
+    },
+    getSchoolName: function() {      
+      this.autoCompleteSchools.forEach(school => {
+        if (school.value === this.school) {
+          this.schoolName = school.text;
+        }
+      });
     }
   },
   computed: {
@@ -85,8 +97,17 @@ export default {
       return this.$store.getters.getAutoCompleteSchools;
     }
   },
+
   created: function() {
     this.$store.dispatch("loadAutoCompleteSchools");
+  },
+  watch: {
+    autoCompData: function(newAutoComp) {
+      this.fetchSchoolTitles(newAutoComp);
+    }
+  },
+  mounted: function() {
+    this.autoCompData = this.autoCompleteSchools;
   }
 };
 </script>

@@ -1,61 +1,74 @@
 <template lang="pug">
 include ../../assets/locale/FA.pug
 
-div.mainDiv
-    h2.pageTitle
-        v-icon.icon
-            |mdi-bus-school
-        |#{STR_studentCatHeader}
-    v-lazy(v-model="lazyActive" :options="{ threshold: .5 }" min-height="200" transition="fade-transition")
-      v-sheet(elevation="2" class="d-flex align-content-start flex-wrap")
-          v-card(v-for="student in schoolStudents" :key="student.studentId")
-              v-card-title
-                  |{{ student.firstName }} {{ student.lastName}}
-              v-card-subtitle
-                  |{{ student.grade }}
-              hr
-              v-card-actions
-                  v-btn(color="primary" medium :to="'/redirect/to/profile/' + student.userId ")=STR_toStudentProfile
-                      v-icon.icon
-                          |mdi-card-account-details
-                  v-btn(color="red" medium v-if="onIsSchool(course.schoolId)" @click="onDeleteStudent(student.studentId)")=STR_delete
-                      v-icon.icon
-                          |mdi-delete
+div.mainDiv(v-if="dataIsLoaded")
+  h2.pageTitle
+    v-icon.icon
+      |mdi-bus-school
+    |#{STR_studentCatHeader}    
+  v-lazy(v-model="lazyActive" class="mt-12" :options="{ threshold: .5 }" min-height="200" transition="fade-transition")
+    v-sheet(elevation="2" class="d-flex align-content-start flex-wrap")
+      h4(v-if="noStudent")=STR_noStudent
+      v-card(v-for="student in studentData" :key="student.studentId" :color="onGenerateCardColor()" class="ma-3 pa-3")
+        v-card-title
+          |{{ student.firstName }} {{ student.lastName }}                 
+        hr
+        v-card-actions
+          v-btn(:color="onGenerateCPColor()" medium :to="'/profile/' + student.userId ")=STR_toStudentProfile
+            v-icon(right).icon
+              |mdi-flask
+          v-btn(:color="onGenerateRMColor()" medium v-if="onIsSchool(student.schoolId)" @click="onDeleteStudent(student.studentId)")=STR_delete
+            v-icon(right).icon
+              |mdi-delete
 
-    v-snackbar(v-model="snackBar")
-        |{{snackBarText}} #[v-btn(color="pink" @click="snackBar = false")=STR_ok]
+
+  v-snackbar(v-model="snackBar")
+    |{{snackBarText}} #[v-btn(color="pink" @click="snackBar = false")=STR_ok]
 </template>
 <script>
 import axios from "axios";
 import FA from "../../assets/locale/FA";
+import _ from "lodash";
 export default {
   name: "SchoolStudents",
   title: FA.titles.viewStudents,
   data: () => ({
     snackBar: false,
     snackBarText: null,
-    lazyActive: false
+    lazyActive: false,
+    noStudent: true,
+    studentData: null,
+    dataIsLoaded: false
   }),
+  beforeRouteEnter: (to, from, next) => {
+    console.log("before");
+    next(vm => {
+      console.log("vm", vm.$store.getters.getSchoolStudents);
+      vm.fetchStudentData(vm.$store.getters.getSchoolStudents);
+    });
+  },
   computed: {
-    schoolStudents: function() {
+    getSchoolStudents: function() {
       return this.$store.getters.getSchoolStudents;
     },
     schoolId: function() {
       return this.$store.getters.getSchoolId;
+    },
+    isStudent: function() {
+      return this.$store.getters.getUserType === "Student";
+    },
+    isSchool: function() {
+      return this.$store.getters.getSchoolIsLoggedIn;
     }
   },
   methods: {
     onDeleteStudent: function(studentId) {
       axios
-        .delete(
-          `/school/delete/student/${studentId}`,
-          { blank: "blank" },
-          {
-            headers: {
-              "x-auth-token-school": localStorage.getItem("schoolToken")
-            }
+        .delete(`/school/delete/student/${studentId}`, {
+          headers: {
+            "x-auth-token-school": localStorage.getItem("schoolToken")
           }
-        )
+        })
         .then(() => {
           this.snackBar = true;
           this.snackBarText = FA.studentDeleted;
@@ -66,7 +79,30 @@ export default {
         });
     },
     onIsSchool: function(studentSchoolId) {
-      return this.schoolId === studentSchoolId;
+      return this.schoolId === studentSchoolId && this.isSchool;
+    },
+    fetchStudentData: function(studentData) {
+      this.studentData = studentData;
+      this.dataIsLoaded = true;
+    },
+    onGenerateCardColor: function() {
+      return `teal lighten-${_.random(0, 5)}`;
+    },
+    onGenerateConnectButtonColor: function() {
+      return `cyan lighten-${_.random(0, 5)}`;
+    },
+    onGenerateCPColor: function() {
+      return `indigo lighten-${_.random(0, 5)}`;
+    },
+    onGenerateRMColor: function() {
+      return `light-blue lighten-${_.random(0, 5)}`;
+    }
+  },
+  watch: {
+    studentData: function(newCD) {
+      if (newCD.length > 0) {
+        this.noStudent = false;
+      }
     }
   }
 };
@@ -85,4 +121,10 @@ body, .mainDiv
 
 .icon
   margin-left: 0.5rem
+
+.addButton
+  position: absolute
+  left: 2%
+  bottom: 5%
+  margin-right: 20px
 </style>

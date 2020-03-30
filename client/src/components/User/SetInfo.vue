@@ -2,28 +2,28 @@
 include ../../assets/locale/FA.pug
 
 div
-    h2.pageTitle
+  h2.pageTitle
+    v-icon.icon
+      |mdi-id-card
+    |#{STR_infoHeader}
+  v-card.inputHolder.d-flex.justify-center.text-end(class="d-flex pa-10 ma-10")
+    v-alert(v-model="alert" border="right" :color="alertColor" dark dismissible)="{{alertText}}"
+    v-col(cols="12" sm="6" md="3")
+      v-text-field(v-model="firstName" append-icon="mdi-human-child" label=STR_firstName :placeholder="info.firstName" outlined)
+      v-text-field(v-model="lastName" append-icon="mdi-human-male-child" label=STR_lastName :placeholder="info.lastName" outlined)            
+      h5.labelTitle
         v-icon.icon
-          |mdi-id-card
-        |#{STR_infoHeader}
-    v-card.inputHolder.d-flex.justify-center.text-end(class="d-flex pa-10 ma-10")
-        v-alert(v-model="alert" border="right" :color="alertColor" dark dismissible)="{{alertText}}"
-        v-col(cols="12" sm="6" md="3")
-            v-text-field(v-model="firstName" append-icon="mdi-human-child" label=STR_firstName :placeholder="info.firstName" outlined)
-            v-text-field(v-model="lastName" append-icon="mdi-human-male-child" label=STR_lastName :placeholder="info.lastName" outlined)            
-            h5.labelTitle
-              v-icon.icon
-                |mdi-calendar
-              |#{STR_dateOfBirth}
-            p.dOBTitle="{{ dateOB }}"
-            v-date-picker(v-model="dateOfBirth" :value="info.dateOfBirth" :show-current="false" first-day-of-week="6" locale="fa" class="datePicker")            
-            v-btn(color="primary" large :disabled="filled" dark @click="onSendInfo")=STR_sendInfo
-              v-icon(:class="showIcon")
-                |mdi-check-all
-              v-progress-circular(color="white" indeterminate :class="showCircle")
-            br/
-            p(v-if="filled")
-              |#{STR_fillFurther}
+          |mdi-calendar
+        |#{STR_dateOfBirth}
+      p.dOBTitle="{{ dateOB }}"
+      v-date-picker(v-model="dateOfBirth" :value="info.dateOfBirth" :show-current="false" first-day-of-week="6" locale="fa" class="datePicker")            
+      v-btn(color="primary" large :disabled="filled" dark @click="onSendInfo")=STR_sendInfo
+        v-icon(:class="showIcon")
+          |mdi-check-all
+        v-progress-circular(color="white" indeterminate :class="showCircle")
+      br/
+      p(v-if="filled")
+        |#{STR_fillFurther}
 
 </template>
 <script>
@@ -43,12 +43,21 @@ export default {
     alertColor: null,
     alertText: null,
     showIcon: "showClass",
-    showCircle: "hideClass"
+    showCircle: "hideClass",
+    infoData: null,
+    dataIsReady: false
   }),
+  beforeRouteEnter: (to, from, next) => {
+    next(vm => {
+      console.log("vm", vm)
+      vm.fetchInfoData(vm.$store.getters.getUserInfo);
+    });
+  },
+  created: function() {
+    this.infoData = this.info;
+  },
   mounted: function() {
-    this.firstName = this.info.firstName;
-    this.lastName = this.info.lastName;
-    this.dateOfBirth = this.info.dateOfBirth;
+    this.infoData = this.info;
   },
   methods: {
     onSendInfo: function() {
@@ -62,19 +71,26 @@ export default {
           referralCode: this.referral
         })
         .then(res => {
+          console.log("innerRes", res);
           this.showIcon = "showClass";
           this.showCircle = "hideClass";
           this.alert = true;
           this.alertColor = "blue";
-          this.alertText = res;
+          this.alertText = res.message;
           this.filled = true;
-          this.$emit("clicked");
+          this.$router.push({ path: `/redirect/to/profile/${res.id}` });
         })
         .catch(e => {
           this.alert = true;
           this.alertColor = "red";
           this.alertText = e;
         });
+    },
+    fetchInfoData: function(info) {
+      this.firstName = info.firstName;
+      this.lastName = info.lastName;
+      this.dateOfBirth = info.dateOfBirth;
+      this.dataIsReady = true;
     }
   },
   computed: {
@@ -89,6 +105,11 @@ export default {
       return moment(dOB, "YYYY/MM/DD")
         .locale("fa")
         .format("YYYY/MM/DD");
+    }
+  },
+  watch: {
+    info: function(newData) {
+      this.fetchInfoData(newData);
     }
   }
 };

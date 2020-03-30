@@ -11,10 +11,10 @@ const SchoolModule = {
       mobileNumber: Number
     },
     info: {
-      name: String,
-      grade: String,
-      landlineNumber: Number,
-      address: String
+      name: FA.STR_notEntered,
+      grade: FA.STR_notEntered,
+      landlineNumber: FA.STR_notEntered,
+      address: FA.STR_notEntered
     },
     courses: [],
     teachers: [],
@@ -23,6 +23,7 @@ const SchoolModule = {
   },
   mutations: {
     SET_SCHOOL_DATA(state, payload) {
+      console.log("SET SCHOOL DATA CALLED");
       state.schoolData = payload;
     },
     SET_SCHOOL_INFO(state, payload) {
@@ -35,18 +36,19 @@ const SchoolModule = {
     SET_AUTO_COMPLETE_SCHOOLS(state, payload) {
       payload.forEach(school => {
         state.autoCompleteSchools.push({
-          title: school.info.name + " (" + school.info.grade + ")",
-          id: school._id
+          text: school.info.name + " (" + school.info.grade + ")",
+          value: school._id
         });
       });
     },
     PUSH_SCHOOL_COURSES(state, payload) {
       state.courses.push(payload);
     },
-    SET_SCHOOL_TEACHERS(state, payload) {
-      state.teachers = payload;
-    },
     PUSH_SCHOOL_TEACHERS(state, payload) {
+      state.teachers.push(payload);
+    },
+    SET_SCHOOL_TEACHERS(state, payload) {
+      console.log("payload", payload)
       payload.data.teacherDocs.forEach((teacher, index) => {
         state.teachers.push({
           teacherId: teacher._id,
@@ -76,7 +78,8 @@ const SchoolModule = {
           schoolId: course.schoolId,
           subject: course.info.subject,
           description: course.info.description,
-          price: course.info.price
+          price: course.info.price,
+          url: course.connectURL
         });
       });
     }
@@ -102,15 +105,9 @@ const SchoolModule = {
               mobileNumber: res.data.docSchool.mobileNumber
             });
             commit("SET_SCHOOL_INFO", res.data.docSchool.info);
-            if (res.data.docSchool.studentsId.length > 0) {
-              dispatch("setSchoolStudents");
-            }
-            if (res.data.docSchool.teachersId.length > 0) {
-              dispatch("setSchoolTeachers");
-            }
-            if (res.data.docSchool.coursesId.length > 0) {
-              dispatch("setSchoolCourses");
-            }
+            dispatch("setSchoolStudents");
+            dispatch("setSchoolTeachers");
+            dispatch("setSchoolCourses");
           })
           .catch(e => {
             if (e.response.status == 400) {
@@ -141,15 +138,9 @@ const SchoolModule = {
             mobileNumber: res.data.docSchool.mobileNumber
           });
           commit("SET_SCHOOL_INFO", res.data.docSchool.info);
-          if (res.data.docSchool.studentsId.length > 0) {
-            dispatch("setSchoolStudents");
-          }
-          if (res.data.docSchool.teachersId.length > 0) {
-            dispatch("setSchoolTeachers");
-          }
-          if (res.data.docSchool.coursesId.length > 0) {
-            dispatch("setSchoolCourses");
-          }
+          dispatch("setSchoolStudents");
+          dispatch("setSchoolTeachers");
+          dispatch("setSchoolCourses");
         });
     },
 
@@ -254,15 +245,9 @@ const SchoolModule = {
               mobileNumber: res.data.docSchool.mobileNumber
             });
             commit("SET_SCHOOL_INFO", res.data.docSchool.info);
-            if (res.data.docSchool.studentsId.length > 0) {
-              dispatch("setSchoolStudents");
-            }
-            if (res.data.docSchool.teachersId.length > 0) {
-              dispatch("setSchoolTeachers");
-            }
-            if (res.data.docSchool.coursesId.length > 0) {
-              dispatch("setSchoolCourses");
-            }
+            dispatch("setSchoolStudents");
+            dispatch("setSchoolTeachers");
+            dispatch("setSchoolCourses");
           })
           .catch(e => {
             reject(e);
@@ -270,56 +255,50 @@ const SchoolModule = {
           });
       });
     },
-    setSchoolTeachers({ commit }) {
+    setSchoolTeachers({ commit, state }) {
+      console.log("SET SCHOOL TEACHER CALLED");
       axios
-        .get(
-          "/school/all/teachers",
-          { blank: "blank" },
-          { headers: { "x-auth-token": localStorage.getItem("schoolToken") } }
-        )
+        .get(`/school/all/teachers/${state.schoolData.schoolId}`)
         .then(res => {
           commit("SET_SCHOOL_TEACHERS", res);
-        });
+        })
+        .catch(e => console.log(e.response));
     },
-    setSchoolStudents({ commit }) {
+    setSchoolStudents({ commit, state }) {
+      console.log("SET SCHOOL STUDENTS CALLED");
       axios
-        .get(
-          "/school/all/students",
-          { blank: "blank" },
-          { headers: { "x-auth-token": localStorage.getItem("schoolToken") } }
-        )
+        .get(`/school/all/students/${state.schoolData.schoolId}`)
         .then(res => {
           commit("SET_SCHOOL_STUDENTS", res);
-        });
+        })
+        .catch(e => console.log(e.response));
     },
-    setSchoolCourses({ commit }) {
+    setSchoolCourses({ commit, state }) {
+      console.log("SET SCHOOL COURSES CALLED");
       axios
-        .get(
-          "/school/all/courses",
-          { blank: "blank" },
-          { headers: { "x-auth-token": localStorage.getItem("schoolToken") } }
-        )
+        .get(`/school/all/courses/${state.schoolData.schoolId}`)
         .then(res => {
           commit("SET_SCHOOL_COURSES", res);
-        });
+        })
+        .catch(e => console.log(e.response));
     },
     loadSchool({ dispatch, commit }, payload) {
       axios.get(`/school/single/${payload}`).then(res => {
         commit("SET_SCHOOL_INFO", res.data.docSchool.info);
-        if (res.data.docSchool.studentsId.length > 0) {
-          dispatch("loadSchoolStudents");
-        }
-        if (res.data.docSchool.teachersId.length > 0) {
-          dispatch("loadSchoolTeachers");
-        }
-        if (res.data.docSchool.coursesId.length > 0) {
-          dispatch("loadSchoolCourses");
-        }
+        commit("SET_SCHOOL_DATA", {
+          schoolId: res.data.docSchool._id,
+          idName: res.data.docSchool.idName,
+          email: res.data.docSchool.email,
+          mobileNumber: res.data.docSchool.mobileNumber
+        });
+        dispatch("setSchoolStudents");
+        dispatch("setSchoolTeachers");
+        dispatch("setSchoolCourses");
       });
     },
     loadAutoCompleteSchools({ commit }) {
       axios.get("/school/all").then(res => {
-        commit("SET_AUTO_COMPLETE_USERS", res.data.docSchools);
+        commit("SET_AUTO_COMPLETE_SCHOOLS", res.data.docSchools);
       });
     },
     schoolLogOut({ commit }) {
@@ -350,6 +329,9 @@ const SchoolModule = {
     },
     getSchoolCourses: state => {
       return state.courses;
+    },
+    getSchoolName: state => {
+      return state.info.name;
     }
   }
 };

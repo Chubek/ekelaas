@@ -5,60 +5,58 @@ div.mainDiv
         v-icon.icon
           |mdi-card-account-details-outline
         |#{STR_profileHeader}
-    v-card.flex-column.text-start(class="d-flex pa-10 ma-10")
+    v-card.flex-column.text-start(class="d-flex pa-10 ma-10" v-if="userDataIsReady")
         v-btn(color="blue" dark x-large @click="onMakeStudent" class="flex-nowrap" :disabled="!loadedIsNone" v-if="userIsLoaded && loadedIsNone")=STR_makeStudent
         br/
-        v-btn(color="blue" dark x-large @click="onMakeTeacher" class="flex-nowrap" :disabled="!loadedIsNone" v-if="isSchool && loadedIsNone")=STR_makeTeacher
+        v-btn(color="blue" dark x-large @click="onMakeTeacher" class="flex-nowrap" :disabled="!loadedIsNone" v-if="userIsLoaded && loadedIsNone")=STR_makeTeacher
         br/
         h3
             |#[v-icon="mdi-account"] #{STR_infoTitle} 
         v-card-title
-            |#{STR_firstName}: {{ info.firstName }}
+            |#{STR_firstName}: {{ userData.firstName }}
             br/
-            |#{STR_lastName}: {{ info.lastName}}
+            |#{STR_lastName}: {{ userData.lastName}}
             br/
             |#{STR_dateOfBirth}: {{ dateOfBirth }}
         v-card-subtitle(v-if="isTeacher || isSchool || userIsLoaded")
             |#{STR_phoneNumber}: {{phoneNumber}}
             br/
             |#{STR_email}: {{email}}
-        v-btn(to="/set/info" color="primary" v-if="userIsLoaded" large fab)
+        v-btn(to="/set/info" color="primary" class="editButton" v-if="userIsLoaded" medium fab)
           v-icon.icon
             |mdi-circle-edit-outline
-    v-card.flex-column.text-start(class="d-flex pa-10 ma-10" v-if="loadedIsStudent")        
+    v-card.flex-column.text-start(class="d-flex pa-10 ma-10" v-if="loadedIsStudent && studentDataIsReady")        
         h3.pageSubTitle
             |#[v-icon="mdi-bus-school"] #{STR_studentTitle}
         v-card-title
-            |#{STR_grade}: {{ studentInfo.grade }}
+            |#{STR_grade}: {{ studentData.grade }}
             br/
-            |#{STR_province}: {{ studentInfo.province }}
+            |#{STR_province}: {{ studentData.province }}
             br/            
-            |#{STR_city}: {{ studentInfo.city }}
+            |#{STR_city}: {{ studentData.city }}
             br/
             |#{STR_school}: {{ studentInfo.school }}
-        v-btn(to="/edit/info-student" color="primary" v-if="isStudent && userIsLoaded" large fab)
+        v-btn(to="/edit/info-student" color="primary" class="editButton" v-if="isStudent && userIsLoaded" medium fab)
           v-icon.icon
             |mdi-circle-edit-outline
-    v-card.inputHolder.flex-column.text-start(class="d-flex pa-10 ma-10" v-if="loadedIsTeacher")
-        v-btn(color="red" dark :disabled="isFavorite ^ isTeacher" large @click="onAddTeacherFavorite")=STR_addTeacherFavorite
-        br/
-        v-btn(color="red" dark :disabled="isEngaged ^ isTeacher" large @click="onAddTeacherEngaged")=STR_addTeacherEngaged
+    v-card.inputHolder.flex-column.text-start(class="d-flex pa-10 ma-10" v-if="loadedIsTeacher && teacherDataIsReady")
+        
         br/
         h3.pageSubTitle
             |#[v-icon="mdi-feather"] #{STR_teacherTitle}
         br/
         h5 
           |#{STR_credits}: #[br/]
-        v-card(v-for="(credit, index) in teacherInfo.credits" :key="(index * 5) + 1" style='white-space:pre;')
+        v-card(v-for="(credit, index) in teacherData.credits" :key="(index * 5) + 1" style='white-space:pre;')
            v-card-title
             |{{ credit }} 
         br/           
         h5
           |#{STR_degrees}:            
-        v-card(v-for="(degree, index) in teacherInfo.degrees" style='white-space:pre;' :key="(index * 10) + 2")
+        v-card(v-for="(degree, index) in teacherData.degrees" style='white-space:pre;' :key="(index * 10) + 2")
           v-card-title
             |{{ degree }}
-        v-btn(to="/edit/info-teacher" color="primary" v-if="isTeacher && userIsLoaded" large fab)
+        v-btn(to="/edit/info-teacher" color="primary" class="editButton" v-if="isTeacher && userIsLoaded" medium fab)
           v-icon.icon
             |mdi-circle-edit-outline
 
@@ -71,7 +69,15 @@ import FA from "../../assets/locale/FA";
 export default {
   name: "Profile",
   title: FA.titles.profile,
-  data: () => ({}),
+  data: () => ({
+    userData: null,
+    studentData: null,
+    teacherData: null,
+    userDataIsReady: false,
+    studentDataIsReady: false,
+    teacherDataIsReady: false,
+    dateOfBirth: null
+  }),
   computed: {
     isSchool: function() {
       return this.$store.getters.getSchoolIsLoggedIn;
@@ -104,13 +110,6 @@ export default {
     },
     info: function() {
       return this.$store.getters.getLoadedUser.loadedUserInfo;
-    },
-    dateOfBirth: function() {
-      let dOB = this.info.dateOfBirth;
-      dOB = _.replace(dOB, /-/g, "/");
-      return moment(dOB, "YYYY/MM/DD")
-        .locale("fa")
-        .format("YYYY/MM/DD");
     },
     studentInfo: function() {
       return this.$store.getters.getLoadedUser.loadedUserStudentInfo;
@@ -184,6 +183,12 @@ export default {
     this.$store.dispatch("loadUser", this.$route.params.userId);
     console.log(this.$route.params.userId);
   },
+  mounted: function() {
+    this.fetchUserData();
+    this.fetchTeacherData();
+    this.fetchStudentData();
+    this.calculateDateOfBirth();
+  },
   methods: {
     onAddTeacherFavorite: function() {
       this.$store.dispatch("pushFavoriteTeachers", {
@@ -204,6 +209,36 @@ export default {
     },
     onMakeTeacher: function() {
       this.$router.push({ path: "/set/info-teacher" });
+    },
+    fetchUserData: function() {
+      this.userData = this.$store.getters.getUserInfo;
+      this.userDataIsReady = true;
+    },
+    fetchStudentData: function() {
+      this.studentData = this.$store.getters.getStudentInfo;
+      this.studentDataIsReady = true;
+    },
+    fetchTeacherData: function() {
+      this.teacherData = this.$store.getters.getTeacherInfo;
+      this.teacherDataIsReady = true;
+    },
+    calculateDateOfBirth: function() {
+      let dOB = this.userData.dateOfBirth;
+      dOB = _.replace(dOB, /-/g, "/");
+      this.dateOfBirth = moment(dOB, "YYYY/MM/DD")
+        .locale("fa")
+        .format("YYYY/MM/DD");
+    }
+  },
+  watch: {
+    info: function(newUserData) {
+      this.fetchUserData(newUserData);
+    },
+    studentInfo: function(newStudentData) {
+      this.fetchStudentData(newStudentData);
+    },
+    teacherInfo: function(newTeacherData) {
+      this.fetchTeacherData(newTeacherData);
     }
   }
 };
@@ -221,4 +256,7 @@ body, .pageTitle, .mainDiv
 
 .icon
   margin-left: 0.5rem
+
+.editButton
+  margin-top: 1rem
 </style>

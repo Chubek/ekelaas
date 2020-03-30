@@ -16,15 +16,8 @@ router.post("/setup", auth, (req, res) => {
     school,
     schoolId
   } = req.body;
-
-  if (
-    !subject ||
-    !description ||
-    !price ||
-    !connectURL ||
-    !school ||
-    !schoolId
-  ) {
+  console.log(req.body);
+  if (!subject || !description || !connectURL || !school || !schoolId) {
     res.status(401).json({ message: "no data entered" });
     console.log("no data enetered.");
     return false;
@@ -145,7 +138,7 @@ router.put("/add/class/:courseid", auth, (req, res) => {
   const courseId = req.params.courseid;
   const { classDate, classHour, classParticipants, classNotes } = req.body;
   console.log(courseId);
-  if (!classDate || !classHour || !classParticipants || !classNotes) {
+  if (!classDate || !classHour) {
     res.status(401).json({ message: "Data not entered." });
     console.log("Data not entered.");
     return false;
@@ -178,7 +171,7 @@ router.put("/set/class/:courseId/:classIndex", auth, (req, res) => {
   const classIndex = req.params.classIndex;
   const courseId = req.params.courseId;
   const { classDate, classHour, classParticipants, classNotes } = req.body;
-  if (!classDate || !classHour || !classParticipants || !classNotes) {
+  if (!classDate || !classHour) {
     res.status(401).json({ message: "Data not sent." });
     console.log("Data not sent.");
     return false;

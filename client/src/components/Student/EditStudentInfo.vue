@@ -2,23 +2,23 @@
 include ../../assets/locale/FA.pug
 
 div    
-    h2.pageTitle
-        v-icon.icon
-          |mdi-bus-school
-        |#{STR_studentHeader}
-    v-card.inputHolder.d-flex.justify-center.text-end(class="d-flex pa-10 ma-10")
-        v-alert(v-model="alert" border="right" :color="alertColor" dark dismissible)="{{alertText}}"
-        v-col(cols="12" sm="6" md="3")
-            v-select(v-model="grade" label=STR_grade append-icon="mdi-id-card" :items="gradeItems" :placeholder="studentInfo.grade" outlined)
-            v-select(v-model="province" label=STR_province append-icon="mdi-map-marker" :items="provinceItems" :placeholder="studentInfo.province" outlined)
-            v-text-field(v-model="city" label=STR_city append-icon="mdi-map-marker" :placeholder="studentInfo.city" outlined)
-            v-autocomplete(v-model="school" label=STR_school append-icon="mdi-bus-school" :placeholder="studentInfo.school" small-chips chips dense :items="autoCompleteSchools" outlined)
-            v-btn(color="primary" x-large dark @click="onSetStudent")=STR_sendInfo
-              v-icon(:class="showIcon")
-                |mdi-check-all
-              v-progress-circular(color="white" indeterminate :class="showCircle")
-              
-              
+  h2.pageTitle
+    v-icon.icon
+      |mdi-bus-school
+    |#{STR_studentHeader}
+  v-card.inputHolder.d-flex.justify-center.text-end(class="d-flex pa-10 ma-10")
+    v-alert(v-model="alert" border="right" :color="alertColor" dark dismissible)="{{alertText}}"
+    v-col(cols="12" sm="6" md="3")
+      v-select(v-model="grade" label=STR_grade append-icon="mdi-id-card" :items="gradeItems" :placeholder="studentInfo.grade" outlined)
+      v-select(v-model="province" label=STR_province append-icon="mdi-map-marker" :items="provinceItems" :placeholder="studentInfo.province" outlined)
+      v-text-field(v-model="city" label=STR_city append-icon="mdi-map-marker" :placeholder="studentInfo.city" outlined)
+      v-autocomplete(v-model="school" label=STR_school append-icon="mdi-bus-school" :placeholder="studentInfo.school" small-chips chips dense :items="autoCompData" outlined)
+      v-btn(color="primary" x-large dark @click="onSetStudent")=STR_sendInfo
+        v-icon(:class="showIcon")
+          |mdi-check-all
+        v-progress-circular(color="white" indeterminate :class="showCircle")
+
+
 
 </template>
 <script>
@@ -42,16 +42,25 @@ export default {
     alertText: null,
     disabledButton: true,
     showIcon: "showClass",
-    showCircle: "hideClass"
+    showCircle: "hideClass",
+    autoCompData: null,
+    schoolName: null
   }),
+  watch: {
+    autoCompData: function(newAutoComp) {
+      this.fetchSchoolTitles(newAutoComp);
+    }
+  },
   mounted: function() {
     this.grade = this.studentInfo.grade;
     this.province = this.studentInfo.province;
     this.city = this.studentInfo.city;
     this.school = this.studentInfo.school;
+    this.autoCompData = this.autoCompleteSchools;
   },
   methods: {
     onSetStudent: function() {
+      this.getSchoolName();
       this.showIcon = "hideClass";
       this.showCircle = "showClass";
       this.$store
@@ -59,8 +68,8 @@ export default {
           grade: this.grade,
           province: this.province,
           city: this.city,
-          school: this.school.name,
-          schoolId: this.school.id
+          school: this.schoolName,
+          schoolId: this.school
         })
         .then(res => {
           this.showIcon = "showClass";
@@ -78,6 +87,16 @@ export default {
     },
     onClickSetInfo: function() {
       this.disabledButton = false;
+    },
+    fetchSchoolTitles: function(autoComps) {
+      this.autoCompData = autoComps;
+    },
+    getSchoolName: function() {
+      this.autoCompleteSchools.forEach(school => {
+        if (school.value === this.school) {
+          this.schoolName = school.text;
+        }
+      });
     }
   },
   computed: {
