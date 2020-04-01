@@ -31,19 +31,21 @@ const db = mongoose
   .catch(e => console.log(`${e}`.underline.red));
 mongoose.set("useFindAndModify", false);
 
-app.use("/img", express.static(path.join(__dirname, "public/image")));
-app.use("/aud", express.static(path.join(__dirname, "public/audio")));
-app.use("/vid", express.static(path.join(__dirname, "public/vid")));
-
-global.IMG_DIR = path.resolve(path.join(__dirname, "public/image"));
-global.AUD_DIR = path.resolve(path.join(__dirname, "public/audio"));
-global.VID_DIR = path.resolve(path.join(__dirname, "public/video"));
+app.use("/img", express.static(path.join(__dirname, "dist/img")));
+app.use("/css", express.static(path.join(__dirname, "dist/css")));
+app.use("/js", express.static(path.join(__dirname, "dist/js")));
+app.use("/fonts", express.static(path.join(__dirname, "dist/fonts")));
+app.use("/public", express.static(path.join(__dirname, "dist/public")));
 
 app.use("/user", require("./routes/user"));
 app.use("/student", require("./routes/student"));
 app.use("/teacher", require("./routes/teacher"));
 app.use("/course", require("./routes/course"));
 app.use("/school", require("./routes/school"));
+
+/*app.get("/", function(req, res) {
+  res.sendFile("index.html", { root: path.join(__dirname, "dist") });
+});*/
 
 const port = process.env.PORT || 5000;
 

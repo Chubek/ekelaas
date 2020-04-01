@@ -16,9 +16,9 @@ const SchoolModule = {
       landlineNumber: FA.STR_notEntered,
       address: FA.STR_notEntered
     },
-    courses: [],
-    teachers: [],
-    students: [],
+    courses: new Set(),
+    teachers: new Set(),
+    students: new Set(),
     autoCompleteSchools: []
   },
   mutations: {
@@ -42,15 +42,15 @@ const SchoolModule = {
       });
     },
     PUSH_SCHOOL_COURSES(state, payload) {
-      state.courses.push(payload);
+      state.courses.add(payload);
     },
     PUSH_SCHOOL_TEACHERS(state, payload) {
-      state.teachers.push(payload);
+      state.teachers.add(payload);
     },
     SET_SCHOOL_TEACHERS(state, payload) {
-      console.log("payload", payload)
+      console.log("payload", payload);
       payload.data.teacherDocs.forEach((teacher, index) => {
-        state.teachers.push({
+        state.teachers.add({
           teacherId: teacher._id,
           userId: payload.data.userDocs[index]._id,
           schoolId: teacher.schoolId,
@@ -61,7 +61,7 @@ const SchoolModule = {
     },
     SET_SCHOOL_STUDENTS(state, payload) {
       payload.data.studentDocs.forEach((student, index) => {
-        state.students.push({
+        state.students.add({
           studentId: student._id,
           schoolId: student.schoolId,
           userId: payload.data.userDocs[index]._id,
@@ -73,7 +73,7 @@ const SchoolModule = {
     },
     SET_SCHOOL_COURSES(state, payload) {
       payload.data.courseDocs.forEach(course => {
-        state.courses.push({
+        state.courses.add({
           courseId: course._id,
           schoolId: course.schoolId,
           subject: course.info.subject,
@@ -83,6 +83,15 @@ const SchoolModule = {
         });
       });
     }
+  },
+  REMOVE_FROM_TEACHERS(state, payload) {
+    state.teachers.delete(payload);
+  },
+  REMOVE_FROM_STUDENTS(state, payload) {
+    state.students.delete(payload);
+  },
+  REMOVE_FROM_COURSES(state, payload) {
+    state.courses.delete(payload);
   },
   actions: {
     schoolLogIn({ dispatch, commit }, payload) {
@@ -306,6 +315,12 @@ const SchoolModule = {
       commit("SET_SCHOOL_LOGGED_IN", false);
       commit("SET_SCHOOL_DATA", null);
       commit("SET_SCHOOL_INFO", null);
+    },
+    removeFromCourses({ commit }, payload) {
+      commit("REMOVE_FROM_COURSES", payload);
+    },
+    removeFromStudents({ commit }, payload) {
+      commit("REMOVE_FROM_STUDENTS", payload);
     }
   },
   getters: {

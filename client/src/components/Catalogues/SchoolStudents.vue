@@ -9,17 +9,21 @@ div.mainDiv(v-if="dataIsLoaded")
   v-lazy(v-model="lazyActive" class="mt-12" :options="{ threshold: .5 }" min-height="200" transition="fade-transition")
     v-sheet(elevation="2" class="d-flex align-content-start flex-wrap")
       h4(v-if="noStudent")=STR_noStudent
-      v-card(v-for="student in studentData" :key="student.studentId" :color="onGenerateCardColor()" class="ma-3 pa-3")
-        v-card-title
-          |{{ student.firstName }} {{ student.lastName }}                 
-        hr
-        v-card-actions
-          v-btn(:color="onGenerateCPColor()" medium :to="'/profile/' + student.userId ")=STR_toStudentProfile
-            v-icon(right).icon
-              |mdi-flask
-          v-btn(:color="onGenerateRMColor()" medium v-if="onIsSchool(student.schoolId)" @click="onDeleteStudent(student.studentId)")=STR_delete
-            v-icon(right).icon
-              |mdi-delete
+      v-container(fluid)
+        v-row
+          v-col(cols="12")
+            v-row
+              v-card(v-for="(student, index) in studentData" :key="student.studentId" :color="onGenerateCardColor()" class="ma-3 pa-3")
+                v-card-title
+                  |{{ student.firstName }} {{ student.lastName }}                 
+                hr
+                v-card-actions
+                  v-btn(:color="onGenerateCPColor()" medium :to="'/profile/' + student.userId ")=STR_toStudentProfile
+                    v-icon(right).icon
+                      |mdi-flask
+                  v-btn(:color="onGenerateRMColor()" medium v-if="onIsSchool(student.schoolId)" @click="onDeleteStudent(student.studentId, index)")=STR_delete
+                    v-icon(right).icon
+                      |mdi-delete
 
 
   v-snackbar(v-model="snackBar")
@@ -62,7 +66,7 @@ export default {
     }
   },
   methods: {
-    onDeleteStudent: function(studentId) {
+    onDeleteStudent: function(studentId, index) {
       axios
         .delete(`/school/delete/student/${studentId}`, {
           headers: {
@@ -72,6 +76,8 @@ export default {
         .then(() => {
           this.snackBar = true;
           this.snackBarText = FA.studentDeleted;
+          this.$store.dispatch("removeFromStudents", this.studentData[index]);
+          this.studentData.delete(this.studentData[index]);
         })
         .catch(e => {
           this.snackBar = true;

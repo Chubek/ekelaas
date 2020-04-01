@@ -2,37 +2,41 @@
 include ../../assets/locale/FA.pug
 
 div.mainDiv(v-if="dataIsLoaded")
-    h2.pageTitle
-        v-icon.icon
-            |mdi-bus-school
-        |#{STR_courseCatHeader}
-    v-btn(to="/set/info-course" large color="green" class="addButton" v-if="isTeacher" x-small fab)
-      v-icon(x-large dark).iconButton
-        |mdi-plus
-    v-lazy(v-model="lazyActive" class="mt-12" :options="{ threshold: .5 }" min-height="200" transition="fade-transition")
-      v-sheet(elevation="2" class="d-flex align-content-start flex-wrap")
-          h4(v-if="noCourse")=STR_noCourse
-          v-card(v-for="course in courseData" :key="course.courseId" :color="onGenerateCardColor()" class="ma-3 pa-3")
-              v-card-title
+  h2.pageTitle
+    v-icon.icon
+      |mdi-bus-school
+    |#{STR_courseCatHeader}
+  v-btn(to="/set/info-course" large color="green" class="addButton" v-if="isTeacher" x-small fab)
+    v-icon(x-large dark).iconButton
+      |mdi-plus
+  v-lazy(v-model="lazyActive" class="mt-12" :options="{ threshold: .5 }" min-height="200" transition="fade-transition")
+    v-sheet(elevation="2" class="d-flex align-content-start flex-wrap")
+      h4(v-if="noCourse")=STR_noCourse
+      v-container(fluid)
+        v-row
+          v-col(cols="12")
+            v-row
+              v-card(v-for="(course, index) in courseData" :key="course.courseId" :color="onGenerateCardColor()" class="ma-3 pa-3")
+                v-card-title
                   |{{ course.subject }}
-              v-card-subtitle
+                v-card-subtitle
                   |{{ course.description }}
                   hr
                   v-btn(:color="onGenerateConnectButtonColor()" :href="course.url" class="mt-2")=STR_connectURL
                     v-icon(right).icon
                       |mdi-adobe
-              hr
-              v-card-actions
-                  v-btn(:color="onGenerateCPColor()" medium :to="'/profile-course/' + course.courseId ")=STR_toCoursePage
+                  hr
+                  v-card-actions
+                    v-btn(:color="onGenerateCPColor()" medium :to="'/profile-course/' + course.courseId ")=STR_toCoursePage
                       v-icon(right).icon
-                          |mdi-chair-school
-                  v-btn(:color="onGenerateRMColor()" medium v-if="onIsSchool(course.schoolId)" @click="onDeleteCourse(course.courseId)")=STR_delete
-                      v-icon(right).icon
+                        |mdi-chair-school
+                      v-btn(:color="onGenerateRMColor()" medium v-if="onIsSchool(course.schoolId)" @click="onDeleteCourse(course.courseId, index)")=STR_delete
+                        v-icon(right).icon
                           |mdi-delete
 
 
-    v-snackbar(v-model="snackBar")
-        |{{snackBarText}} #[v-btn(color="pink" @click="snackBar = false")=STR_ok]
+  v-snackbar(v-model="snackBar")
+    |{{snackBarText}} #[v-btn(color="pink" @click="snackBar = false")=STR_ok]
 </template>
 <script>
 import axios from "axios";
@@ -69,7 +73,7 @@ export default {
     }
   },
   methods: {
-    onDeleteCourse: function(courseId) {
+    onDeleteCourse: function(courseId, index) {
       axios
         .delete(`/school/delete/course/${courseId}`, {
           headers: {
@@ -79,6 +83,8 @@ export default {
         .then(() => {
           this.snackBar = true;
           this.snackBarText = FA.courseDeleted;
+          this.$store.dispatch("removeFromCourses", this.courseData[index]);
+          this.courseData.delete(this.courseData[index]);
         })
         .catch(e => {
           this.snackBar = true;

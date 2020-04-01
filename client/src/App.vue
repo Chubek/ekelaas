@@ -1,20 +1,48 @@
 <template lang="pug">
-v-app
-  v-app-bar(app color="primary" dark)
-    span(v-if="isNameState" class="name")="{{welcomeName}}"
-    span(:v-if="isUserState" v-for="(link, index) in stateLinks" :key="keys[index]" class="menu pa-1")      
-      v-btn(color="green" @click="onTo(link.link)")="{{ link.text }}"      
-        v-icon(right).icon
-          |{{ link.icon }}
-        v-spacer
-      
+include assets/locale/FA.pug
+v-app  
+  v-app-bar(app color="primary" dark)    
+    v-app-bar-nav-icon(class="hamburgerIcon ml-2" @click="hamburgerMenu = !hamburgerMenu")
+    v-menu(v-model="hamburgerMenu" nudge-right="200")
+      v-list(class="menuList")
+        v-list-item(v-for="(link, index) in stateLinks" :key="keys[index]" :href="link.link")
+          v-list-item-icon
+            v-icon(left)
+              |{{link.icon}}
+          v-list-item-content
+            v-list-item-title(v-text="link.text")    
+    v-menu(v-model="hamburgerMenu" nudge-right="600")
+      v-list(class="menuListTablet")
+        v-list-item(v-for="(link, index) in stateLinks" :key="keys[index]" :href="link.link")
+          v-list-item-icon
+            v-icon(left)
+              |{{link.icon}}
+          v-list-item-content
+            v-list-item-title(v-text="link.text")
+
+    div(class="siteTitle ml-3")=STR_siteName    
+     
+    v-container(fluid class="normalMenu")      
+      v-row
+        v-col(cols="12")
+          v-row
+            span(:v-if="isUserState" v-for="(link, index) in stateLinks" :key="keys[index]" class="menu pa-1")      
+              v-btn(color="green" @click="onTo(link.link)")="{{ link.text }}"      
+                v-icon(right).icon
+                  |{{ link.icon }}
+                v-spacer
 
     
-  
+
+    div(class="name")="{{ welcomeName }}"
+
+
+
+
   v-content
     router-view
 
-        
+
 </template>  
 <script>
 import _ from "lodash";
@@ -35,7 +63,8 @@ export default {
     schoolInfoData: null,
     userInfoData: null,
     isNameState: false,
-    dataIsReady: false
+    dataIsReady: false,
+    hamburgerMenu: false
   }),
   computed: {
     userInfo: function() {
@@ -81,6 +110,7 @@ export default {
       this.isNameState = true;
     }
     if (this.schoolLoggedIn) {
+      console.log("nick");
       this.isSchool = true;
       this.stateLinks = this.schoolLinks;
       this.isGuest = false;
@@ -94,7 +124,7 @@ export default {
         this.isUser = true;
         this.isGuest = false;
         this.stateLinks = this.userLinks;
-        this.welcomeName = this.userInfoData.firstName;
+        this.welcomeName = this.userInfo.firstName;
       } else if (newLoggedIn == false) {
         this.isGuest = true;
         this.isUser = false;
@@ -108,7 +138,7 @@ export default {
       if (newSchoolLoggedIn == true) {
         this.isSchool = true;
         this.stateLinks = this.schoolLinks;
-        this.welcomeName = this.schoolInfoData.name;
+        this.welcomeName = this.schoolInfo.name;
       } else if (newSchoolLoggedIn == false) {
         this.isGuest = true;
         this.isSchool = false;
@@ -117,20 +147,8 @@ export default {
         this.welcomeName = FA.STR_guest;
       }
     },
-    userInfo: function(newUserData) {
-      this.fetchUserData(newUserData);
-    },
-    schoolInfo: function(newSchoolData) {
-      this.fetchSchoolData(newSchoolData);
-    },
     isGuest: function(newIsGuest) {
-      if (newIsGuest == false && this.isSchool == true) {
-        this.welcomeName = this.schoolInfoData.name;
-        this.isNameState = true;
-      } else if (newIsGuest == false && this.isUser == true) {
-        this.welcomeName = this.userInfoData.firstName;
-        this.isNameState = true;
-      } else if (newIsGuest == true) {
+      if (newIsGuest == true) {
         this.welcomeName = FA.STR_guest;
         this.isNameState = true;
       }
@@ -150,13 +168,13 @@ export default {
     fetchUserData: function(newUserData) {
       this.userInfoData = newUserData;
       this.dataIsReady = true;
-      this.welcomeName = this.userInfoData.firstName;
+      this.welcomeName = this.userInfo.firstName;
       this.isNameState = this.isUser && this.dataIsReady;
     },
     fetchSchoolData: function(newSchoolData) {
       this.schoolInfoData = newSchoolData;
       this.dataIsReady = true;
-      this.welcomeName = this.schoolInfoData.name;
+      this.welcomeName = this.schoolInfo.name;
       this.isNameState = this.isSchool && this.dataIsReady;
     }
   }
@@ -166,13 +184,47 @@ export default {
 @import '@/assets/sass/_colors', '@/assets/sass/_font'
 @include font('Yekan', 'assets/fonts/Yekan')
 
-body, .menu, .name
+body, .menu, .name, .menuList, .menuListTablet, .siteTitle
   font-family: 'Yekan', Tahoma, sans-serif
 
+.hamburgerIcon
+  display: none
+
 .name
-  margin-left: 0.5rem
-  border: 0.5px solid
-  padding: 0.5rem
-  border-radius: 4rem
+  margin-left: 1rem
+  border-left: 0.4rem solid black
+  padding-right: 1.5rem
+  padding-bottom: 0.5rem
+  padding-top: 0.5rem
+  border-radius: 2rem
   background-color: purple
+  display: flex
+  text-align: center
+  width: 100px
+
+@media (min-width: 768px) and (max-width: 979px)
+  .hamburgerIcon
+    display: inline
+
+  .normalMenu
+    display: none
+
+  .name
+    margin-right: 70%
+
+  .menuList
+    display: none
+
+@media (max-width: 767px)
+  .hamburgerIcon
+    display: inline
+
+  .normalMenu
+    display: none
+
+  .name
+    margin-right: 40%
+
+  .menuListTablet
+    display: none
 </style>

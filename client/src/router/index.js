@@ -25,62 +25,46 @@ import EditCourseInfo from "../components/Course/EditCourseInfo.vue";
 import OurSchools from "../components/OurSchools.vue";
 import EditSchoolInfo from "../components/School/EditSchoolInfo.vue";
 import authGuard from "./Guards/authGuard";
+import authSchoolGuard from "./Guards/authSchoolGuard";
 import registerGuard from "./Guards/registerGuard";
-//import teacherGuard from "./Guards/teacherGuard";
-//import studentGuard from "./Guards/studentGuard";
+import registerSchoolGuard from "./Guards/registerSchoolGuard";
+import teacherGuard from "./Guards/teacherGuard";
+import studentGuard from "./Guards/studentGuard";
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
     name: "Home",
-    component: Home,
-    meta: {
-      title: "خانه"
-    }
+    component: Home
   },
   {
     path: "/register",
     name: "Register",
     component: Register,
-    beforeEnter: registerGuard,
-    meta: {
-      title: "ثبت نام"
-    }
+    beforeEnter: registerGuard
   },
   {
     path: "/register-school",
     name: "RegisterSchool",
     component: RegisterSchool,
-    beforeEnter: registerGuard,
-    meta: {
-      title: "ثبت نام"
-    }
+    beforeEnter: registerSchoolGuard
   },
   {
     path: "/login",
     name: "Login",
-    component: Login,
-    meta: {
-      title: "ورود"
-    }
+    component: Login
   },
   {
     path: "/login-school",
     name: "LoginSchool",
-    component: LoginSchool,
-    meta: {
-      title: "ورود"
-    }
+    component: LoginSchool
   },
   {
     path: "/set/info",
     name: "SetInfo",
     component: SetInfo,
-    beforeEnter: authGuard,
-    meta: {
-      title: "ثبت اطلاعات کاربری"
-    }
+    beforeEnter: authGuard
   },
   {
     path: "/set/info-school",
@@ -91,80 +75,53 @@ const routes = [
     path: "/set/info-student",
     name: "SetStudent",
     component: SetStudent,
-    beforeEnter: authGuard,
-    meta: {
-      title: " ثبت اطلاعات دانش آموزی"
-    }
+    beforeEnter: authGuard
   },
   {
     path: "/set/info-teacher",
     name: "SetTeacher",
     component: SetTeacher,
-    beforeEnter: authGuard,
-    meta: {
-      title: " ثبت اطلاعات معلمی"
-    }
+    beforeEnter: authGuard
   },
   {
     path: "/edit/info-student",
     name: "EditStudentInfo",
     component: EditStudentInfo,
-    //beforeEnter: studentGuard
-    meta: {
-      title: " ویرایش اطلاعات دانش‌اموزی"
-    }
+    beforeEnter: studentGuard
   },
   {
     path: "/edit/info-teacher",
     name: "EditTeacherInfo",
     component: EditTeacherInfo,
-    //beforeEnter: teacherGuard
-    meta: {
-      title: "ویرایش اطلاعات معلمی"
-    }
+    beforeEnter: teacherGuard
   },
   {
     path: "/set/info-course",
     name: "SetCourse",
     component: SetCourse,
-    //beforeEnter: teacherGuard
-    meta: {
-      title: "ثبت اطلاعات دوره"
-    }
+    beforeEnter: teacherGuard
   },
   {
     path: "/edit/info-course/:courseId",
     name: "EditCourseInfo",
     component: EditCourseInfo,
-    //beforeEnter: teacherGuard
-    meta: {
-      title: "ویرایش اطلاعات دوره"
-    }
+    beforeEnter: teacherGuard
   },
   {
     path: "/set/class/:courseId",
     name: "SetClass",
     component: SetClass,
-    //beforeEnter: teacherGuard,
-    meta: {
-      title: " ثبت اطلاعات کلاس"
-    }
+    beforeEnter: teacherGuard
   },
   {
     path: "/profile/:userId",
     name: "Profile",
-    component: Profile,
-    meta: {
-      title: "پروفایل کاربر"
-    }
+    component: Profile
   },
   {
     path: "/profile-school",
     name: "ProfileSchool",
-    component: ProfileSchool,
-    meta: {
-      title: "پروفایل کاربر"
-    }
+    component: ProfileSchool
   },
   {
     path: "/profile-course/:courseId",
@@ -175,58 +132,40 @@ const routes = [
     path: "/logout",
     name: "Logout",
     component: Logout,
-    beforeEnter: authGuard,
-    meta: {
-      title: "خروج کاربر"
-    }
+    beforeEnter: authGuard,   
   },
   {
     path: "/logout-school",
     name: "LogoutSchool",
     component: LogoutSchool,
-    meta: {
-      title: "خروج کاربر"
-    }
+    beforeEnter: authSchoolGuard
+    
   },
   {
     path: "/redirect/to/profile/:userId",
     name: "ًRedirectToProfile",
     component: RedirectToProfile,
-    meta: {
-      title: " انتقال به کاربر"
-    }
+   
   },
   {
     path: "/view-students",
     name: "ًSchoolStudents",
-    component: SchoolStudents,
-    meta: {
-      title: " انتقال به کاربر"
-    }
+    component: SchoolStudents
   },
   {
     path: "/view-teachers",
     name: "ًSchoolTeachers",
-    component: SchoolTeachers,
-    meta: {
-      title: " انتقال به کاربر"
-    }
+    component: SchoolTeachers   
   },
   {
     path: "/view-courses",
     name: "ًSchoolCourses",
-    component: SchoolCourses,
-    meta: {
-      title: " انتقال به کاربر"
-    }
+    component: SchoolCourses    
   },
   {
     path: "/our-schools",
     name: "ًOurSchools",
-    component: OurSchools,
-    meta: {
-      title: " انتقال به کاربر"
-    }
+    component: OurSchools   
   },
   {
     path: "/about",

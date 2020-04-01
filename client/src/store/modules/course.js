@@ -12,7 +12,7 @@ const CourseModule = {
       school: String
     },
     schoolId: String,
-    connectURL: STR_notEntered,
+    connectURL: FA.STR_notEntered,
     classes: [
       {
         classDate: FA.STR_notEntered,

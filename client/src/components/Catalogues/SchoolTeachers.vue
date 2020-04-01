@@ -9,17 +9,21 @@ div.mainDiv(v-if="dataIsLoaded")
   v-lazy(v-model="lazyActive" class="mt-12" :options="{ threshold: .5 }" min-height="200" transition="fade-transition")
     v-sheet(elevation="2" class="d-flex align-content-start flex-wrap")
       h4(v-if="noTeacher")=STR_noTeacher
-      v-card(v-for="teacher in teacherData" :key="teacher.teacherId" :color="onGenerateCardColor()" class="ma-3 pa-3")
-        v-card-title
-          |{{ teacher.firstName }} {{ teacher.lastName }}                 
-        hr
-        v-card-actions
-          v-btn(:color="onGenerateCPColor()" medium :to="'/profile/' + teacher.userId ")=STR_toTeacherProfile
-            v-icon(right).icon
-              |mdi-flask
-          v-btn(:color="onGenerateRMColor()" medium v-if="onIsSchool(teacher.schoolId)" @click="onDeleteTeacher(teacher.teacherId)")=STR_delete
-            v-icon(right).icon
-              |mdi-delete
+      v-container(fluid)
+        v-row
+          v-col(cols="12")
+            v-row
+              v-card(v-for="(teacher, index) in teacherData" :key="teacher.teacherId" :color="onGenerateCardColor()" class="ma-3 pa-3")
+                v-card-title
+                  |{{ teacher.firstName }} {{ teacher.lastName }}                 
+                hr
+                v-card-actions
+                  v-btn(:color="onGenerateCPColor()" medium :to="'/profile/' + teacher.userId ")=STR_toTeacherProfile
+                    v-icon(right).icon
+                      |mdi-flask
+                v-btn(:color="onGenerateRMColor()" medium v-if="onIsSchool(teacher.schoolId)" @click="onDeleteTeacher(teacher.teacherId, index)")=STR_delete
+                    v-icon(right).icon
+                      |mdi-delete
 
 
   v-snackbar(v-model="snackBar")
@@ -61,7 +65,7 @@ export default {
     }
   },
   methods: {
-    onDeleteTeacher: function(teacherId) {
+    onDeleteTeacher: function(teacherId, index) {
       axios
         .delete(`/school/delete/teacher/${teacherId}`, {
           headers: {
@@ -71,6 +75,8 @@ export default {
         .then(() => {
           this.snackBar = true;
           this.snackBarText = FA.teacherDeleted;
+          this.$store.dispatch("removeFromStudents", this.teacherData[index]);
+          this.teacherData.delete(this.teacherData[index]);
         })
         .catch(e => {
           this.snackBar = true;

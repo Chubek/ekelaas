@@ -7,7 +7,7 @@ div
       v-icon.icon
         |mdi-chair-school
       |#{STR_courseClassHeader}   
-    v-col(cols="8" md="5" sm="3")
+    v-col(lg="4" md="3" sm="2")
       v-card(class="ml-2 pa-3 courseCard" color="blue")
         v-card-title
           |{{courseData.subject}}
